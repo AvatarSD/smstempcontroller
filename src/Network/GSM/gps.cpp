@@ -3,7 +3,8 @@
 #include "util/delay.h"
 #define delay(x) _delay_ms(x)
 //#define NULL 0
-
+#include <string.h>
+#include <stdlib.h>
 
 GPSGSM::GPSGSM(GSM& _gsm) : gsm(_gsm)
 {

@@ -1,6 +1,8 @@
 #include "SIM900.h"
-
 #include "../../LOG/debug.h"
+
+#include <string.h>
+#include <stdio.h>
 //#define NULL 0
 
 #define _GSM_CONNECTION_TOUT_ 5

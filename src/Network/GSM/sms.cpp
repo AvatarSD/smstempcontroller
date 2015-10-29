@@ -4,6 +4,9 @@
 #define delay(x) _delay_ms(x)
 //#define NULL 0
 
+#include <string.h>
+#include <stdlib.h>
+
 SMSGSM::SMSGSM(GSM& _gsm) : gsm(_gsm)
 {
 

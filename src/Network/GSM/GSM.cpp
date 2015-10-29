@@ -22,6 +22,9 @@ based on QuectelM10 chip.
 
 #include "avr/io.h"
 
+#include <string.h>
+#include <stdio.h>
+
 GSM::GSM(volatile unsigned char & port) : UART(port, 9600, 64, 16)
 {
 	millisInit();

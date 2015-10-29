@@ -1,6 +1,10 @@
 #include "call.h"
 
 #include "util/delay.h"
+
+#include <string.h>
+#include <stdio.h>
+
 #define delay(x) _delay_ms(x)
 
 CallGSM::CallGSM(GSM& _gsm) : gsm(_gsm)
