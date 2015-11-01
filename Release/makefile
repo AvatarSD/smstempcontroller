@@ -12,6 +12,9 @@ RM := rm -rf
 -include src/UART/subdir.mk
 -include src/Network/GSM/subdir.mk
 -include src/Network/subdir.mk
+-include src/LiquidCrystal_I2C/pcf8574/subdir.mk
+-include src/LiquidCrystal_I2C/lcdpcf8574/subdir.mk
+-include src/LiquidCrystal_I2C/i2chw/subdir.mk
 -include src/LOG/subdir.mk
 -include src/HardwareData/subdir.mk
 -include src/DallasOneWire/subdir.mk

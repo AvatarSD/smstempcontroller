@@ -10,11 +10,7 @@
 #define _GSM_DATA_TOUT_ 10
 
 #include "avr/io.h"
-#define PWR_PORT PORTH
-#define PWR_DDR DDRH
-#define PWR_PIN 5
-
-#define NUM_OF_ACK_ATTEMPT 2
+#include "../../config.h"
 
 
 SIMCOM900::SIMCOM900(volatile unsigned char & port) : GSM(port)

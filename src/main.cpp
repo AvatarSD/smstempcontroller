@@ -12,10 +12,20 @@
 #include "LOG/debug.h"
 #include "Network/NetworkWorker.h"
 #include "ADC/Analog.h"
+#include "config.h"
+
+/**/
+#include <avr/io.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <avr/pgmspace.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+
+#include "LiquidCrystal_I2C/lcdpcf8574/lcdpcf8574.h"
+/**/
 
 
-#define TIMER_PERIOD 5			//in minutes
-#define NTC_REFRESH_PERIOD 24 	//in hours
 
 #define LED_ON PORTB |= (1<<PORTB7)
 #define LED_OFF PORTB &=~ (1<<PORTB7)
@@ -48,6 +58,7 @@ void mainLoop()
 	LED_OFF;
 }
 
+
 ISR(TIMER1_CAPT_vect)
 {
 	static bool mutex = false;
@@ -62,7 +73,7 @@ ISR(TIMER1_CAPT_vect)
 	{
 		mutex = true;
 		++breakCounter;
-		mainLoop();
+//		mainLoop();
 		mutex = false;
 	}
 	else if((!breakCounter)&&(mutex))
@@ -128,11 +139,19 @@ int main(void)
 	// Timer/Counter 1 Interrupt(s) initialization
 	TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
 
+	sei();
+
+	delay(2000);
+	//init lcd
+	lcd_init(LCD_DISP_ON_CURSOR);
+	//lcd go home
+	//lcd_home();
+	bool led = 0;
 
 	while(1)
 	{
-		delay(1000);
 
+		delay(1000);
 		//		[](){
 		/*for(int i = 0; (i < 5); i++)
 			debug(F("\n\r"));
@@ -170,5 +189,28 @@ int main(void)
 		//		};
 
 		//LED_TRN;
+
+
+
+
+		lcd_led(led); //set led
+		led = !led; //invert led for next loop
+
+		//test loop
+		int i = 0;
+		int line = 0;
+		for(i=0; i<60; i++)
+		{
+			char buf[10];
+			itoa(i, buf, 10);
+			///lcd_gotoxy(i, line);
+			//lcd_puts("i= ");
+			//lcd_gotoxy(3, line);
+			lcd_puts(buf);
+			//line++;
+			//line %= 2;
+			delay(200);
+		}
+
 	};
 }

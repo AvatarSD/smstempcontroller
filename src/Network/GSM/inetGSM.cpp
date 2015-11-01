@@ -5,9 +5,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define _GSM_CONNECTION_TOUT_ 5
-#define _TCP_CONNECTION_TOUT_ 20
-#define _GSM_DATA_TOUT_ 10
+//#define _GSM_CONNECTION_TOUT_ 5
+//#define _TCP_CONNECTION_TOUT_ 20
+//#define _GSM_DATA_TOUT_ 10
 
 
 InetGSM::InetGSM(GSM& _gsm) : gsm(_gsm)

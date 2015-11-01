@@ -37,6 +37,9 @@ src/init \
 src/UART \
 src/Network \
 src/Network/GSM \
+src/LiquidCrystal_I2C/pcf8574 \
+src/LiquidCrystal_I2C/lcdpcf8574 \
+src/LiquidCrystal_I2C/i2chw \
 src/LOG \
 src/HardwareData \
 src/DallasOneWire \
