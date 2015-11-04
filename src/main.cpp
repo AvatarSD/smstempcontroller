@@ -66,7 +66,7 @@ ISR(TIMER1_CAPT_vect)
 	{
 		mutex = true;
 		++breakCounter;
-		mainLoop();
+		//mainLoop();
 		mutex = false;
 	}
 	else if((!breakCounter)&&(mutex))
@@ -158,11 +158,11 @@ int main(void)
 		{
 			LED_ON;
 
-			char buf[101] = {"Hello!!!    sdfhdghdgjfjfhbhjnj sdhsdf\r\n"}, buf2[5];
+			char buf[101] = {"Hello!!!    sdf\r\n"}, buf2[5];
 			itoa(i, buf2, 10);
 			if(buf2[1] == 0) buf2[1] = ' ';
 			memcpy(buf+9, buf2, 2);
-			//debug(buf);
+			debug(buf);
 			LED_OFF;
 			delay(1000);
 
