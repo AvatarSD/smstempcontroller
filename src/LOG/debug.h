@@ -11,7 +11,12 @@
 
 #include "../UART/UART.h"
 
-extern UART debug;
+
+#include "../LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
+//LCDterm & debug = lcdTerm;
+//extern UART debug;
+
+
 
 #define DEBUG_LEVEL_QUITE 0
 #define DEBUG_LEVEL_CRITICAL 1
@@ -29,7 +34,7 @@ extern UART debug;
 #define DEBUG_SPEED 115200
 #define DEBUG_TXBUF 64
 #define DEBUG_RXBUF 8
-#define DEBUG_LEVEL DEBUG_LEVEL_DEBUG
+#define DEBUG_LEVEL DEBUG_LEVEL_INFO
 /*****************************************/
 
 #if (DEBUG_LEVEL>=DEBUG_LEVEL_CRITICAL)

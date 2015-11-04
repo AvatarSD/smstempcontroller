@@ -328,7 +328,7 @@ float DallasTemp::calculateTemperature(ROM & deviceAddress, unsigned char * scra
 	{
 	case DS18B20MODEL:
 	case DS1822MODEL:
-		if(deviceAddress[0] == DS18B20MODEL) DEBUG(F("DS18B20 MODEL"))
+		if(deviceAddress[0] == DS18B20MODEL) {DEBUG(F("DS18B20 MODEL"))}
 		else DEBUG(F("DS1822 MODEL"));
 		switch (scratchPad[CONFIGURATION])
 		{

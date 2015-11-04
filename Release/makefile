@@ -14,6 +14,7 @@ RM := rm -rf
 -include src/Network/subdir.mk
 -include src/LiquidCrystal_I2C/pcf8574/subdir.mk
 -include src/LiquidCrystal_I2C/lcdpcf8574/subdir.mk
+-include src/LiquidCrystal_I2C/lcdTerminal/subdir.mk
 -include src/LiquidCrystal_I2C/i2chw/subdir.mk
 -include src/LOG/subdir.mk
 -include src/HardwareData/subdir.mk

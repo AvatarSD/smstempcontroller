@@ -15,14 +15,7 @@
 #include "config.h"
 
 /**/
-#include <avr/io.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <avr/pgmspace.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-
-#include "LiquidCrystal_I2C/lcdpcf8574/lcdpcf8574.h"
+#include "LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
 /**/
 
 
@@ -47,14 +40,14 @@ ISR(USART1_TX_vect)
 void mainLoop()
 {
 	LED_ON;
-	debug(F("---------INT---------\r\n"));
+	debug(F("--------INT---------\r\n\n\n"));
 	static int ntcRefrwshPeriodCount = 0;
 	if(!ntcRefrwshPeriodCount)
 		_network->refreshTime();
 	if(++ntcRefrwshPeriodCount == (NTC_REFRESH_PERIOD*60/TIMER_PERIOD))
 		ntcRefrwshPeriodCount = 0;
 	while(!_network->sendTemp());
-	debug(F("-------INT END-------\r\n\r\n"));
+	debug(F("-------INTEND-------\r\n"));
 	LED_OFF;
 }
 
@@ -73,7 +66,7 @@ ISR(TIMER1_CAPT_vect)
 	{
 		mutex = true;
 		++breakCounter;
-//		mainLoop();
+		mainLoop();
 		mutex = false;
 	}
 	else if((!breakCounter)&&(mutex))
@@ -94,6 +87,9 @@ int main(void)
 {
 	init();
 
+	lcd_init(LCD_DISP_ON);
+	lcd_led(0);
+
 	DallasOneWire iface(UDR1);
 	_iface = &iface;
 
@@ -104,12 +100,14 @@ int main(void)
 	NetworkWorker network(sensors, HWdata);
 	_network = &network;
 
-	for(auto i = 0; i<5; i++)
-		debug(F("\r\n"));
-	debug(F("---------Hello---------\r\n"));
+	//for(auto i = 0; i<5; i++)
+	//debug(F("\r\n"));
+	debug(F("-------Hello-------\r\n"));
 
 	iface.DS2480B_Detect();
 
+
+	//Just for see temp in debug
 	//while(true)
 	//	sensors.readAllTempSerial();
 
@@ -139,19 +137,41 @@ int main(void)
 	// Timer/Counter 1 Interrupt(s) initialization
 	TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
 
-	sei();
 
-	delay(2000);
+	//sei();
+	//delay(4000);
 	//init lcd
-	lcd_init(LCD_DISP_ON_CURSOR);
+
+	//delay(400);
+	//lcd_init(LCD_DISP_ON);
+
 	//lcd go home
 	//lcd_home();
-	bool led = 0;
+
 
 	while(1)
 	{
 
-		delay(1000);
+		//for(auto i = 0; i<10; i++)
+
+		for(auto i=0; i<60; i++)
+		{
+			LED_ON;
+
+			char buf[101] = {"Hello!!!    sdfhdghdgjfjfhbhjnj sdhsdf\r\n"}, buf2[5];
+			itoa(i, buf2, 10);
+			if(buf2[1] == 0) buf2[1] = ' ';
+			memcpy(buf+9, buf2, 2);
+			//debug(buf);
+			LED_OFF;
+			delay(1000);
+
+		}
+
+
+
+
+		//lcd_puts("HaHA!");
 		//		[](){
 		/*for(int i = 0; (i < 5); i++)
 			debug(F("\n\r"));
@@ -193,24 +213,21 @@ int main(void)
 
 
 
-		lcd_led(led); //set led
-		led = !led; //invert led for next loop
+		//lcd_led(led); //set led
+		//led = !led; //invert led for next loop
 
 		//test loop
-		int i = 0;
-		int line = 0;
-		for(i=0; i<60; i++)
-		{
-			char buf[10];
-			itoa(i, buf, 10);
-			///lcd_gotoxy(i, line);
-			//lcd_puts("i= ");
-			//lcd_gotoxy(3, line);
-			lcd_puts(buf);
-			//line++;
-			//line %= 2;
-			delay(200);
-		}
+		//		int i = 0;
+		//		//int line = 0;
+
+		//			///lcd_gotoxy(i, line);
+		//			//lcd_puts("i= ");
+		//			//lcd_gotoxy(3, line);
+		//			lcd_puts(buf);
+		//			//line++;
+		//			//line %= 2;
+		//			//delay(200);
+		//		}
 
 	};
 }

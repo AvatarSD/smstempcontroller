@@ -265,7 +265,7 @@ void init()
 
 	// TWI initialization
 	// TWI disabled
-	TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
+	//TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
 
 	// Global enable interrupts
 	sei();

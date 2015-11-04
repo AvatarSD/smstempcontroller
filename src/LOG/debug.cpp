@@ -9,7 +9,7 @@
 #include "avr/interrupt.h"
 #include "debug.h"
 
-
+/*
 UART debug(DEBUG_PORT, DEBUG_SPEED, DEBUG_TXBUF, DEBUG_RXBUF);
 
 ISR(DEBUG_RXINT)
@@ -19,4 +19,5 @@ ISR(DEBUG_RXINT)
 ISR(DEBUG_TXINT)
 {
 	debug.tx_byte_int();
-}
+}*/
+
