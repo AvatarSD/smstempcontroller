@@ -15,7 +15,8 @@
 #include "config.h"
 
 /**/
-#include "LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
+//#include "LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
+#include "sdcard/ff.h"
 /**/
 
 
@@ -137,97 +138,9 @@ int main(void)
 	// Timer/Counter 1 Interrupt(s) initialization
 	TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
 
-
-	//sei();
-	//delay(4000);
-	//init lcd
-
-	//delay(400);
-	//lcd_init(LCD_DISP_ON);
-
-	//lcd go home
-	//lcd_home();
-
-
 	while(1)
 	{
 
-		//for(auto i = 0; i<10; i++)
-/*
-		for(auto i=0; i<60; i++)
-		{
-			LED_ON;
-
-			char buf[101] = {"Hello!!!    sdf\r\n"}, buf2[5];
-			itoa(i, buf2, 10);
-			if(buf2[1] == 0) buf2[1] = ' ';
-			memcpy(buf+9, buf2, 2);
-			debug(buf);
-			LED_OFF;
-			delay(1000);
-
-		}*/
-
-
-
-
-		//lcd_puts("HaHA!");
-		//		[](){
-		/*for(int i = 0; (i < 5); i++)
-			debug(F("\n\r"));
-
-		debug(F("NetworkWorker: "));
-		debug(sizeof(NetworkWorker));
-		debug(F("\n\r"));
-		debug(F("SIMCOM900: "));
-		debug(sizeof(SIMCOM900));
-		debug(F("\n\r"));
-		debug(F("InetGSM: "));
-		debug(sizeof(InetGSM));
-		debug(F("\n\r"));
-		debug(F("GSM: "));
-		debug(sizeof(GSM));
-		debug(F("\n\r"));
-		debug(F("UART: "));
-		debug(sizeof(UART));
-		debug(F("\n\r"));
-		debug(F("DallasTemp: "));
-		debug(sizeof(DallasTemp));
-		debug(F("\n\r"));
-		debug(F("DallasOneWire: "));
-		debug(sizeof(DallasOneWire));
-		debug(F("\n\r"));
-		debug(F("\n\r"));*/
-		//
-		//		for(int i = FIRST_ADC_INPUT; i <= LAST_ADC_INPUT; i++)
-		//		{
-		//			debug(i);
-		//			debug(": ");
-		//			debug(analog.dataAt(i));
-		//			debug("\n\r");
-		//		}
-		//		};
-
-		//LED_TRN;
-
-
-
-
-		//lcd_led(led); //set led
-		//led = !led; //invert led for next loop
-
-		//test loop
-		//		int i = 0;
-		//		//int line = 0;
-
-		//			///lcd_gotoxy(i, line);
-		//			//lcd_puts("i= ");
-		//			//lcd_gotoxy(3, line);
-		//			lcd_puts(buf);
-		//			//line++;
-		//			//line %= 2;
-		//			//delay(200);
-		//		}
 
 	};
 }

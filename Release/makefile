@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/sdcard/subdir.mk
 -include src/init/subdir.mk
 -include src/UART/subdir.mk
 -include src/Network/GSM/subdir.mk
