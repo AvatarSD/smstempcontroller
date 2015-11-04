@@ -66,7 +66,7 @@ ISR(TIMER1_CAPT_vect)
 	{
 		mutex = true;
 		++breakCounter;
-		//mainLoop();
+		mainLoop();
 		mutex = false;
 	}
 	else if((!breakCounter)&&(mutex))
@@ -153,7 +153,7 @@ int main(void)
 	{
 
 		//for(auto i = 0; i<10; i++)
-
+/*
 		for(auto i=0; i<60; i++)
 		{
 			LED_ON;
@@ -166,7 +166,7 @@ int main(void)
 			LED_OFF;
 			delay(1000);
 
-		}
+		}*/
 
 
 
