@@ -34,8 +34,8 @@ LCDterm::~LCDterm()
 
 void LCDterm::putch(char c)
 {
-	/*if(c == '\r')
-		pBuff = pBuff/LCD_DISP_LENGTH;
+/*	if(c == '\r')
+		pBuff = (pBuff/LCD_DISP_LENGTH)*LCD_DISP_LENGTH;
 	else*/
 		if(c == '\n')
 	{
