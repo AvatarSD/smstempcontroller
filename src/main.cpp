@@ -15,7 +15,7 @@
 #include "config.h"
 
 /**/
-//#include "LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
+#include "LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
 #include "sdcard/ff.h"
 /**/
 
@@ -52,6 +52,13 @@ void mainLoop()
 	LED_OFF;
 }
 
+void screensaver(int time)
+{
+	char buff[50];
+	sprintf(buff, "\nTime to next cycle:\n       %2d:%02d\n\n",
+			time/60, time%60);
+	debug(buff);
+}
 
 ISR(TIMER1_CAPT_vect)
 {
@@ -63,22 +70,17 @@ ISR(TIMER1_CAPT_vect)
 	debug(F("   ")); debug(F("Mutex is: ")); debug(mutex); debug(F("\r\n"));
 #endif
 
-	if((!breakCounter)&&(!mutex))
+	if((breakCounter == 0)&&(!mutex))
 	{
 		mutex = true;
-		++breakCounter;
 		mainLoop();
 		mutex = false;
 	}
-	else if((!breakCounter)&&(mutex))
-	{
+	else if((breakCounter != 0)&&(!mutex))
+		screensaver(TIMER_PERIOD*60 - breakCounter);
 
-	}
-	else
-	{
-		++breakCounter;
-	}
-	if(breakCounter == TIMER_PERIOD*60)
+	++breakCounter;
+	if((breakCounter >= TIMER_PERIOD*60)&&(!mutex))
 		breakCounter = 0;
 }
 

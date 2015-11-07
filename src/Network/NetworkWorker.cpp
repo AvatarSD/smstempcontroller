@@ -54,8 +54,8 @@ bool NetworkWorker::sendTemp()
 	bool retVal = false;
 	attemptCount++;
 	errorPercent = ((float)(errorCount*100))/attemptCount;
-#ifdef LEVEL_INFO
-	debug.print(F("[INFO]: "));
+#ifdef LEVEL_DEBUG
+	debug.print(F("[DEBUG]: "));
 	debug.print(F("Error Percent is: "));
 	debug.print((double)errorPercent);
 	debug.print("%");

@@ -692,7 +692,8 @@ GSM::RegistrationStatus GSM::isRegistered(void)
 	}
 
 #ifdef LEVEL_INFO
-	debug(F("[INFO]: ")); debug(F("Signal level is: ")); debug(getSignalLevel()); debug(F("   (0-31 or 99)\r\n"));
+	debug(F("[INFO]: ")); debug(F("Signal level is: "));
+	debug(getSignalLevel()); debug(F(" (0-31 or 99)\r\n"));
 #endif
 
 	return retVal;

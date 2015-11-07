@@ -12,7 +12,7 @@
 /**inet**/
 #define PWR_PORT PORTH
 #define PWR_DDR DDRH
-#define PWR_PIN 5
+#define PWR_PIN 4
 
 #define NUM_OF_ACK_ATTEMPT 2
 /*******/

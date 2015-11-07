@@ -294,7 +294,7 @@ int DallasTemp::readOnce(DallasSensorData & data)
 #ifdef LEVEL_INFO
 						char buff[40];
 						strcpy(buff, _iface.ROM_NO.toString());
-						sprintf(buff+16, "  Temperature is: %3.1f`C", temp);
+						sprintf(buff+16, "  Temp: %3.1f`C", temp);
 						INFO(buff);
 #endif
 						return true;
