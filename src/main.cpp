@@ -55,7 +55,7 @@ void mainLoop()
 void screensaver(int time)
 {
 	char buff[50];
-	sprintf(buff, "\nTime to next cycle:\n       %2d:%02d\n\n",
+	sprintf(buff, "\nTime to next cycle:\n        %2d:%02d\n\n",
 			time/60, time%60);
 	debug(buff);
 }

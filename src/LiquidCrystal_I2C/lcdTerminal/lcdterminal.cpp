@@ -35,21 +35,24 @@ LCDterm::~LCDterm()
 void LCDterm::putch(char c)
 {
 	static char lastChar = 0;
-	static bool lastLF = false;
-	/*
-	if((lastLF == true)&&(lastChar != '\n')&&(c == '\n'))
+
+	/*if((pBuff%LCD_DISP_LENGTH == 0)&&(lastChar != '\n')&&(c == '\n'))
 	{
 		lastChar = c;
-		lastLF = false;
+		return;
+	}*/
+
+
+	if((pBuff%LCD_DISP_LENGTH == 0)&&(lastChar != ' ')&&(c == ' '))
+	{
+		lastChar = c;
 		return;
 	}
-	 */
 
 	lastChar = c;
-	lastLF = shiftBuff();;
+	shiftBuff();
 
 	if(c == '\n')
-		//		if((!lf)||(lastChar == '\n'))
 		pBuff += (LCD_DISP_LENGTH-(pBuff%LCD_DISP_LENGTH));
 
 
