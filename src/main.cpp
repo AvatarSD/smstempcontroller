@@ -41,14 +41,14 @@ ISR(USART1_TX_vect)
 void mainLoop()
 {
 	LED_ON;
-	debug(F("--------INT---------\r\n\n\n"));
+	debug(F("--------INT---------\n"));
 	static int ntcRefrwshPeriodCount = 0;
 	if(!ntcRefrwshPeriodCount)
 		_network->refreshTime();
 	if(++ntcRefrwshPeriodCount == (NTC_REFRESH_PERIOD*60/TIMER_PERIOD))
 		ntcRefrwshPeriodCount = 0;
 	while(!_network->sendTemp());
-	debug(F("-------INTEND-------\r\n"));
+	debug(F("-------INTEND-------\n"));
 	LED_OFF;
 }
 

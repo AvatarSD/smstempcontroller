@@ -32,7 +32,7 @@ public:
 	template<class T>void (* operator()(T str)){print(str);return 0;}
 
 private:
-	void shiftBuff();
+	bool shiftBuff();
 	char videoBuff[LCD_DISP_LENGTH*LCD_LINES+1];
 	unsigned char pBuff;
 };
