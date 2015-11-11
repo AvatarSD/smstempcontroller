@@ -41,7 +41,7 @@ ISR(USART1_TX_vect)
 void mainLoop()
 {
 	LED_ON;
-	debug(F("/n--------INT---------"));
+	debug(F("--------INT---------"));
 	static int ntcRefrwshPeriodCount = 0;
 	if(!ntcRefrwshPeriodCount)
 		_network->refreshTime();
@@ -159,12 +159,7 @@ int main(void)
 	ICR1L=0x23;
 
 	// Timer/Counter 1 Interrupt(s) initialization
-	//TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
-
-	delay(500);
-
-
-
+	TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
 
 
 
@@ -174,10 +169,7 @@ int main(void)
 
 
 	/*
-	FATFS FatFs;	// FatFs work area
-	FIL *fp;		// fpe object
-
-	debug(f_mount(0, &FatFs));*/
+	delay(500);
 
 	// init sdcard
 	UINT bw;
@@ -239,7 +231,7 @@ int main(void)
 
 
 
-
+*/
 
 
 
