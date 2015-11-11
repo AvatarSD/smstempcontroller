@@ -1109,7 +1109,7 @@ int DallasOneWire::DS2480B_Detect(void)
 		DS2480B_HardwareReset();
 		firstInit = true;
 	}
-	if(firstInit) INFO(F("First initialize always without answer"))
+	if(firstInit) INFO(F("DS2480B: First initialize always without answer"))
 	else WARNING(F("DS2480B not detect or not response... :-("))
 	firstInit = false;
 	return FALSE;

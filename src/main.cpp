@@ -86,14 +86,15 @@ ISR(TIMER1_CAPT_vect)
 
 
 
-
+/*
 FATFS FatFs;	// FatFs work area
 FIL *fp;		// fpe object
-
+*/
 
 /*---------------------------------------------------------*/
 /* User Provided RTC Function called by FatFs module       */
 /* Used to provide a Timestamp for SDCard files and folders*/
+/*
 DWORD get_fattime (void)
 {
 	// Returns current time packed into a DWORD variable
@@ -104,7 +105,7 @@ DWORD get_fattime (void)
 			| ((DWORD)30 << 5)				// Min 0
 			| ((DWORD)0 >> 1);				// Sec 0
 }
-
+*/
 
 
 int main(void)
