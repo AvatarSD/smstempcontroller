@@ -104,7 +104,7 @@ bool NetworkWorker::sendTemp()
 		}
 		gsm("&");
 #ifdef LEVEL_INFO
-		debug.print(F("[INFO]: Sensors count: ")); debug.print(i); debug(F("\r\n"));
+		debug(F("[INFO]: Sensors count: ")); debug(i); debug(F("\r\n"));
 #endif
 
 		if(inetIface.endWriteInet())
@@ -116,7 +116,7 @@ bool NetworkWorker::sendTemp()
 				int flag;
 				sscanf(buf, "%ld,%d", &i, &flag);
 #ifdef LEVEL_INFO
-				debug.print(F("[INFO]: Package number: ")); debug.print(i); debug(F("\r\n"));
+				debug(F("[INFO]: Package number: ")); debug(i); debug(F("\r\n"));
 #endif
 				if(i == pktCount)
 				{

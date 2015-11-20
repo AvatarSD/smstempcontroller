@@ -37,6 +37,6 @@ private:
 	unsigned char pBuff;
 };
 
-extern LCDterm debug;
+extern LCDterm debugLCD;
 
 #endif /* LIQUIDCRYSTAL_I2C_LCDTERMINAL_LCDTERMINAL_H_ */

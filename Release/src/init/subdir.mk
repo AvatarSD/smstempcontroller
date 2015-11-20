@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/init/freeram.cpp \
 ../src/init/init.cpp \
 ../src/init/millis.cpp 
 
 OBJS += \
+./src/init/freeram.o \
 ./src/init/init.o \
 ./src/init/millis.o 
 
 CPP_DEPS += \
+./src/init/freeram.d \
 ./src/init/init.d \
 ./src/init/millis.d 
 

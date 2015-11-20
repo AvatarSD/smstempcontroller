@@ -18,7 +18,7 @@
 
 
 
-LCDterm debug;
+LCDterm debugLCD;
 
 LCDterm::LCDterm()
 {

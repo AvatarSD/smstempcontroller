@@ -19,6 +19,10 @@
 #include "sdcard/ff.h"
 /**/
 
+/**/
+#include "init/freeram.h"
+/**/
+
 
 
 #define LED_ON PORTB |= (1<<PORTB7)
@@ -37,6 +41,10 @@ ISR(USART1_TX_vect)
 {
 	_iface->tx_byte_int();
 }
+
+
+
+
 
 void mainLoop()
 {
@@ -242,7 +250,10 @@ int main(void)
 
 	while(1)
 	{
-
+		/*
+		debug(F("Free RAM: "));
+		debug(freeRam());
+		debug("\n");*/
 
 	};
 }
