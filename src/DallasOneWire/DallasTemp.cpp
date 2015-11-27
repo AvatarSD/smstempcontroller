@@ -10,6 +10,8 @@
 
 #include "../LOG/debug.h"
 
+
+
 void * operator new(size_t size)
 {
 	return malloc(size);
@@ -48,7 +50,7 @@ DallasTemp::DallasTemp(DallasOneWire& iface) : _iface(iface)
 {
 
 }
-
+/*
 const std::list<DallasSensorData>&  DallasTemp::readAllTempSerial(bool isCurr)
 {
 	INFO(F("Reading sensors with serial conversion..."));
@@ -133,12 +135,12 @@ const std::list<DallasSensorData>&  DallasTemp::readAllTempSerial(bool isCurr)
 const std::list<DallasSensorData>&  DallasTemp::readAllTempParalel(char attemptNum)
 {
 	//TODO do several attempt reading times
-	/*
+
 	 * 3 попытки поиска(+намАттемп) + старт конверсии, если в какойто меньше датчиков чем в остальных - в лог
 	 * попытка считывания(+намАттемп) - если датчиков меньше - до 3 попыток(+намАттемп) повторного считывания
 	 * +в лог варнинги.
 	 * +критикал если датчиков ноль
-	 */
+	 *
 
 	INFO(F("Reading sensors with parallel conversion..."));
 	while(_iface.OWReset() == FALSE);
@@ -146,7 +148,8 @@ const std::list<DallasSensorData>&  DallasTemp::readAllTempParalel(char attemptN
 	return justGetTemp();
 
 }
-
+*/
+/*
 int DallasTemp::justStartConversion()
 {
 	int numtemp=0;
@@ -175,8 +178,8 @@ int DallasTemp::justStartConversion()
 #endif
 
 	return numtemp;
-}
-
+}*/
+/*
 const std::list<DallasSensorData>& DallasTemp::justGetTemp()
 {
 	unsigned char sendpacket[10];
@@ -244,7 +247,7 @@ const std::list<DallasSensorData>& DallasTemp::justGetTemp()
 
 	return _sensorsRes;
 }
-
+*/
 
 int DallasTemp::readOnce(DallasSensorData & data)
 {
@@ -316,7 +319,7 @@ void DallasTemp::readingInit()
 {
 	while(_iface.OWReset() == FALSE);
 
-	_sensorsRes.clear();
+	//_sensorsRes.clear();
 }
 
 // reads scratchpad and returns the temperature in degrees C

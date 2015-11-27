@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/sdcard/uni_avr/subdir.mk
 -include src/sdcard/subdir.mk
 -include src/init/subdir.mk
 -include src/UART/subdir.mk
@@ -111,7 +112,7 @@ sizedummy: project.elf
 
 avrdudedummy: project.elf
 	@echo 'Invoking: AVRDude'
-	/usr/bin/avrdude -pm2560 -cwiring -P/dev/ttyACM1 -D -Uflash:w:project.hex:a
+	/usr/bin/avrdude -pm2560 -cwiring -P/dev/ttyACM0 -D -Uflash:w:project.hex:a
 	@echo 'Finished building: $@'
 	@echo ' '
 

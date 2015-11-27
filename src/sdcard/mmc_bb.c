@@ -1,14 +1,26 @@
 /*------------------------------------------------------------------------/
-/  Foolproof MMCv3/SDv1/SDv2 (in SPI mode) control module
+/  Bitbanging MMCv3/SDv1/SDv2 (in SPI mode) control module
 /-------------------------------------------------------------------------/
 /
-/  Copyright (C) 2013, ChaN, all right reserved.
+/  Copyright (C) 2014, ChaN, all right reserved.
 /
 / * This software is a free software and there is NO WARRANTY.
 / * No restriction on use. You can use, modify and redistribute it for
 /   personal, non-profit or commercial products UNDER YOUR RESPONSIBILITY.
 / * Redistributions of source code must retain the above copyright notice.
 /
+/--------------------------------------------------------------------------/
+ Features and Limitations:
+
+ * Very Easy to Port
+   It uses only 4 bit of GPIO port. No interrupt, no SPI port is used.
+
+ * Platform Independent
+   You need to modify only a few macros to control GPIO ports.
+
+ * Low Speed
+   The data transfer rate will be several times slower than hardware SPI.
+
 /-------------------------------------------------------------------------*/
 
 
@@ -23,7 +35,7 @@
 #include <avr/io.h>			/* Include device specific declareation file here */
 
 // Set DQ as AVR MISO
-#define DO_INIT()					/* Initialize port MMC DO as input */
+#define DO_INIT()	DDRB  &= ~(1<<DO_DQ)				/* Initialize port MMC DO as input */
 #define DO_DQ		PB5//PB3
 #define DO			(PINB &	(1<<DO_DQ))	/* Test for MMC DO ('H':true, 'L':false) */
 
@@ -45,35 +57,16 @@
 #define	CS_H()		PORTB |= (1<<CS_DQ)	/* Set MMC CS "high" */
 #define CS_L()		PORTB &= ~(1<<CS_DQ)	/* Set MMC CS "low" */
 
-#define dly_us(n) _delay_us(n)
-/*static void dly_us (UINT n)	 Delay n microseconds (avr-gcc -Os)
-{
-	do {
-		PINB;
-#if F_CPU >= 6000000
-		PINB;
-#endif
-#if F_CPU >= 7000000
-		PINB;
-#endif
-#if F_CPU >= 8000000
-		PINB;
-#endif
-#if F_CPU >= 9000000
-		PINB;
-#endif
-#if F_CPU >= 10000000
-		PINB;
-#endif
-#if F_CPU >= 12000000
-		PINB; PINB;
-#endif
-#if F_CPU >= 14000000
-#error Too fast clock
-#endif
-	} while (--n);
-}*/
+#define DLY_US(n)	_delay_us(n)	/* Delay n microseconds */
+#define	INIT_PORT()	init_port()	/* Initialize MMC control port (CS=H, CLK=L, DI=H, DO=pu) */
 
+static void init_port (void)
+{
+	DO_INIT();
+	DI_INIT();
+	CK_INIT();
+	CS_INIT();
+}
 
 
 /*--------------------------------------------------------------------------
@@ -202,7 +195,7 @@ int wait_ready (void)	/* 1:OK, 0:Timeout */
 	for (tmr = 5000; tmr; tmr--) {	/* Wait for ready in timeout of 500ms */
 		rcvr_mmc(&d, 1);
 		if (d == 0xFF) break;
-		dly_us(100);
+		DLY_US(100);
 	}
 
 	return tmr ? 1 : 0;
@@ -219,7 +212,7 @@ void deselect (void)
 {
 	BYTE d;
 
-	CS_H();
+	CS_H();				/* Set CS# high */
 	rcvr_mmc(&d, 1);	/* Dummy clock (force DO hi-z for multiple slave SPI) */
 }
 
@@ -234,10 +227,10 @@ int select (void)	/* 1:OK, 0:Timeout */
 {
 	BYTE d;
 
-	CS_L();
+	CS_L();				/*Set CS# low */
 	rcvr_mmc(&d, 1);	/* Dummy clock (force DO enabled) */
+	if (wait_ready()) return 1;	/* Wait for card ready */
 
-	if (wait_ready()) return 1;	/* OK */
 	deselect();
 	return 0;			/* Failed */
 }
@@ -261,7 +254,7 @@ int rcvr_datablock (	/* 1:OK, 0:Failed */
 	for (tmr = 1000; tmr; tmr--) {	/* Wait for data packet in timeout of 100ms */
 		rcvr_mmc(d, 1);
 		if (d[0] != 0xFF) break;
-		dly_us(100);
+		DLY_US(100);
 	}
 	if (d[0] != 0xFE) return 0;		/* If not valid data token, return with error */
 
@@ -322,9 +315,11 @@ BYTE send_cmd (		/* Returns command response (bit7==1:Send failed)*/
 		if (n > 1) return n;
 	}
 
-	/* Select the card and wait for ready */
-	deselect();
-	if (!select()) return 0xFF;
+	/* Select the card and wait for ready except to stop multiple block read */
+	if (cmd != CMD12) {
+		deselect();
+		if (!select()) return 0xFF;
+	}
 
 	/* Send a command packet */
 	buf[0] = 0x40 | cmd;			/* Start + Command index */
@@ -365,9 +360,23 @@ DSTATUS disk_status (
 	BYTE drv			/* Drive number (always 0) */
 )
 {
+	DSTATUS s;
+	BYTE d;
+
+
 	if (drv) return STA_NOINIT;
 
-	return Stat;
+	/* Check if the card is kept initialized */
+	s = Stat;
+	if (!(s & STA_NOINIT)) {
+		if (send_cmd(CMD13, 0))	/* Read card status */
+			s = STA_NOINIT;
+		rcvr_mmc(&d, 1);		/* Receive following half of R2 */
+		deselect();
+	}
+	Stat = s;
+
+	return s;
 }
 
 
@@ -387,13 +396,8 @@ DSTATUS disk_initialize (
 
 	if (drv) return RES_NOTRDY;
 
-	dly_us(10000);			/* 10ms */
-	CS_INIT(); CS_H();		/* Initialize port pin tied to CS */
-	CK_INIT(); CK_L();		/* Initialize port pin tied to SCLK */
-	DI_INIT();				/* Initialize port pin tied to DI */
-	DO_INIT();				/* Initialize port pin tied to DO */
-
-	for (n = 10; n; n--) rcvr_mmc(buf, 1);	/* Apply 80 dummy clocks and the card gets ready to receive command */
+	INIT_PORT();				/* Initialize control port */
+	for (n = 10; n; n--) rcvr_mmc(buf, 1);	/* 80 dummy clocks */
 
 	ty = 0;
 	if (send_cmd(CMD0, 0) == 1) {			/* Enter Idle state */
@@ -402,7 +406,7 @@ DSTATUS disk_initialize (
 			if (buf[2] == 0x01 && buf[3] == 0xAA) {		/* The card can work at vdd range of 2.7-3.6V */
 				for (tmr = 1000; tmr; tmr--) {			/* Wait for leaving idle state (ACMD41 with HCS bit) */
 					if (send_cmd(ACMD41, 1UL << 30) == 0) break;
-					dly_us(1000);
+					DLY_US(1000);
 				}
 				if (tmr && send_cmd(CMD58, 0) == 0) {	/* Check CCS bit in the OCR */
 					rcvr_mmc(buf, 4);
@@ -417,7 +421,7 @@ DSTATUS disk_initialize (
 			}
 			for (tmr = 1000; tmr; tmr--) {			/* Wait for leaving idle state */
 				if (send_cmd(cmd, 0) == 0) break;
-				dly_us(1000);
+				DLY_US(1000);
 			}
 			if (!tmr || send_cmd(CMD16, 512) != 0)	/* Set R/W block length to 512 */
 				ty = 0;
@@ -442,25 +446,23 @@ DRESULT disk_read (
 	BYTE drv,			/* Physical drive nmuber (0) */
 	BYTE *buff,			/* Pointer to the data buffer to store read data */
 	DWORD sector,		/* Start sector number (LBA) */
-	BYTE count			/* Sector count (1..256(0)) */
+	UINT count			/* Sector count (1..128) */
 )
 {
+	BYTE cmd;
+
+
 	if (disk_status(drv) & STA_NOINIT) return RES_NOTRDY;
+	if (!count) return RES_PARERR;
 	if (!(CardType & CT_BLOCK)) sector *= 512;	/* Convert LBA to byte address if needed */
 
-	if (count == 1) {	/* Single block read */
-		if ((send_cmd(CMD17, sector) == 0)	/* READ_SINGLE_BLOCK */
-			&& rcvr_datablock(buff, 512))
-			count = 0;
-	}
-	else {				/* Multiple block read */
-		if (send_cmd(CMD18, sector) == 0) {	/* READ_MULTIPLE_BLOCK */
-			do {
-				if (!rcvr_datablock(buff, 512)) break;
-				buff += 512;
-			} while (--count);
-			send_cmd(CMD12, 0);				/* STOP_TRANSMISSION */
-		}
+	cmd = count > 1 ? CMD18 : CMD17;			/*  READ_MULTIPLE_BLOCK : READ_SINGLE_BLOCK */
+	if (send_cmd(cmd, sector) == 0) {
+		do {
+			if (!rcvr_datablock(buff, 512)) break;
+			buff += 512;
+		} while (--count);
+		if (cmd == CMD18) send_cmd(CMD12, 0);	/* STOP_TRANSMISSION */
 	}
 	deselect();
 
@@ -473,14 +475,16 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
+#if _USE_WRITE
 DRESULT disk_write (
 	BYTE drv,			/* Physical drive nmuber (0) */
 	const BYTE *buff,	/* Pointer to the data to be written */
 	DWORD sector,		/* Start sector number (LBA) */
-	BYTE count			/* Sector count (1..256(0)) */
+	UINT count			/* Sector count (1..128) */
 )
 {
 	if (disk_status(drv) & STA_NOINIT) return RES_NOTRDY;
+	if (!count) return RES_PARERR;
 	if (!(CardType & CT_BLOCK)) sector *= 512;	/* Convert LBA to byte address if needed */
 
 	if (count == 1) {	/* Single block write */
@@ -503,12 +507,14 @@ DRESULT disk_write (
 
 	return count ? RES_ERROR : RES_OK;
 }
+#endif
 
 
 /*-----------------------------------------------------------------------*/
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
 
+#if _USE_IOCTL
 DRESULT disk_ioctl (
 	BYTE drv,		/* Physical drive nmuber (0) */
 	BYTE ctrl,		/* Control code */
@@ -524,36 +530,45 @@ DRESULT disk_ioctl (
 
 	res = RES_ERROR;
 	switch (ctrl) {
-		case CTRL_SYNC :		/* Make sure that no pending write process */
-			if (select()) res = RES_OK;
-			break;
+	case CTRL_SYNC :		/* Make sure that no pending write process */
+		if (select()) res = RES_OK;
+		break;
 
-		case GET_SECTOR_COUNT :	/* Get number of sectors on the disk (DWORD) */
-			if ((send_cmd(CMD9, 0) == 0) && rcvr_datablock(csd, 16)) {
-				if ((csd[0] >> 6) == 1) {	/* SDC ver 2.00 */
-					cs = csd[9] + ((WORD)csd[8] << 8) + ((DWORD)(csd[7] & 63) << 16) + 1;
-					*(DWORD*)buff = cs << 10;
-				} else {					/* SDC ver 1.XX or MMC */
-					n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
-					cs = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
-					*(DWORD*)buff = cs << (n - 9);
-				}
-				res = RES_OK;
+	case GET_SECTOR_COUNT :	/* Get number of sectors on the disk (DWORD) */
+		if ((send_cmd(CMD9, 0) == 0) && rcvr_datablock(csd, 16)) {
+			if ((csd[0] >> 6) == 1) {	/* SDC ver 2.00 */
+				cs = csd[9] + ((WORD)csd[8] << 8) + ((DWORD)(csd[7] & 63) << 16) + 1;
+				*(DWORD*)buff = cs << 10;
+			} else {					/* SDC ver 1.XX or MMC */
+				n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
+				cs = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
+				*(DWORD*)buff = cs << (n - 9);
 			}
-			break;
-
-		case GET_BLOCK_SIZE :	/* Get erase block size in unit of sector (DWORD) */
-			*(DWORD*)buff = 128;
 			res = RES_OK;
-			break;
+		}
+		break;
 
-		default:
-			res = RES_PARERR;
+	case GET_BLOCK_SIZE :	/* Get erase block size in unit of sector (DWORD) */
+		*(DWORD*)buff = 128;
+		res = RES_OK;
+		break;
+
+	default:
+		res = RES_PARERR;
 	}
 
 	deselect();
 
 	return res;
 }
+#endif
 
+
+/*-----------------------------------------------------------------------*/
+/* This function is defined for only project compatibility               */
+
+void disk_timerproc (void)
+{
+	/* Nothing to do */
+}
 

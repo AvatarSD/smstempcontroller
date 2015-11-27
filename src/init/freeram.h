@@ -10,4 +10,8 @@
 
 int freeRam();
 
+#define SEE_FREE_MEM() {debug(F("Free RAM: "));\
+						debug(freeRam());\
+						debug(F("bytes\r\n"));}
+
 #endif /* INIT_FREERAM_H_ */
