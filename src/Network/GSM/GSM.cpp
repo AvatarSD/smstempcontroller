@@ -752,10 +752,10 @@ char GSM::isInitialized(void)
 //	print(comm);
 //}
 
-int GSM::read(char *inbuf, unsigned int inlen)
-{
-	return ReadCOM(inlen, (unsigned char*)inbuf);
-}
+//int GSM::read(char *inbuf, unsigned int inlen)
+//{
+//	return ReadCOM(inlen, (unsigned char*)inbuf);
+//}
 
 volatile GSM::COMStatus GSM::getCOMStatus(void)
 {

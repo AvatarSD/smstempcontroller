@@ -9,27 +9,19 @@
 #define LIQUIDCRYSTAL_I2C_LCDTERMINAL_LCDTERMINAL_H_
 
 #include "../lcdpcf8574/lcdpcf8574.h"
+#include "../../stream/Stream.h"
 
-class __FlashStringHelper;
-#define F(string_literal) (reinterpret_cast<const __FlashStringHelper *>(PSTR(string_literal)))
-
-class LCDterm
+class LCDterm : public Stream
 {
 public:
 	LCDterm();
 	~LCDterm();
 
-	void putch(char c);
 	void refreshScreen();
 
-	void print(const char * str);
-	void print(const __FlashStringHelper * flashStr);
-	void print(long int num);
-	void print(int num);
-	void print(unsigned long int num);
-	void print(unsigned int num);
-	void print(double num);
-	template<class T>void (* operator()(T str)){print(str);return 0;}
+	void putch(char c);
+	int  write(const unsigned char *outbuf, unsigned int outlen);
+	bool postSendHandler();
 
 private:
 	bool shiftBuff();
@@ -38,5 +30,6 @@ private:
 };
 
 extern LCDterm debugLCD;
+
 
 #endif /* LIQUIDCRYSTAL_I2C_LCDTERMINAL_LCDTERMINAL_H_ */

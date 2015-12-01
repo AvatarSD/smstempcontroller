@@ -10,11 +10,10 @@
 #define UARTS_CLASS_H_
 
 #include "avr/pgmspace.h"
+#include "../stream/Stream.h"
 
-class __FlashStringHelper;
-#define F(string_literal) (reinterpret_cast<const __FlashStringHelper *>(PSTR(string_literal)))
 
-class UART
+class UART : public Stream
 {
 public:
 	UART(volatile unsigned char & udr, unsigned long int baud, int txBuffersize, int rxBuffersize);
@@ -25,22 +24,15 @@ public:
 	void begin(long baud_rate);
 	void setBaud(unsigned long int baud);
 	void flush(void);// erase rx circular buffer
-	void BreakCOM(void);
+	void doBreak(void);
 	int  available();
 
-	char getch();
 	char peek();
+	char getch();
 	void putch(char);
-	void print(const char * str);
-	void print(const __FlashStringHelper * flashStr);
-	void print(long int num);
-	void print(int num);
-	void print(unsigned long int num);
-	void print(unsigned int num);
-	void print(double num);
-	int  WriteCOM(unsigned int outlen, unsigned char *outbuf);
-	int  ReadCOM(unsigned int inlen, unsigned char *inbuf);
-	template<class T>void (* operator()(T str)){print(str);return 0;}
+	int  write(const unsigned char *outbuf, unsigned int outlen);
+	int  read(unsigned char *inbuf, unsigned int inlen);
+
 
 	//please, connect it to math interrupt
 	void rx_byte_int();
@@ -71,6 +63,5 @@ private:
 	unsigned int rx_rd_index;
 	volatile unsigned int rx_counter;
 };
-
 
 #endif /* UARTS_CLASS_H_ */

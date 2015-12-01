@@ -4,12 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/LOG/SDCardLogger.cpp \
 ../src/LOG/debug.cpp 
 
 OBJS += \
+./src/LOG/SDCardLogger.o \
 ./src/LOG/debug.o 
 
 CPP_DEPS += \
+./src/LOG/SDCardLogger.d \
 ./src/LOG/debug.d 
 
 

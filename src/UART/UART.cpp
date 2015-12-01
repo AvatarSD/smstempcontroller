@@ -115,7 +115,7 @@ void UART::putch(char c)
 	sei();
 }
 
-int  UART::WriteCOM(unsigned int outlen, unsigned char *outbuf)
+int  UART::write(const unsigned char *outbuf, unsigned int outlen)
 {
 	for(unsigned int i = 0; i < outlen; i++)
 		putch(outbuf[i]);
@@ -149,7 +149,7 @@ char UART::getch()
 	return data;
 }
 
-int  UART::ReadCOM(unsigned int inlen, unsigned char *inbuf)
+int  UART::read(unsigned char *inbuf, unsigned int inlen)
 {
 	long int delay_counter = 0;
 	while((rx_counter < inlen)&&(delay_counter < CYCLE_COUNT_WAIT))
@@ -163,7 +163,10 @@ int  UART::ReadCOM(unsigned int inlen, unsigned char *inbuf)
 	return buffCount;
 }
 
-void UART::byteRecived(char rxByte){}
+void UART::byteRecived(char rxByte)
+{
+
+}
 
 void UART::flush(void) // erase rx circular buffer
 {
@@ -171,7 +174,7 @@ void UART::flush(void) // erase rx circular buffer
 	rx_counter = 0;
 }
 
-void UART::BreakCOM(void)
+void UART::doBreak(void)
 {
 	while(tx_counter > 0);
 	unsigned short int tempUBRR = *_ubrr;
@@ -181,59 +184,52 @@ void UART::BreakCOM(void)
 	*_ubrr = tempUBRR;
 }
 
-void UART::print(const char * str)
-{
-	int curr = 0;
-	while(str[curr] != '\0')
-		putch(str[curr++]);
-}
-
-void UART::print(long int num)
-{
-	char buf[12];
-	sprintf(buf, "%ld", num);
-	print(buf);
-}
-
-void UART::print(int num)
-{
-	char buf[12];
-	sprintf(buf, "%d", num);
-	print(buf);
-}
-
-void UART::print(unsigned long int num)
-{
-	char buf[12];
-	sprintf(buf, "%lu", num);
-	print(buf);
-}
-
-void UART::print(unsigned int num)
-{
-	char buf[12];
-	sprintf(buf, "%u", num);
-	print(buf);
-}
-
-void UART::print(double num)
-{
-	char buf[12];
-	sprintf(buf, "%f", num);
-	print(buf);
-}
-
-void UART::print(const __FlashStringHelper * flashStr)
-{
-	char readedByte, *flashPointer = (char*)flashStr;
-	readedByte = pgm_read_byte(flashPointer);
-	while(readedByte)
-	{
-		putch(readedByte);
-		flashPointer++;
-		readedByte = pgm_read_byte(flashPointer);
-	}
-}
+//void UART::print(long int num)
+//{
+//	char buf[12];
+//	sprintf(buf, "%ld", num);
+//	print(buf);
+//}
+//
+//void UART::print(int num)
+//{
+//	char buf[12];
+//	sprintf(buf, "%d", num);
+//	print(buf);
+//}
+//
+//void UART::print(unsigned long int num)
+//{
+//	char buf[12];
+//	sprintf(buf, "%lu", num);
+//	print(buf);
+//}
+//
+//void UART::print(unsigned int num)
+//{
+//	char buf[12];
+//	sprintf(buf, "%u", num);
+//	print(buf);
+//}
+//
+//void UART::print(double num)
+//{
+//	char buf[12];
+//	sprintf(buf, "%f", num);
+//	print(buf);
+//}
+//
+//void UART::print(const __FlashStringHelper * flashStr)
+//{
+//	char readedByte, *flashPointer = (char*)flashStr;
+//	readedByte = pgm_read_byte(flashPointer);
+//	while(readedByte)
+//	{
+//		putch(readedByte);
+//		flashPointer++;
+//		readedByte = pgm_read_byte(flashPointer);
+//	}
+//}
 
 int UART::available(){
 	return rx_counter;

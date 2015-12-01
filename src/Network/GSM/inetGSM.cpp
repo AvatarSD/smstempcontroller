@@ -67,7 +67,7 @@ int InetGSM::httpGET(const char* server, int port, const char* path, char* resul
 #ifdef DEBUG_ON
 	Serial.println("DB:SENT");
 #endif
-	int res= gsm.read(result, resultlength);
+	int res= gsm.read((unsigned char*)result, resultlength);
 
 	//gsm.disconnectTCP();
 
@@ -129,7 +129,7 @@ int InetGSM::httpPOST(const char* server, int port, const char* path, const char
 	Serial.println("DB:SENT");
 #endif
 
-	int res= gsm.read(result, resultlength);
+	int res= gsm.read((unsigned char*)result, resultlength);
 	//gsm.disconnectTCP();
 	return res;
 }
@@ -623,7 +623,7 @@ int  InetGSM::ReadINET(unsigned int inlen, char *inbuf)
 {
 	if((gsm.getGSMStatus() == GSM::GSM_TCPCONNECTEDSERVER)||
 			(gsm.getGSMStatus() == GSM::GSM_TCPCONNECTEDCLIENT))
-		return gsm.ReadCOM(inlen, (unsigned char *)inbuf);
+		return gsm.read((unsigned char *)inbuf, inlen);
 	else
 	{
 		WARNING(F("Reading: modem not have connection with server"));

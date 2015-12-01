@@ -12,6 +12,10 @@
 
 #include <stdio.h>
 
+#define WriteCOM(x,y) write(y,x)
+#define ReadCOM(x,y) read(y,x)
+#define BreakCOM() doBreak()
+
 DallasOneWire::DallasOneWire(volatile unsigned char & udr) :
 UART(udr, UART_BASE_SPEED, UART_TX_BUFFER, UART_RX_BUFFER)
 {

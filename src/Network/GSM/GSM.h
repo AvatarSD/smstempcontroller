@@ -56,8 +56,6 @@ public:
 
 	int getSignalLevel();
 
-	int  read(char *inbuf, unsigned int inlen);
-
 	//-----------------------
 	void Echo(char state);
 

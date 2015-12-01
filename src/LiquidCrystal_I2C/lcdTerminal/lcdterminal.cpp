@@ -101,61 +101,17 @@ void LCDterm::refreshScreen()
 	lcd_puts(videoBuff);
 }
 
-void LCDterm::print(const char * str)
+int LCDterm::write(const unsigned char *outbuf, unsigned int outlen)
 {
-	int curr = 0;
-	while(str[curr] != '\0')
-		putch(str[curr++]);
+	for(unsigned int i = 0; i < outlen; i++)
+		putch(outbuf[i]);
+	return outlen;
+}
+
+bool LCDterm::postSendHandler()
+{
 	refreshScreen();
+	return true;
 }
-
-void LCDterm::print(long int num)
-{
-	char buf[12];
-	sprintf(buf, "%ld", num);
-	print(buf);
-}
-
-void LCDterm::print(int num)
-{
-	char buf[12];
-	sprintf(buf, "%d", num);
-	print(buf);
-}
-
-void LCDterm::print(unsigned long int num)
-{
-	char buf[12];
-	sprintf(buf, "%lu", num);
-	print(buf);
-}
-
-void LCDterm::print(unsigned int num)
-{
-	char buf[12];
-	sprintf(buf, "%u", num);
-	print(buf);
-}
-
-void LCDterm::print(double num)
-{
-	char buf[12];
-	sprintf(buf, "%f", num);
-	print(buf);
-}
-
-void LCDterm::print(const __FlashStringHelper * flashStr)
-{
-	char readedByte, *flashPointer = (char*)flashStr;
-	readedByte = pgm_read_byte(flashPointer);
-	while(readedByte)
-	{
-		putch(readedByte);
-		flashPointer++;
-		readedByte = pgm_read_byte(flashPointer);
-	}
-	refreshScreen();
-}
-
 
 
