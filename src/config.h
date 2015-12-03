@@ -56,7 +56,33 @@
 #define NETWORK_SERVER_PORT 3050
 
 #define NUM_ATTEMP_TO_COMNNECT 10
-/*****************************************/
+
+
+
+/*************** SD card ******************/
+// Set DQ as AVR MISO
+#define DO_INIT()	DDRB  &= ~(1<<DO_DQ) /* Initialize port MMC DO as input */
+#define DO_DQ		PB5//PB3
+#define DO			(PINB &	(1<<DO_DQ))	 /* Test for MMC DO ('H':true, 'L':false) */
+
+// Set DQ as AVR MOSI
+#define DI_DQ		PB6//PB2
+#define DI_INIT()	DDRB  |= (1<<DI_DQ)	 /* Initialize port MMC DI as output */
+#define DI_H()		PORTB |= (1<<DI_DQ)	 /* Set MMC DI "high" */
+#define DI_L()		PORTB &= ~(1<<DI_DQ) /* Set MMC DI "low" */
+
+// Set DQ as AVR SCK
+#define CK_DQ		PB7//PB1
+#define CK_INIT()	DDRB  |= (1<<CK_DQ)	 /* Initialize port MMC SCLK as output */
+#define CK_H()		PORTB |= (1<<CK_DQ)	 /* Set MMC SCLK "high" */
+#define	CK_L()		PORTB &= ~(1<<CK_DQ) /* Set MMC SCLK "low" */
+
+// Use a pin for CS
+#define CS_DQ		PB4//PB0
+#define CS_INIT()	DDRB  |= (1<<CS_DQ)	/* Initialize port MMC CS as output */
+#define	CS_H()		PORTB |= (1<<CS_DQ)	/* Set MMC CS "high" */
+#define CS_L()		PORTB &= ~(1<<CS_DQ)	/* Set MMC CS "low" */
+
 
 
 #endif /* CONFIG_H_ */
