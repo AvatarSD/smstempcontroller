@@ -8,20 +8,8 @@
 #include "NetworkWorker.h"
 #include "avr/interrupt.h"
 #include "../LOG/debug.h"
-
-/************ Network Settings ************/
-#define NETWORK_TXINT USART2_TX_vect
-#define NETWORK_RXINT USART2_RX_vect
-#define NETWORK_PORT    UDR2
-
-#define NETWORK_AP "www.kyivstar.net"
-#define NTP_ADDR "pool.ntp.org"
-
-#define NETWORK_SERVER_ADDR "termo.big-gps.com"//"avatarsd.com"
-#define NETWORK_SERVER_PORT 3050
-
-#define NUM_ATTEMP_TO_COMNNECT 10
-/*****************************************/
+#include "../init/rtc.h"
+#include "../config.h"
 
 
 UART * _gsm;
@@ -67,6 +55,7 @@ bool NetworkWorker::sendTemp()
 	if(forceConnectToServer(NETWORK_SERVER_ADDR, NETWORK_SERVER_PORT))
 	{
 		unsigned long int data = gsm.getUNIXdate();
+		setUnixTime(date);
 		const char * imei = gsm.getIMEI();
 		char pktCountStr[6];
 		static unsigned int pktCount = 0;
