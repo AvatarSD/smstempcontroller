@@ -7,6 +7,7 @@
 
 #include "SDCardLogger.h"
 #include "string.h"
+#include "debug.h"
 
 SDCardLogger debugSDcardLog;
 
@@ -48,15 +49,24 @@ int SDCardLogger::begin()
 {
 	end();
 
-	char buf[50] = {"toiooyo"};
-	//strcpy(buf, getDateStr());
+	DATA(F("SD card begin"));
 
 	if (f_mount(&fatFs, "", 1) != FR_OK)
+	{
+		WARNING(F("SD card not mount"));
 		return -3;
-	if (f_open(&logFile, buf, FA_WRITE | FA_OPEN_ALWAYS) != FR_OK)
+	}
+	if (f_open(&logFile, getDateStr(), FA_WRITE | FA_OPEN_ALWAYS) != FR_OK)
+	{
+		WARNING(F("Log file not created"));
 		return -2;
+	}
 	if (f_lseek(&logFile, f_size(&logFile)) != FR_OK)
+	{
+		WARNING(F("Log file seek error"));
 		return -1;
+	}
+	INFO(F("SD card mounted"));
 	return 0;
 }
 

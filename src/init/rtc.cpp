@@ -16,7 +16,7 @@
 
 #define BUFFER_SIZE 50
 char buff[BUFFER_SIZE] =
-{ "Date:Time" };
+{ "DateTime" };
 
 volatile unsigned long long int currentTime;
 

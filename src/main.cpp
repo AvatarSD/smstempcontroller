@@ -93,10 +93,10 @@ int main(void)
 {
 	init();
 
-	debugSDcardLog.begin();
-
 	lcd_init(LCD_DISP_ON);
 	lcd_led(0);
+
+	debugSDcardLog.begin();
 
 	DallasOneWire iface(UDR1);
 	_iface = &iface;
