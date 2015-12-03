@@ -55,7 +55,7 @@ bool NetworkWorker::sendTemp()
 	if(forceConnectToServer(NETWORK_SERVER_ADDR, NETWORK_SERVER_PORT))
 	{
 		unsigned long int data = gsm.getUNIXdate();
-		setUnixTime(date);
+		setUnixTime(data);
 		const char * imei = gsm.getIMEI();
 		char pktCountStr[6];
 		static unsigned int pktCount = 0;
