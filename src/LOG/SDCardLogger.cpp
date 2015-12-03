@@ -72,6 +72,7 @@ int SDCardLogger::begin()
 
 int SDCardLogger::end()
 {
+	DEBUG(F("SD card unmount"));
 	f_close(&logFile);
 
 	return 0;
