@@ -13,16 +13,12 @@
 #include "ADC/Analog.h"
 #include "config.h"
 #include "LOG/SDCardLogger.h"
+#include "init/rtc.h"
 
-/*Additional for debug*/
-#include "LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
-#include "sdcard/ff.h"
-#include "init/freeram.h"
-/**********************/
 
-#define LED_ON PORTB |= (1<<PORTB7)
-#define LED_OFF PORTB &=~ (1<<PORTB7)
-#define LED_TRN PORTB ^= (1<<PORTB7)
+#define LED_ON //PORTB |= (1<<PORTB7)
+#define LED_OFF //PORTB &=~ (1<<PORTB7)
+#define LED_TRN //PORTB ^= (1<<PORTB7)
 
 
 
@@ -92,6 +88,8 @@ ISR(TIMER1_CAPT_vect)
 int main(void)
 {
 	init();
+
+	startClock();
 
 	lcd_init(LCD_DISP_ON);
 	lcd_led(0);
