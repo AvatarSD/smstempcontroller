@@ -501,7 +501,7 @@ int InetGSM::connectTCP(const char* server, unsigned int port)
 	}
 
 	gsm.setGSMStatus(GSM::GSM_READY);
-	WARNING(F("Modem: Didn't connect to server"))
+	WARNING(F("Modem: Didn't connect to server"));
 	return -1;
 }
 

@@ -10,15 +10,7 @@
 
 #include "ROM.h"
 #include "../UART/UART.h"
-
-/***** User Definitions *****/
-#define DETECT_ERROR_COUNT 3
-
-#include "avr/io.h"
-#define PWR_PORT PORTA
-#define PWR_DDR DDRA
-#define PWR_PIN 0
-/****************************/
+#include "../config.h"
 
 
 

@@ -646,7 +646,7 @@ GSM::RegistrationStatus GSM::CheckRegistration(void)
 				setGSMStatus(GSM_INITIALIZED);
 				setCOMStatus(CLS_FREE);
 				InitParam(PARAM_SET_1);
-				DEBUG(F("Status: Initialized"))
+				DEBUG(F("Status: Initialized"));
 			}
 			ret_val = REG_REGISTERED;
 			INFO(F("Status: Registered"));

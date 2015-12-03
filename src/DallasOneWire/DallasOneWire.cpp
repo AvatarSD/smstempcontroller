@@ -7,9 +7,8 @@
 
 #include "DallasOneWire.h"
 #include "util/delay.h"
-
 #include "../LOG/debug.h"
-
+#include "avr/io.h"
 #include <stdio.h>
 
 #define WriteCOM(x,y) write(y,x)
@@ -1113,8 +1112,8 @@ int DallasOneWire::DS2480B_Detect(void)
 		DS2480B_HardwareReset();
 		firstInit = true;
 	}
-	if(firstInit) INFO(F("DS2480B: First initialize always without answer"))
-	else WARNING(F("DS2480B not detect or not response... :-("))
+	if(firstInit) INFO(F("DS2480B: First initialize always without answer"));
+	else WARNING(F("DS2480B not detect or not response... :-("));
 	firstInit = false;
 	return FALSE;
 }
@@ -1204,10 +1203,10 @@ void DallasOneWire::DS2480B_HardwareReset()
 {
 	CRITICAL(F("DS2480B HardwareReset, because it not answered several times"));
 
-	PWR_DDR |= (1<<PWR_PIN);
-	PWR_PORT &= ~(1<<PWR_PIN);
+	DALL_PWR_DDR |= (1<<DALL_PWR_PIN);
+	DALL_PWR_PORT &= ~(1<<DALL_PWR_PIN);
 	_delay_ms(1000);
-	PWR_DDR &= ~(1<<PWR_PIN);
+	DALL_PWR_DDR &= ~(1<<DALL_PWR_PIN);
 	_delay_ms(30);
 }
 

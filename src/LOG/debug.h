@@ -8,13 +8,11 @@
 #ifndef LOG_DEBUG_H_
 #define LOG_DEBUG_H_
 
-
 #include "../UART/UART.h"
 extern UART debugPort;
 #include "../LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
 #include "SDCardLogger.h"
-
-#define debug(x) {debugLCD(x);debugPort(x);debugSDcardLog(x);}
+#include "../config.h"
 
 
 #define DEBUG_LEVEL_QUITE 0
@@ -25,51 +23,112 @@ extern UART debugPort;
 #define DEBUG_LEVEL_DATA 5
 
 
+#define debug(x) {debugLCD(x);debugPort(x);debugSDcardLog(x);}
 
-/************ Debug Settings & Level ************/
-#define DEBUG_TXINT USART3_TX_vect
-#define DEBUG_RXINT USART3_RX_vect
-#define DEBUG_PORT 	  UDR3
-#define DEBUG_SPEED 115200
-#define DEBUG_TXBUF 64
-#define DEBUG_RXBUF 8
-#define DEBUG_LEVEL DEBUG_LEVEL_INFO
-/*****************************************/
 
-#if (DEBUG_LEVEL>=DEBUG_LEVEL_CRITICAL)
-#define CRITICAL(msg) {debug(F("[CRITICAL]: ")); debug(msg); debug(F("!!!\r\n"));}
-#define LEVEL_CRITICAL
-#else
-#define CRITICAL(msg)
+template<class T>
+void CRITICAL(T msg)
+{
+#if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_CRITICAL)
+	debugPort(F("[CRITICAL]: "));
+	debugPort(msg);
+	debugPort(F("!!!\r\n"));
 #endif
-
-#if (DEBUG_LEVEL>=DEBUG_LEVEL_WARNING)
-#define WARNING(msg) {debug(F("[WARNING]: ")); debug(msg); debug(F("\r\n"));}
-#define LEVEL_WARNING
-#else
-#define WARNING(msg)
+#if (DEBUG_LEVEL_LCD>=DEBUG_LEVEL_CRITICAL)
+	debugLCD(F("[CRITICAL]: "));
+	debugLCD(msg);
+	debugLCD(F("!!!\r\n"));
 #endif
-
-#if (DEBUG_LEVEL>=DEBUG_LEVEL_INFO)
-#define INFO(msg) {debug(F("[INFO]: ")); debug(msg); debug(F("\r\n"));}
-#define LEVEL_INFO
-#else
-#define INFO(msg)
+#if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_CRITICAL)
+	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog(F("[CRITICAL]: "));
+	debugSDcardLog(msg);
+	debugSDcardLog(F("!!!\r\n"));
 #endif
+}
 
-#if (DEBUG_LEVEL>=DEBUG_LEVEL_DEBUG)
-#define DEBUG(msg) {debug(F("[DEBUG]: ")); debug(msg); debug(F("\r\n"));}
-#define LEVEL_DEBUG
-#else
-#define DEBUG(msg) {debugPort(F("[DEBUG]: ")); debugPort(msg); debugPort(F("\r\n"));}
+template<class T>
+void WARNING(T msg)
+{
+#if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_WARNING)
+	debugPort(F("[WARNING]: "));
+	debugPort(msg);
+	debugPort(F("\r\n"));
 #endif
-
-#if (DEBUG_LEVEL>=DEBUG_LEVEL_DATA)
-#define DATA(msg) {debug(F("[DATA]: ")); debug(msg); debug(F("\r\n"));}
-#define LEVEL_DATA
-#else
-#define DATA(msg)
+#if (DEBUG_LEVEL_LCD>=DEBUG_LEVEL_WARNING)
+	debugLCD(F("[WARNING]: "));
+	debugLCD(msg);
+	debugLCD(F("\r\n"));
 #endif
+#if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_WARNING)
+	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog(F("[WARNING]: "));
+	debugSDcardLog(msg);
+	debugSDcardLog(F("\r\n"));
+#endif
+}
 
+template<class T>
+void INFO(T msg)
+{
+#if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_INFO)
+	debugPort(F("[INFO]: "));
+	debugPort(msg);
+	debugPort(F("\r\n"));
+#endif
+#if (DEBUG_LEVEL_LCD>=DEBUG_LEVEL_INFO)
+	debugLCD(F("[INFO]: "));
+	debugLCD(msg);
+	debugLCD(F("\r\n"));
+#endif
+#if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_INFO)
+	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog(F("[INFO]: "));
+	debugSDcardLog(msg);
+	debugSDcardLog(F("\r\n"));
+#endif
+}
+
+template<class T>
+void DEBUG(T msg)
+{
+#if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_DEBUG)
+	debugPort(F("[DEBUG]: "));
+	debugPort(msg);
+	debugPort(F("\r\n"));
+#endif
+#if (DEBUG_LEVEL_LCD>=DEBUG_LEVEL_DEBUG)
+	debugLCD(F("[DEBUG]: "));
+	debugLCD(msg);
+	debugLCD(F("\r\n"));
+#endif
+#if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_DEBUG)
+	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog(F("[DEBUG]: "));
+	debugSDcardLog(msg);
+	debugSDcardLog(F("\r\n"));
+#endif
+}
+
+template<class T>
+void DATA(T msg)
+{
+#if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_DATA)
+	debugPort(F("[DATA]: "));
+	debugPort(msg);
+	debugPort(F("\r\n"));
+#endif
+#if (DEBUG_LEVEL_LCD>=DEBUG_LEVEL_DATA)
+	debugLCD(F("[DATA]: "));
+	debugLCD(msg);
+	debugLCD(F("\r\n"));
+#endif
+#if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_DATA)
+	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog(F("[DATA]: "));
+	debugSDcardLog(msg);
+	debugSDcardLog(F("\r\n"));
+#endif
+}
 
 #endif /* LOG_DEBUG_H_ */
