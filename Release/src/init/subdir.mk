@@ -6,17 +6,20 @@
 CPP_SRCS += \
 ../src/init/freeram.cpp \
 ../src/init/init.cpp \
-../src/init/millis.cpp 
+../src/init/millis.cpp \
+../src/init/rtc.cpp 
 
 OBJS += \
 ./src/init/freeram.o \
 ./src/init/init.o \
-./src/init/millis.o 
+./src/init/millis.o \
+./src/init/rtc.o 
 
 CPP_DEPS += \
 ./src/init/freeram.d \
 ./src/init/init.d \
-./src/init/millis.d 
+./src/init/millis.d \
+./src/init/rtc.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

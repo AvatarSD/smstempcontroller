@@ -12,15 +12,13 @@
 #include "Network/NetworkWorker.h"
 #include "ADC/Analog.h"
 #include "config.h"
+#include "LOG/SDCardLogger.h"
 
-/**/
+/*Additional for debug*/
 #include "LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
 #include "sdcard/ff.h"
-/**/
-
-/**/
 #include "init/freeram.h"
-/**/
+/**********************/
 
 #define LED_ON PORTB |= (1<<PORTB7)
 #define LED_OFF PORTB &=~ (1<<PORTB7)
@@ -43,6 +41,7 @@ ISR(USART1_TX_vect)
 void mainLoop()
 {
 	LED_ON;
+	debugSDcardLog.begin();
 	debug(F("--------INT---------"));
 	static int ntcRefrwshPeriodCount = 0;
 	if (!ntcRefrwshPeriodCount)
@@ -52,6 +51,7 @@ void mainLoop()
 	while (!_network->sendTemp())
 		;
 	debug(F("-------INTEND-------"));
+	debugSDcardLog.end();
 	LED_OFF;
 }
 
@@ -87,27 +87,13 @@ ISR(TIMER1_CAPT_vect)
 		breakCounter = 0;
 }
 
-FATFS FatFs;	// FatFs work area
-FIL *fp, file;		// fpe object
 
-/*---------------------------------------------------------*/
-/* User Provided RTC Function called by FatFs module       */
-/* Used to provide a Timestamp for SDCard files and folders*/
-
-DWORD get_fattime(void)
-{
-	// Returns current time packed into a DWORD variable
-	return ((DWORD) (2015 - 1980) << 25)	// Year 2013
-			| ((DWORD) 8 << 21)				// Month 7
-			| ((DWORD) 2 << 16)				// Mday 28
-			| ((DWORD) 20 << 11)				// Hour 0..24
-			| ((DWORD) 30 << 5)				// Min 0
-			| ((DWORD) 0 >> 1);				// Sec 0
-}
 
 int main(void)
 {
 	init();
+
+	debugSDcardLog.begin();
 
 	lcd_init(LCD_DISP_ON);
 	lcd_led(0);
@@ -125,8 +111,8 @@ int main(void)
 	//for(auto i = 0; i<5; i++)
 	//debug(F("\r\n"));
 	debug(F("-------Hello-------\r\n"));
-
-	//iface.DS2480B_Detect();
+	//debugSDcardLog.begin();
+	iface.DS2480B_Detect();
 
 	//Just for see temp in debug
 	//while(true)
@@ -156,151 +142,101 @@ int main(void)
 	ICR1H = 0xF4;
 	ICR1L = 0x23;
 
+	debugSDcardLog("fuking shit!\r\n");
+
+	debugSDcardLog.end();
 	// Timer/Counter 1 Interrupt(s) initialization
-	//TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
+	TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
 
 
 	//delay(500);
 
-	// init sdcard
-	UINT bw;
-	debug(f_mount(&FatFs, "", 1));		// Give a work area to the FatFs module
-	debug("\r\n");
-	FRESULT res;
-	fp = (FIL *) malloc(sizeof(FIL));
+//
+//	FATFS FatFs;	// FatFs work area
+//	FIL logFile, *fp;	// file object
+//
+//
+//	// init sdcard
+//	UINT bw;
+//	debug(f_mount(&FatFs, "", 1));		// Give a work area to the FatFs module
+//	debug("\r\n");
+//	FRESULT res;
+//	//fp = (FIL *) malloc(sizeof(FIL));
+//
+//
+//
+//
+//	SEE_FREE_MEM();
+//
+//	if(1)
+//
+//		// read from file
+//		fp = (FIL *) malloc(sizeof(FIL));
+//	res = f_open(fp, "pj-kk.txt", FA_WRITE | FA_CREATE_ALWAYS);
+//	if (res == FR_OK)
+//	{	// Create a file
+//		debug(F("file opened to read.., res: "));
+//		debug(res);
+//		debug("\r\n");
+//		SEE_FREE_MEM();
+//
+//		UINT br;
+///*
+//		debug(F("File size: "));
+//		debug(f_size(fp));
+//		debug("\n\r");
+//		SEE_FREE_MEM();
+//
+//		char text[255];
+//		memset(text, 0, 255);
+//		debug(F("Reading res: "));
+//		debug(f_read(fp, text, 255, &br));
+//		debug("\r\n");
+//		SEE_FREE_MEM();
+//
+//		debug(F("Byte readed: "));
+//		debug(br);
+//		debug("\r\n");
+//		SEE_FREE_MEM();
+//
+//		debug(F("Text: "));
+//		debug(text);
+//		debug("\r\n");
+//		SEE_FREE_MEM();
+//
+//		debug(F("lseek res: "));
+//		debug(f_lseek(fp, f_size(fp)));
+//		debug("\r\n");
+//		SEE_FREE_MEM();*/
+//
+//		debug(F("write res: "));
+//		for(int i = 0; i < 100; i++)
+//		{
+//			char buf[1000];
+//			sprintf(buf, "Its my striiiiing --- S.D.!: %d\r\n", i);
+//			f_write(fp, buf, strlen(buf), &br);
+//		}
+//		debug("\r\n");
+//		SEE_FREE_MEM();
+//
+//		debug(F("Byte writen: "));
+//		debug(br);
+//		debug("\r\n");
+//		SEE_FREE_MEM();
+//
+//		f_close(fp);	// Close the file
+//		SEE_FREE_MEM();
+//	}
+//	else
+//	{
+//		debug("file not open to read: ");
+//		debug(res);
+//		debug("\r\n")
+//	}
+//	free(fp);
 
 
-
-
-
-	/*// open file
-	 res = f_open(fp, "xx2x-SD.txt", FA_CREATE_ALWAYS|FA_WRITE);
-	 if (res == FR_OK) {	// Create a file
-	 debug(F("file opened to write\r\n"));
-	 char text[255] = {"klsjfhgsdklfjgskdfjgskdjfhgsdkfgskd!\r\n\0"};
-	 debug(F("Write Res: "));
-	 debug(f_write(fp, text, strlen(text), &bw));	// Write data to the file
-	 debug("\r\n");
-	 //
-	 //if (bw == strlen(text)) { //we wrote the entire string
-	 //led1.Set(1); // Lights LED if data written well (D4 led on atmega128 board)
-	 //lcd.goto_xy(0,0); lcd.send_format_string("Created:%dB\n", f_size(fp));
-	 debug(F("File size: ")); debug(f_size(fp)); debug("\n\r");
-	 //}
-	 //else led2.Set(1);
-	 debug(F("Close Res: "));
-	 debug(f_close(fp));// Close the file
-	 debug(F("\r\nfile closed to write\r\n"));
-	 }
-	 else{ debug("file not open: ");
-	 debug(res);debug("\r\n")}
-	 free(fp);
-	 */
-	/*
-
-	 // test append
-	 if (f_open(fp, "file.txt", FA_WRITE | FA_OPEN_ALWAYS) == FR_OK) {	// Open existing or create new file
-	 if (f_lseek(fp, f_size(fp)) == FR_OK)
-	 {
-	 char *text2 = "This is a new line, appended to existing file!\r\n";
-	 f_write(fp, text2, strlen(text2), &bw);	// Write data to the file
-	 if (bw == strlen(text2)) { //we wrote the entire string
-	 //lcd.send_format_string("Appended:%dB\n", f_size(fp));
-	 debug(f_size(fp)); debug("\n");
-	 }
-
-	 }
-	 f_close(fp);// Close the file
-	 }
-	 char str[12];
-
-
-	 // get card volume
-	 char szCardLabel[12] = {0};
-	 DWORD sn = 0;
-	 if (f_getlabel("", szCardLabel, &sn) == FR_OK) {
-	 //lcd.send_format_string("%s SN:%X\n", szCardLabel, sn);
-	 debug(szCardLabel); debug("\n");
-	 debug(sn); debug("\n");
-	 }
-	 */
-	SEE_FREE_MEM();
-
-	if(1)
-
-		// read from file
-		fp = (FIL *) malloc(sizeof(FIL));
-	res = f_open(fp, "pj-kk.txt", FA_WRITE | FA_CREATE_ALWAYS);
-	if (res == FR_OK)
-	{	// Create a file
-		debug(F("file opened to read.., res: "));
-		debug(res);
-		debug("\r\n");
-		SEE_FREE_MEM();
-
-		UINT br;
-/*
-		debug(F("File size: "));
-		debug(f_size(fp));
-		debug("\n\r");
-		SEE_FREE_MEM();
-
-		char text[255];
-		memset(text, 0, 255);
-		debug(F("Reading res: "));
-		debug(f_read(fp, text, 255, &br));
-		debug("\r\n");
-		SEE_FREE_MEM();
-
-		debug(F("Byte readed: "));
-		debug(br);
-		debug("\r\n");
-		SEE_FREE_MEM();
-
-		debug(F("Text: "));
-		debug(text);
-		debug("\r\n");
-		SEE_FREE_MEM();
-
-		debug(F("lseek res: "));
-		debug(f_lseek(fp, f_size(fp)));
-		debug("\r\n");
-		SEE_FREE_MEM();*/
-
-		debug(F("write res: "));
-		for(int i = 0; i < 100; i++)
-		{
-			char buf[1000];
-			sprintf(buf, "Its my striiiiing --- S.D.!: %d\r\n", i);
-			f_write(fp, buf, strlen(buf), &br);
-		}
-		debug("\r\n");
-		SEE_FREE_MEM();
-
-		debug(F("Byte writen: "));
-		debug(br);
-		debug("\r\n");
-		SEE_FREE_MEM();
-
-		f_close(fp);	// Close the file
-		SEE_FREE_MEM();
-	}
-	else
-	{
-		debug("file not open to read: ");
-		debug(res);
-		debug("\r\n")
-	}
-	free(fp);
 
 	while (1)
-	{
-		//SEE_FREE_MEM();
 		_delay_ms(500);
-		/*
-		 debug(F("Free RAM: "));
-		 debug(freeRam());
-		 debug("\n");*/
-
-	};
 }

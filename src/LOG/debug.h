@@ -10,12 +10,11 @@
 
 
 #include "../UART/UART.h"
-
-
-#include "../LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
 extern UART debugPort;
+#include "../LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
+#include "SDCardLogger.h"
 
-#define debug(x) {debugLCD(x);debugPort(x);}
+#define debug(x) {debugLCD(x);debugPort(x);debugSDcardLog(x);}
 
 
 #define DEBUG_LEVEL_QUITE 0
