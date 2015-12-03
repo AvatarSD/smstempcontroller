@@ -8,10 +8,11 @@
 #ifndef INIT_RTC_H_
 #define INIT_RTC_H_
 
-unsigned long long int getUnixTime();
-void setUnixTime(unsigned long long int time);
-
 void startClock();
 void stopClock();
+void setUnixTime(unsigned long long int time);
+unsigned long long int getUnixTime();
+const char * getDateStr();
+const char * getDateTimeStr();
 
 #endif /* INIT_RTC_H_ */

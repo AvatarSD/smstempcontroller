@@ -40,7 +40,9 @@ void CRITICAL(T msg)
 	debugLCD(F("!!!\r\n"));
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_CRITICAL)
-	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog("[");
+	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog("]");
 	debugSDcardLog(F("[CRITICAL]: "));
 	debugSDcardLog(msg);
 	debugSDcardLog(F("!!!\r\n"));
@@ -61,7 +63,9 @@ void WARNING(T msg)
 	debugLCD(F("\r\n"));
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_WARNING)
-	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog("[");
+	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog("]");
 	debugSDcardLog(F("[WARNING]: "));
 	debugSDcardLog(msg);
 	debugSDcardLog(F("\r\n"));
@@ -82,7 +86,9 @@ void INFO(T msg)
 	debugLCD(F("\r\n"));
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_INFO)
-	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog("[");
+	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog("]");
 	debugSDcardLog(F("[INFO]: "));
 	debugSDcardLog(msg);
 	debugSDcardLog(F("\r\n"));
@@ -103,7 +109,9 @@ void DEBUG(T msg)
 	debugLCD(F("\r\n"));
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_DEBUG)
-	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog("[");
+	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog("]");
 	debugSDcardLog(F("[DEBUG]: "));
 	debugSDcardLog(msg);
 	debugSDcardLog(F("\r\n"));
@@ -124,7 +132,9 @@ void DATA(T msg)
 	debugLCD(F("\r\n"));
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_DATA)
-	debugSDcardLog("[...need to config date/time...]");
+	debugSDcardLog("[");
+	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog("]");
 	debugSDcardLog(F("[DATA]: "));
 	debugSDcardLog(msg);
 	debugSDcardLog(F("\r\n"));

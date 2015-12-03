@@ -10,6 +10,7 @@
 
 #include "../stream/Stream.h"
 #include "../sdcard/ff.h"
+#include "../init/rtc.h"
 
 class SDCardLogger : public Stream
 {

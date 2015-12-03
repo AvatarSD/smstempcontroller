@@ -14,9 +14,11 @@
 #define TIM_ TIMER3_CAPT_vect
 /**************/
 
+#define BUFFER_SIZE 50
+char buff[BUFFER_SIZE] =
+{ "Date:Time" };
 
 volatile unsigned long long int currentTime;
-
 
 ISR(INT_VECTOR)
 {
@@ -41,4 +43,14 @@ void startClock()
 void stopClock()
 {
 
+}
+
+const char* getDateStr()
+{
+	return buff;
+}
+
+const char* getDateTimeStr()
+{
+	return buff;
 }
