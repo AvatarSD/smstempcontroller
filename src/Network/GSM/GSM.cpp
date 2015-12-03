@@ -689,6 +689,7 @@ GSM::RegistrationStatus GSM::isRegistered(void)
 		}
 		if(i < NUM_OF_ATTEMPT)
 			delay(TIME_OF_ATTRMPT/NUM_OF_ATTEMPT);
+		else WARNING(F("Not Registered"));
 	}
 
 #ifdef LEVEL_INFO

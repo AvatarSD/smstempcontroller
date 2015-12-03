@@ -13,7 +13,7 @@ extern UART debugPort;
 #include "../LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
 #include "SDCardLogger.h"
 #include "../config.h"
-
+#include "../init/freeram.h"
 
 #define DEBUG_LEVEL_QUITE 0
 #define DEBUG_LEVEL_CRITICAL 1
@@ -22,14 +22,15 @@ extern UART debugPort;
 #define DEBUG_LEVEL_DEBUG 4
 #define DEBUG_LEVEL_DATA 5
 
-
 #define debug(x) {debugLCD(x);debugPort(x);debugSDcardLog(x);}
-
 
 template<class T>
 void CRITICAL(T msg)
 {
 #if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_CRITICAL)
+	debugPort("[Free:");
+	debugPort(freeRam());
+	debugPort("b]");
 	debugPort(F("[CRITICAL]: "));
 	debugPort(msg);
 	debugPort(F("!!!\r\n"));
@@ -53,6 +54,9 @@ template<class T>
 void WARNING(T msg)
 {
 #if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_WARNING)
+	debugPort("[Free:");
+	debugPort(freeRam());
+	debugPort("b]");
 	debugPort(F("[WARNING]: "));
 	debugPort(msg);
 	debugPort(F("\r\n"));
@@ -76,6 +80,9 @@ template<class T>
 void INFO(T msg)
 {
 #if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_INFO)
+	debugPort("[Free:");
+	debugPort(freeRam());
+	debugPort("b]");
 	debugPort(F("[INFO]: "));
 	debugPort(msg);
 	debugPort(F("\r\n"));
@@ -99,6 +106,9 @@ template<class T>
 void DEBUG(T msg)
 {
 #if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_DEBUG)
+	debugPort("[Free:");
+	debugPort(freeRam());
+	debugPort("b]");
 	debugPort(F("[DEBUG]: "));
 	debugPort(msg);
 	debugPort(F("\r\n"));
@@ -122,6 +132,9 @@ template<class T>
 void DATA(T msg)
 {
 #if (DEBUG_LEVEL_PORT>=DEBUG_LEVEL_DATA)
+	debugPort("[Free:");
+	debugPort(freeRam());
+	debugPort("b]");
 	debugPort(F("[DATA]: "));
 	debugPort(msg);
 	debugPort(F("\r\n"));

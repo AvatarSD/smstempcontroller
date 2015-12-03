@@ -35,6 +35,10 @@
 #define DEBUG_LEVEL_LCD 	DEBUG_LEVEL_INFO
 #define DEBUG_LEVEL_SDCARD 	DEBUG_LEVEL_DEBUG
 
+#define LEVEL_INFO // todo temp, need to fix later
+#define LEVEL_WARNING
+#define LEVEL_CRITICAL
+
 
 /********** Dallas User Definitions *************/
 #define DETECT_ERROR_COUNT 3
@@ -61,12 +65,12 @@
 
 /*************** SD card ******************/
 // Set DQ as AVR MISO
+#define DO_DQ		PB6//PB3
 #define DO_INIT()	DDRB  &= ~(1<<DO_DQ) /* Initialize port MMC DO as input */
-#define DO_DQ		PB5//PB3
 #define DO			(PINB &	(1<<DO_DQ))	 /* Test for MMC DO ('H':true, 'L':false) */
 
 // Set DQ as AVR MOSI
-#define DI_DQ		PB6//PB2
+#define DI_DQ		PB5//PB2
 #define DI_INIT()	DDRB  |= (1<<DI_DQ)	 /* Initialize port MMC DI as output */
 #define DI_H()		PORTB |= (1<<DI_DQ)	 /* Set MMC DI "high" */
 #define DI_L()		PORTB &= ~(1<<DI_DQ) /* Set MMC DI "low" */
