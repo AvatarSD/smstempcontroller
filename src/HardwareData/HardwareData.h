@@ -13,10 +13,19 @@ class HardwareData
 public:
 	HardwareData();
 
+	void checkPins(); /** call this function regularity **/
+
+	char getError();
 	double getVoltage();
+	bool didHadVoltageSupply();
+	bool didHadCaseOpen();
+
+private:
 	bool isHaveVoltageSupply();
 	bool isCaseOpen();
-	char getError();
+
+	bool caseOpenedFlag, supplyFlag;
+
 };
 
 #endif /* HARDWAREDATA_HARDWAREDATA_H_ */

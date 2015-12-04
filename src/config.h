@@ -9,13 +9,6 @@
 #define CONFIG_H_
 
 
-/******************** Inet **********************/
-#define PWR_PORT PORTH
-#define PWR_DDR DDRH
-#define PWR_PIN 4
-#define NUM_OF_ACK_ATTEMPT 2
-
-
 /******************* NTC ************************/
 #define TIMER_PERIOD 5			//in minutes
 #define NTC_REFRESH_PERIOD 24 	//in hours
@@ -60,7 +53,11 @@
 #define NETWORK_SERVER_PORT 3050
 
 #define NUM_ATTEMP_TO_COMNNECT 10
+#define NUM_OF_ACK_ATTEMPT 2
 
+#define PWR_PORT PORTH
+#define PWR_DDR DDRH
+#define PWR_PIN 4
 
 
 /*************** SD card ******************/
@@ -86,6 +83,17 @@
 #define CS_INIT()	DDRB  |= (1<<CS_DQ)	/* Initialize port MMC CS as output */
 #define	CS_H()		PORTB |= (1<<CS_DQ)	/* Set MMC CS "high" */
 #define CS_L()		PORTB &= ~(1<<CS_DQ)	/* Set MMC CS "low" */
+
+
+/*********** HARDWARE Settings ************/
+#define VOLTAGE_DIVIDER_RATIO 1
+#define VOLTAGE_ANALOG_PIN 15
+#define CASE_PIN_NUM 6
+#define CASE_PIN PINK
+#define CASE_DDR DDRK
+#define POWER_PIN_NUM 5
+#define POWER_PIN PINK
+#define POWER_DDR DDRK
 
 
 
