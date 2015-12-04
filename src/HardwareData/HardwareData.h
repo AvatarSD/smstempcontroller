@@ -17,15 +17,17 @@ public:
 
 	char getError();
 	double getVoltage();
-	bool didHadVoltageSupply();
+	bool didHadNoVoltageSupply();
 	bool didHadCaseOpen();
 
 private:
 	bool isHaveVoltageSupply();
 	bool isCaseOpen();
 
-	bool caseOpenedFlag, supplyFlag;
+	bool caseOpenedFlag, noSupplyFlag;
 
 };
+
+extern HardwareData HWdata;
 
 #endif /* HARDWAREDATA_HARDWAREDATA_H_ */

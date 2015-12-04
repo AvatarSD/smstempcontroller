@@ -76,9 +76,9 @@ bool NetworkWorker::sendTemp()
 		gsm(",");
 		gsm(HWdata.getVoltage());
 		gsm(",");
-		gsm(HWdata.isHaveVoltageSupply());
+		gsm(!HWdata.didHadNoVoltageSupply());
 		gsm(",");
-		gsm(HWdata.isCaseOpen());
+		gsm(HWdata.didHadCaseOpen());
 		gsm(",");
 		gsm(HWdata.getError());
 

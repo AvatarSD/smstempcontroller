@@ -46,6 +46,6 @@ src/LiquidCrystal_I2C/lcdTerminal \
 src/LiquidCrystal_I2C/i2chw \
 src/LOG \
 src/HardwareData \
+src/HardwareData/ADC \
 src/DallasOneWire \
-src/ADC \
 

@@ -10,7 +10,6 @@
 #include "init/init.h"
 #include "LOG/debug.h"
 #include "Network/NetworkWorker.h"
-#include "ADC/Analog.h"
 #include "config.h"
 #include "LOG/SDCardLogger.h"
 #include "init/rtc.h"
@@ -69,6 +68,8 @@ ISR(TIMER1_CAPT_vect)
 	debug(F("   ")); debug(F("Mutex is: ")); debug(mutex); debug(F("\r\n"));
 #endif
 
+	HWdata.checkPins();
+
 	if ((breakCounter == 0) && (!mutex))
 	{
 		mutex = true;
@@ -100,8 +101,6 @@ int main(void)
 	_iface = &iface;
 
 	DallasTemp sensors(iface);
-
-	HardwareData HWdata;
 
 	NetworkWorker network(sensors, HWdata);
 	_network = &network;

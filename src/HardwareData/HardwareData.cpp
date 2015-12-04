@@ -5,15 +5,18 @@
  *      Author: sd
  */
 
+#include "stdio.h"
 #include <avr/io.h>
 #include "HardwareData.h"
 #include "ADC/Analog.h"
 #include "../config.h"
+#include "../LOG/debug.h"
+
+HardwareData HWdata;
 
 HardwareData::HardwareData()
 {
-	// TODO Auto-generated constructor stub
-	supplyFlag = 0;
+	noSupplyFlag = 0;
 	caseOpenedFlag = 0;
 }
 
@@ -22,6 +25,10 @@ double HardwareData::getVoltage()
 	double voltage = analog[VOLTAGE_ANALOG_PIN];
 	voltage /= 400;
 	voltage *= VOLTAGE_DIVIDER_RATIO;
+
+	char buff[30];
+	sprintf(buff, "Battery voltage: %2.1fv", voltage);
+	INFO(buff);
 
 	return voltage;
 }
@@ -45,20 +52,31 @@ char HardwareData::getError()
 
 void HardwareData::checkPins()
 {
-	supplyFlag = isHaveVoltageSupply();
-	caseOpenedFlag = isCaseOpen();
+	if (!isHaveVoltageSupply())
+		noSupplyFlag = 1;
+	if (isCaseOpen())
+		caseOpenedFlag = 1;
 }
 
-bool HardwareData::didHadVoltageSupply()
+bool HardwareData::didHadNoVoltageSupply()
 {
-	bool ret = supplyFlag;
-	supplyFlag = 0;
-	return ret;
+	if (noSupplyFlag)
+	{
+		WARNING(F("There was no mains voltage"));
+		noSupplyFlag = 0;
+		return true;
+	}
+	INFO(F("Mains supply is OK"));
+	return false;
 }
 
 bool HardwareData::didHadCaseOpen()
 {
-	bool ret = caseOpenedFlag;
-	caseOpenedFlag = 0;
-	return ret;
+	if (caseOpenedFlag)
+	{
+		WARNING(F("Box was opened"));
+		caseOpenedFlag = 0;
+		return true;
+	}
+	return false;
 }

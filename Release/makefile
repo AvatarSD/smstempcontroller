@@ -20,9 +20,9 @@ RM := rm -rf
 -include src/LiquidCrystal_I2C/lcdTerminal/subdir.mk
 -include src/LiquidCrystal_I2C/i2chw/subdir.mk
 -include src/LOG/subdir.mk
+-include src/HardwareData/ADC/subdir.mk
 -include src/HardwareData/subdir.mk
 -include src/DallasOneWire/subdir.mk
--include src/ADC/subdir.mk
 -include src/subdir.mk
 -include subdir.mk
 -include objects.mk
