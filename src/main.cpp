@@ -14,12 +14,9 @@
 #include "LOG/SDCardLogger.h"
 #include "init/rtc.h"
 
-
 #define LED_ON //PORTB |= (1<<PORTB7)
 #define LED_OFF //PORTB &=~ (1<<PORTB7)
 #define LED_TRN //PORTB ^= (1<<PORTB7)
-
-
 
 UART * _iface;
 NetworkWorker * _network;
@@ -84,8 +81,6 @@ ISR(TIMER1_CAPT_vect)
 		breakCounter = 0;
 }
 
-
-
 int main(void)
 {
 	init();
@@ -129,9 +124,9 @@ int main(void)
 	// Compare B Match Interrupt: Off
 	// Compare C Match Interrupt: Off
 	TCCR1A = (0 << COM1A1) | (0 << COM1A0) | (0 << COM1B1) | (0 << COM1B0)
-					| (0 << COM1C1) | (0 << COM1C0) | (0 << WGM11) | (0 << WGM10);
+			| (0 << COM1C1) | (0 << COM1C0) | (0 << WGM11) | (0 << WGM10);
 	TCCR1B = (0 << ICNC1) | (0 << ICES1) | (1 << WGM13) | (1 << WGM12)
-					| (1 << CS12) | (0 << CS11) | (0 << CS10);
+			| (1 << CS12) | (0 << CS11) | (0 << CS10);
 	TCNT1H = 0x00;
 	TCNT1L = 0x00;
 	ICR1H = 0xF4;
@@ -139,8 +134,18 @@ int main(void)
 
 	debugSDcardLog.end();
 	// Timer/Counter 1 Interrupt(s) initialization
-	TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
+	//TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
 
 	while (1)
-		_delay_ms(500);
+	{
+		INFO(F("Check hardware"));
+		HWdata.getVoltage();
+		HWdata.didHadNoVoltageSupply();
+		HWdata.didHadCaseOpen();
+		for (int i = 0; i < 10; i++)
+		{
+			_delay_ms(500);
+			HWdata.checkPins();
+		}
+	}
 }

@@ -47,6 +47,7 @@ bool HardwareData::isCaseOpen()
 
 char HardwareData::getError()
 {
+	DEBUG(F("No hardware error"));S
 	return 0;
 }
 
