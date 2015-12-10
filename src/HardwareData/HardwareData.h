@@ -20,6 +20,8 @@ public:
 	bool didHadNoVoltageSupply();
 	bool didHadCaseOpen();
 
+	void pinsSetup();
+
 private:
 	bool isHaveVoltageSupply();
 	bool isCaseOpen();

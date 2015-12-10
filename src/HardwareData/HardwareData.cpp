@@ -24,7 +24,7 @@ double HardwareData::getVoltage()
 {
 	double voltage = analog[VOLTAGE_ANALOG_PIN];
 	voltage /= 400;
-	voltage *= VOLTAGE_DIVIDER_RATIO;
+	voltage *= VOLTAGE_MULTIPLY_RATIO;
 
 	char buff[30];
 	sprintf(buff, "Battery voltage: %2.1fv", voltage);
@@ -35,13 +35,13 @@ double HardwareData::getVoltage()
 
 bool HardwareData::isHaveVoltageSupply()
 {
-	POWER_DDR &= ~(1 << POWER_PIN_NUM);
-	return (POWER_PIN >> POWER_PIN_NUM) & 0x01;
+	pinsSetup();
+	return !((POWER_PIN >> POWER_PIN_NUM) & 0x01);
 }
 
 bool HardwareData::isCaseOpen()
 {
-	CASE_DDR &= ~(1 << CASE_PIN_NUM);
+	pinsSetup();
 	return (CASE_PIN >> CASE_PIN_NUM) & 0x01;
 }
 
@@ -61,23 +61,39 @@ void HardwareData::checkPins()
 
 bool HardwareData::didHadNoVoltageSupply()
 {
+	checkPins();
+
 	if (noSupplyFlag)
 	{
 		WARNING(F("There was no mains voltage"));
 		noSupplyFlag = 0;
 		return true;
 	}
+	noSupplyFlag = 0;
 	INFO(F("Mains supply is OK"));
 	return false;
 }
 
 bool HardwareData::didHadCaseOpen()
 {
+	checkPins();
+
 	if (caseOpenedFlag)
 	{
 		WARNING(F("Box was opened"));
 		caseOpenedFlag = 0;
 		return true;
 	}
+	caseOpenedFlag = 0;
+	INFO(F("Case is OK"));
 	return false;
+}
+
+void HardwareData::pinsSetup()
+{
+	POWER_DDR &= ~(1 << POWER_PIN_NUM);
+	CASE_DDR &= ~(1 << CASE_PIN_NUM);
+
+	POWER_PORT |= (1 << POWER_PIN_NUM);
+	CASE_PORT |= (1 << CASE_PIN_NUM);
 }

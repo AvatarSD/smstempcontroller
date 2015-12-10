@@ -86,14 +86,16 @@
 
 
 /*********** HARDWARE Settings ************/
-#define VOLTAGE_DIVIDER_RATIO 1
-#define VOLTAGE_ANALOG_PIN 15
-#define CASE_PIN_NUM 6
-#define CASE_PIN PINK
-#define CASE_DDR DDRK
-#define POWER_PIN_NUM 5
-#define POWER_PIN PINK
-#define POWER_DDR DDRK
+#define VOLTAGE_MULTIPLY_RATIO 7.25
+#define VOLTAGE_ANALOG_PIN 0
+#define CASE_PIN_NUM 2
+#define CASE_PIN PINF
+#define CASE_DDR DDRF
+#define CASE_PORT PORTF
+#define POWER_PIN_NUM 1
+#define POWER_PIN PINF
+#define POWER_DDR DDRF
+#define POWER_PORT PORTF
 
 
 

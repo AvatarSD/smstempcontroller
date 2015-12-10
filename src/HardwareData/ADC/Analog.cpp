@@ -57,7 +57,7 @@ void Analog::ADCint()
 		wr_index=LAST_ADC_INPUT-FIRST_ADC_INPUT;
 
 	// Read the AD conversion result
-	adc_data[input_index]=ADCW;
+	adc_data[wr_index]=ADCW;
 	// Select next ADC input
 	if (++input_index > (LAST_ADC_INPUT-FIRST_ADC_INPUT))
 		input_index=0;

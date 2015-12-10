@@ -144,6 +144,8 @@ int main(void)
 		HWdata.didHadCaseOpen();
 		for (int i = 0; i < 10; i++)
 		{
+			INFO(i);
+
 			_delay_ms(500);
 			HWdata.checkPins();
 		}
