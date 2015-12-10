@@ -35,13 +35,13 @@ double HardwareData::getVoltage()
 
 bool HardwareData::isHaveVoltageSupply()
 {
-	pinsSetup();
+	//pinsSetup();
 	return !((POWER_PIN >> POWER_PIN_NUM) & 0x01);
 }
 
 bool HardwareData::isCaseOpen()
 {
-	pinsSetup();
+	//pinsSetup();
 	return (CASE_PIN >> CASE_PIN_NUM) & 0x01;
 }
 

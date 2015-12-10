@@ -104,6 +104,8 @@ int main(void)
 
 	iface.DS2480B_Detect();
 
+	HWdata.pinsSetup();
+
 	//Just for see temp in debug
 	//while(true)
 	//	sensors.readAllTempSerial();
@@ -134,20 +136,8 @@ int main(void)
 
 	debugSDcardLog.end();
 	// Timer/Counter 1 Interrupt(s) initialization
-	//TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
+	TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
 
-	while (1)
-	{
-		INFO(F("Check hardware"));
-		HWdata.getVoltage();
-		HWdata.didHadNoVoltageSupply();
-		HWdata.didHadCaseOpen();
-		for (int i = 0; i < 10; i++)
-		{
-			INFO(i);
+	while (1);
 
-			_delay_ms(500);
-			HWdata.checkPins();
-		}
-	}
 }
