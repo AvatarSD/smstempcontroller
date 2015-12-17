@@ -113,7 +113,7 @@ sizedummy: project.elf
 
 avrdudedummy: project.elf
 	@echo 'Invoking: AVRDude'
-	/usr/bin/avrdude -pm2560 -cwiring -P/dev/ttyACM4 -D -Uflash:w:project.hex:a
+	/usr/bin/avrdude -pm2560 -cwiring -P/dev/ttyACM0 -D -Uflash:w:project.hex:a
 	@echo 'Finished building: $@'
 	@echo ' '
 

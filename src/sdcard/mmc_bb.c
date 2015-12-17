@@ -32,6 +32,7 @@
 /*-------------------------------------------------------------------------*/
 
 #include <util/delay.h>
+#include <util/atomic.h>
 #include <avr/io.h>			/* Include device specific declareation file here */
 #include "../config.h"
 
@@ -97,6 +98,7 @@ void xmit_mmc (
 {
 	BYTE d;
 
+	cli();
 
 	do {
 		d = *buff++;	/* Get a byte to be sent */
@@ -117,6 +119,8 @@ void xmit_mmc (
 		if (d & 0x01) DI_H(); else DI_L();	/* bit0 */
 		CK_H(); CK_L();
 	} while (--bc);
+
+	sei();
 }
 
 
@@ -133,6 +137,7 @@ void rcvr_mmc (
 {
 	BYTE r;
 
+	cli();
 
 	DI_H();	/* Send 0xFF */
 
@@ -155,6 +160,7 @@ void rcvr_mmc (
 		CK_H(); CK_L();
 		*buff++ = r;			/* Store a received byte */
 	} while (--bc);
+	sei();
 }
 
 
