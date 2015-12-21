@@ -66,7 +66,6 @@ bool NetworkWorker::sendTemp()
 		if(!inetIface.beginWriteInet())
 			return false;
 
-
 		gsm("$");
 		gsm(imei);
 		gsm(",");
