@@ -647,7 +647,7 @@ bool InetGSM::beginWriteInet()
 bool InetGSM::endWriteInet()
 {
 	gsm.putch(ctrlz);
-	//	gsm.putch(ctrlz);
+	gsm.putch(ctrlz);
 	gsm.setCOMStatus(GSM::CLS_FREE);
 	if(gsm.WaitResp(20000, 10000, "SEND OK") == GSM::RX_FINISHED_STR_RECV)
 	{
