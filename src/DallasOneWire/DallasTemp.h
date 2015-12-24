@@ -17,7 +17,7 @@ class DallasTemp {
 public:
 	DallasTemp(DallasOneWire& iface);
 
-	//const std::list<DallasSensorData>&  readAllTempSerial(bool isCurr = true);
+	const std::list<DallasSensorData>&  readAllTempSerial(bool isCurr = true);
 	//const std::list<DallasSensorData>&  readAllTempParalel(char attemptNum);
 
 	void readingInit();
@@ -27,7 +27,7 @@ private:
 	//const std::list<DallasSensorData>& justGetTemp();
 	float calculateTemperature(ROM & deviceAddress, unsigned char * scratchPad);
 
-	//std::list<DallasSensorData> _sensorsRes;
+	std::list<DallasSensorData> _sensorsRes;
 	DallasOneWire& _iface;
 };
 

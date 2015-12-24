@@ -50,7 +50,7 @@ DallasTemp::DallasTemp(DallasOneWire& iface) : _iface(iface)
 {
 
 }
-/*
+
 const std::list<DallasSensorData>&  DallasTemp::readAllTempSerial(bool isCurr)
 {
 	INFO(F("Reading sensors with serial conversion..."));
@@ -131,7 +131,7 @@ const std::list<DallasSensorData>&  DallasTemp::readAllTempSerial(bool isCurr)
 	return _sensorsRes;
 
 }
-
+/*
 const std::list<DallasSensorData>&  DallasTemp::readAllTempParalel(char attemptNum)
 {
 	//TODO do several attempt reading times
