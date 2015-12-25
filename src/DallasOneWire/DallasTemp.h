@@ -17,13 +17,18 @@ class DallasTemp {
 public:
 	DallasTemp(DallasOneWire& iface);
 
+	/*Second algoritm*/
 	const std::list<DallasSensorData>&  readAllTempSerial(bool isCurr = true);
 	//const std::list<DallasSensorData>&  readAllTempParalel(char attemptNum);
 
-	const std::list<ROM>&  searchAllTemp();
-
+	/*Second algoritm*/
 	void readingInit();
-	int readOnce(DallasSensorData & data);
+	bool readOnce(DallasSensorData & data);
+
+	/*Third algoritm*/
+	const std::list<ROM>&  searchAllTempSensors();
+	bool readSensor(const ROM & sensorRom, double & retTemp);
+
 private:
 	//int justStartConversion();
 	//const std::list<DallasSensorData>& justGetTemp();

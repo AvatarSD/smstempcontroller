@@ -43,7 +43,7 @@ void operator delete(void * ptr)
 #define TEMP_12_BIT 0x7F // 12 bit
 
 DallasTemp::DallasTemp(DallasOneWire& iface) :
-		_iface(iface)
+				_iface(iface)
 {
 
 }
@@ -56,8 +56,11 @@ const std::list<DallasSensorData>& DallasTemp::readAllTempSerial(bool isCurr)
 
 	//TODO repeat reading if have any error
 
-	while (_iface.OWReset() == FALSE)
-		;
+	if (_iface.OWReset() == FALSE)
+	{
+		WARNING(F("1-Wire bus reset error"));
+		return _sensorsRes;
+	}
 
 	_sensorsRes.clear();
 
@@ -250,7 +253,7 @@ const std::list<DallasSensorData>& DallasTemp::readAllTempSerial(bool isCurr)
  }
  */
 
-int DallasTemp::readOnce(DallasSensorData & data)
+bool DallasTemp::readOnce(DallasSensorData & data)
 {
 	unsigned char sendpacket[10];
 	int sendlen = 0;
@@ -327,7 +330,7 @@ void DallasTemp::readingInit()
 	//_sensorsRes.clear();
 }
 
-const std::list<ROM>& DallasTemp::searchAllTemp()
+const std::list<ROM>& DallasTemp::searchAllTempSensors()
 {
 	INFO(F("Searching sensors..."));
 
@@ -339,7 +342,6 @@ const std::list<ROM>& DallasTemp::searchAllTemp()
 		WARNING(F("1-Wire bus reset error"));
 		return _sensors;
 	}
-
 
 	while (_iface.OWNext())
 	{
@@ -368,12 +370,81 @@ const std::list<ROM>& DallasTemp::searchAllTemp()
 
 }
 
+bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
+{
+	unsigned char sendpacket[10];
+	int sendlen = 0;
+
+	// verify correct type
+	if ((_iface.ROM_NO.isMathFamily(0x28)) || (_iface.ROM_NO.isMathFamily(0x22))
+			|| (_iface.ROM_NO.isMathFamily(0x10)))
+	{
+
+		// match sequence for select the device
+		sendpacket[0] = 0x55; // match command
+		for (int i = 0; i < 8; i++)
+			sendpacket[i + 1] = _iface.ROM_NO[i];
+
+		// Reset 1-Wire
+		if(_iface.OWReset())
+			// select device
+			if (_iface.OWBlock(sendpacket, 9) != 9)
+			{
+				WARNING(F("Device not available"));
+				return false;
+			}
+
+		//start conversion
+		_iface.OWWriteBytePower(0x44); //)
+
+		// sleep for 1 second
+		_delay_ms(1000);
+		if (_iface.OWReadByte() != 0xFF)
+			WARNING(F("ERROR, temperature conversion was not complete\n\r"));
+
+		// match sequence for select the device
+		sendpacket[0] = 0x55; // match command
+		for (int i = 0; i < 8; i++)
+			sendpacket[i + 1] = _iface.ROM_NO[i];
+
+		// Reset 1-Wire
+		if (_iface.OWReset())
+		{
+			// select device
+			_iface.OWBlock(sendpacket, 9);
+
+			// Read Scratch pad
+			sendlen = 0;
+			sendpacket[sendlen++] = 0xBE;
+			for (int i = 0; i < 9; i++)
+				sendpacket[sendlen++] = 0xFF;
+
+			if (_iface.OWBlock(sendpacket, sendlen))
+			{
+				retTemp = calculateTemperature(_iface.ROM_NO,
+						sendpacket + 1);
+
+#ifdef LEVEL_INFO
+				char buff[20];
+				sprintf(buff, "Temp is: %3.1f`C", retTemp);
+				INFO(buff);
+#endif
+				return true;
+			}
+		}
+		WARNING(F("Some error while reading sensor"));
+	}
+	else
+		WARNING(F("This is not temp sensor"));
+	return false;
+}
+
 // reads scratchpad and returns the temperature in degrees C
 float DallasTemp::calculateTemperature(ROM & deviceAddress,
 		unsigned char * scratchPad)
 {
 	int16_t rawTemperature = (((int16_t) scratchPad[TEMP_MSB]) << 8)
-			| scratchPad[TEMP_LSB];
+					| scratchPad[TEMP_LSB];
 	DATA(F("Calculating Temperature.."));
 	switch (deviceAddress[0])
 	{
@@ -403,9 +474,9 @@ float DallasTemp::calculateTemperature(ROM & deviceAddress,
 			break;
 		}
 		break;
-	case DS18S20MODEL:
-		DEBUG(F("DS18S20 MODEL"));
-		/*
+		case DS18S20MODEL:
+			DEBUG(F("DS18S20 MODEL"));
+			/*
 		 Resolutions greater than 9 bits can be calculated using the data from
 		 the temperature, COUNT REMAIN and COUNT PER �C registers in the
 		 scratchpad. Note that the COUNT PER �C register is hard-wired to 16
@@ -417,13 +488,13 @@ float DallasTemp::calculateTemperature(ROM & deviceAddress,
 		 COUNT_PER_C - COUNT_REMAIN
 		 TEMPERATURE = TEMP_READ - 0.25 + --------------------------
 		 COUNT_PER_C
-		 */
+			 */
 
-		// Good spot. Thanks Nic Johns for your contribution
-		return (float) (rawTemperature >> 1) - 0.25
-				+ ((float) (scratchPad[COUNT_PER_C] - scratchPad[COUNT_REMAIN])
-						/ (float) scratchPad[COUNT_PER_C]);
-		break;
+			// Good spot. Thanks Nic Johns for your contribution
+			return (float) (rawTemperature >> 1) - 0.25
+					+ ((float) (scratchPad[COUNT_PER_C] - scratchPad[COUNT_REMAIN])
+							/ (float) scratchPad[COUNT_PER_C]);
+			break;
 	}
 	return -127;
 }
