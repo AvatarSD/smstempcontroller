@@ -108,7 +108,7 @@ int main(void)
 
 	//Just for see temp in debug
 	while(true)
-		sensors.readAllTempSerial();
+		sensors.searchAllTemp();
 
 	// Timer/Counter 1 initialization
 	// Clock source: System Clock

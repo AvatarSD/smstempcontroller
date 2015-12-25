@@ -20,6 +20,8 @@ public:
 	const std::list<DallasSensorData>&  readAllTempSerial(bool isCurr = true);
 	//const std::list<DallasSensorData>&  readAllTempParalel(char attemptNum);
 
+	const std::list<ROM>&  searchAllTemp();
+
 	void readingInit();
 	int readOnce(DallasSensorData & data);
 private:
@@ -28,6 +30,7 @@ private:
 	float calculateTemperature(ROM & deviceAddress, unsigned char * scratchPad);
 
 	std::list<DallasSensorData> _sensorsRes;
+	std::list<ROM> _sensors;
 	DallasOneWire& _iface;
 };
 
