@@ -107,8 +107,8 @@ int main(void)
 	HWdata.pinsSetup();
 
 	//Just for see temp in debug
-	while(true)
-		sensors.searchAllTemp();
+//	while(true)
+//		sensors.searchAllTemp();
 
 	// Timer/Counter 1 initialization
 	// Clock source: System Clock
@@ -136,7 +136,7 @@ int main(void)
 
 	debugSDcardLog.end();
 	// Timer/Counter 1 Interrupt(s) initialization
-	//TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
+	TIMSK1=(1<<ICIE1) | (0<<OCIE1C) | (0<<OCIE1B) | (0<<OCIE1A) | (0<<TOIE1);
 
 	while (1);
 
