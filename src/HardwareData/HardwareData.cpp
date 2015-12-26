@@ -92,8 +92,24 @@ bool HardwareData::didHadCaseOpen()
 void HardwareData::pinsSetup()
 {
 	POWER_DDR &= ~(1 << POWER_PIN_NUM);
-	CASE_DDR &= ~(1 << CASE_PIN_NUM);
-
 	POWER_PORT |= (1 << POWER_PIN_NUM);
+
+	CASE_DDR &= ~(1 << CASE_PIN_NUM);
 	CASE_PORT |= (1 << CASE_PIN_NUM);
+
+	NEWSRC_DDR &= ~(1 << NEWSRC_PIN_NUM);
+	NEWSRC_PORT |= (1 << NEWSRC_PIN_NUM);
+
+	ADDSRC_DDR &= ~(1 << ADDSRC_PIN_NUM);
+	ADDSRC_PORT |= (1 << ADDSRC_PIN_NUM);
+}
+
+bool HardwareData::isNewSrhBtnPress()
+{
+	return !((NEWSRC_PIN >> NEWSRC_PIN_NUM) & 0x01);
+}
+
+bool HardwareData::isAddSrhBtnPress()
+{
+	return !((ADDSRC_PIN >> ADDSRC_PIN_NUM) & 0x01);
 }

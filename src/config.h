@@ -97,6 +97,14 @@
 #define POWER_DDR DDRF
 #define POWER_PORT PORTF
 
+#define NEWSRC_PIN_NUM 2
+#define NEWSRC_PIN PINF
+#define NEWSRC_DDR DDRF
+#define NEWSRC_PORT PORTF
+#define ADDSRC_PIN_NUM 1
+#define ADDSRC_PIN PINF
+#define ADDSRC_DDR DDRF
+#define ADDSRC_PORT PORTF
 
 
 #endif /* CONFIG_H_ */

@@ -142,13 +142,13 @@ void MainWorker::timerStart()
 	ICR1L = 0x23;
 
 	//enable maim timer interrupt
-	TIMSK1 = (1 << ICIE1);
+	TIMSK1 |= (1 << ICIE1);
 }
 
 
 void MainWorker::timerStop()
 {
-	TIMSK1 = (0 << ICIE1);
+	TIMSK1 &= ~(0 << ICIE1);
 }
 
 void MainWorker::startingProcedure()
