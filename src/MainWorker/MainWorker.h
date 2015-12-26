@@ -16,6 +16,9 @@ public:
 	void mainLoop();
 	void screensaver(int time);
 	void iterationTimerLoop();
+	void timerStart();
+	void timerStop();
+	void startingProcedure();
 };
 
 #endif /* MAINWORKER_MAINWORKER_H_ */

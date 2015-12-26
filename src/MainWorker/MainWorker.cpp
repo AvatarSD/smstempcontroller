@@ -115,3 +115,47 @@ void MainWorker::iterationTimerLoop()
 		breakCounter = 0;
 }
 
+void MainWorker::timerStart()
+{
+	// Timer/Counter 1 initialization
+	// Clock source: System Clock
+	// Clock value: 62,500 kHz
+	// Mode: CTC top=ICR1
+	// OC1A output: Disconnected
+	// OC1B output: Disconnected
+	// OC1C output: Disconnected
+	// Noise Canceler: Off
+	// Input Capture on Falling Edge
+	// Timer Period: 1 s
+	// Timer1 Overflow Interrupt: Off
+	// Input Capture Interrupt: On
+	// Compare A Match Interrupt: Off
+	// Compare B Match Interrupt: Off
+	// Compare C Match Interrupt: Off
+	TCCR1A = (0 << COM1A1) | (0 << COM1A0) | (0 << COM1B1) | (0 << COM1B0)
+			| (0 << COM1C1) | (0 << COM1C0) | (0 << WGM11) | (0 << WGM10);
+	TCCR1B = (0 << ICNC1) | (0 << ICES1) | (1 << WGM13) | (1 << WGM12)
+			| (1 << CS12) | (0 << CS11) | (0 << CS10);
+	TCNT1H = 0x00;
+	TCNT1L = 0x00;
+	ICR1H = 0xF4;
+	ICR1L = 0x23;
+
+	//enable maim timer interrupt
+	TIMSK1 = (1 << ICIE1);
+}
+
+
+void MainWorker::timerStop()
+{
+	TIMSK1 = (0 << ICIE1);
+}
+
+void MainWorker::startingProcedure()
+{
+	if(true&&true/*todo hwdatacondition*/)
+	{
+
+	}
+	else timerStart();
+}
