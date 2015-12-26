@@ -43,7 +43,7 @@ void operator delete(void * ptr)
 #define TEMP_12_BIT 0x7F // 12 bit
 
 DallasTemp::DallasTemp(DallasOneWire& iface) :
-				_iface(iface)
+		_iface(iface)
 {
 
 }
@@ -386,7 +386,7 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 			sendpacket[i + 1] = _iface.ROM_NO[i];
 
 		// Reset 1-Wire
-		if(_iface.OWReset())
+		if (_iface.OWReset())
 			// select device
 			if (_iface.OWBlock(sendpacket, 9) != 9)
 			{
@@ -421,8 +421,7 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 
 			if (_iface.OWBlock(sendpacket, sendlen))
 			{
-				retTemp = calculateTemperature(_iface.ROM_NO,
-						sendpacket + 1);
+				retTemp = calculateTemperature(_iface.ROM_NO, sendpacket + 1);
 
 #ifdef LEVEL_INFO
 				char buff[20];
@@ -444,7 +443,7 @@ float DallasTemp::calculateTemperature(ROM & deviceAddress,
 		unsigned char * scratchPad)
 {
 	int16_t rawTemperature = (((int16_t) scratchPad[TEMP_MSB]) << 8)
-					| scratchPad[TEMP_LSB];
+			| scratchPad[TEMP_LSB];
 	DATA(F("Calculating Temperature.."));
 	switch (deviceAddress[0])
 	{
@@ -474,9 +473,9 @@ float DallasTemp::calculateTemperature(ROM & deviceAddress,
 			break;
 		}
 		break;
-		case DS18S20MODEL:
-			DEBUG(F("DS18S20 MODEL"));
-			/*
+	case DS18S20MODEL:
+		DEBUG(F("DS18S20 MODEL"));
+		/*
 		 Resolutions greater than 9 bits can be calculated using the data from
 		 the temperature, COUNT REMAIN and COUNT PER �C registers in the
 		 scratchpad. Note that the COUNT PER �C register is hard-wired to 16
@@ -488,7 +487,7 @@ float DallasTemp::calculateTemperature(ROM & deviceAddress,
 		 COUNT_PER_C - COUNT_REMAIN
 		 TEMPERATURE = TEMP_READ - 0.25 + --------------------------
 		 COUNT_PER_C
-			 */
+		 */
 
 			// Good spot. Thanks Nic Johns for your contribution
 			return (float) (rawTemperature >> 1) - 0.25
