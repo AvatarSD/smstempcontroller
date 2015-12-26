@@ -21,8 +21,7 @@ int main()
 	MainWorker worker;
 	_worker = &worker;
 
-
-
+	worker.startingProcedure();
 
 	while (true)
 		;

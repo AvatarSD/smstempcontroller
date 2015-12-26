@@ -153,8 +153,22 @@ void MainWorker::timerStop()
 
 void MainWorker::startingProcedure()
 {
-	if(true&&true/*todo hwdatacondition*/)
+	bool wasbtnNewSrcPressed = HWdata.isNewSrhBtnPress();
+	bool wasbtnAddSrcPressed = HWdata.isAddSrhBtnPress();
+
+	/*searching procedure*/
+	if((wasbtnNewSrcPressed)||(wasbtnAddSrcPressed))
 	{
+		/*if wasbtnNewSrcPressed == true, cleaning data*/
+		if(wasbtnNewSrcPressed)
+		{
+
+		}
+
+
+
+
+
 
 	}
 	else timerStart();
