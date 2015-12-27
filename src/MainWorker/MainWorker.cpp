@@ -169,12 +169,17 @@ void MainWorker::startingProcedure()
 						sensorsCount++;
 						INFO(F("New sensor:"));
 						INFO(it->toString());
+						break;
 					}
-			INFO(F("Sensor founded: "));
+			INFO(F("New sensor founded: "));
 			INFO(sensorsCount);
 
-			//todo //////////////////////.............
-
+			if((HWdata.isNewSrhBtnPress())||(HWdata.isAddSrhBtnPress()))
+			{
+				INFO(F("Perform to saving founding ROMs in eeprom memory"));
+				saveMainbuff();
+				INFO(F("Saving successful"));
+			}
 		}
 	}
 	else
