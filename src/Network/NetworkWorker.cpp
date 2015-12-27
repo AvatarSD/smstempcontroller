@@ -11,7 +11,6 @@
 #include "../init/rtc.h"
 #include "../config.h"
 
-
 UART * _gsm;
 
 ISR(NETWORK_RXINT)
@@ -23,11 +22,10 @@ ISR(NETWORK_TXINT)
 	_gsm->tx_byte_int();
 }
 
-
-
-
-NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data, ROM * buffer) :
-		gsm(NETWORK_PORT), inetIface(gsm),sensors(Sensors), HWdata(data), _romMainBuff(buffer)
+NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data,
+		ROM * buffer) :
+		gsm(NETWORK_PORT), inetIface(gsm), sensors(Sensors), HWdata(data), _romMainBuff(
+				buffer)
 
 {
 	errorCount = 0;
@@ -41,7 +39,7 @@ bool NetworkWorker::sendTemp()
 {
 	bool retVal = false;
 	attemptCount++;
-	errorPercent = ((float)(errorCount*100))/attemptCount;
+	errorPercent = ((float) (errorCount * 100)) / attemptCount;
 #ifdef LEVEL_DEBUG
 	debug.print(F("[DEBUG]: "));
 	debug.print(F("Error Percent is: "));
@@ -52,7 +50,7 @@ bool NetworkWorker::sendTemp()
 
 	errorCount++;
 	INFO(F("Starting network procedure..."));
-	if(forceConnectToServer(NETWORK_SERVER_ADDR, NETWORK_SERVER_PORT))
+	if (forceConnectToServer(NETWORK_SERVER_ADDR, NETWORK_SERVER_PORT))
 	{
 		unsigned long int data = gsm.getUNIXdate();
 		setUnixTime(data);
@@ -63,7 +61,7 @@ bool NetworkWorker::sendTemp()
 		//DallasSensorData sensorData;
 		//sensors.readingInit();
 
-		if(!inetIface.beginWriteInet())
+		if (!inetIface.beginWriteInet())
 			return false;
 
 		gsm("$");
@@ -91,38 +89,43 @@ bool NetworkWorker::sendTemp()
 		//			gsm(sensorData.getTempStr());
 		//		}
 
-		for(uint16_t i = 0; _romMainBuff[i][0] != 0; i++)
+		uint16_t sensorsCount = 0;
+		for (uint16_t i = 0; _romMainBuff[i][0] != 0, i < ROM_MAINBFF_SIZE; i++)
 		{
 			double temp;
-			for(uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
-				if(sensors.readSensor(_romMainBuff[i], temp))
+			for (uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
+				if (sensors.readSensor(_romMainBuff[i], temp))
 				{
 					gsm("\r");
 					gsm(_romMainBuff[i].toString());
 					gsm(",");
 					gsm(temp);
+					sensorsCount++;
 					break;
 				}
 		}
 		gsm("&");
 
-
 #ifdef LEVEL_INFO
-		debug(F("[INFO]: Sensors count: ")); debug(i); debug(F("\r\n"));
+		debug(F("[INFO]: Read sensors count: "));
+		debug(sensorsCount);
+		debug(F("\r\n"));
 #endif
 
-		if(inetIface.endWriteInet())
+		if (inetIface.endWriteInet())
 		{
 			char buf[9];
-			if(gsm.getString("$", "&", buf, 8))
+			if (gsm.getString("$", "&", buf, 8))
 			{
 				long int i;
 				int flag;
 				sscanf(buf, "%ld,%d", &i, &flag);
 #ifdef LEVEL_INFO
-				debug(F("[INFO]: Package number: ")); debug(i); debug(F("\r\n"));
+				debug(F("[INFO]: Package number: "));
+				debug(i);
+				debug(F("\r\n"));
 #endif
-				if(i == pktCount)
+				if (i == pktCount)
 				{
 					INFO(F("Server answered"));
 					pktCount++;
@@ -138,11 +141,11 @@ bool NetworkWorker::sendTemp()
 
 bool NetworkWorker::forceConnectToServer(const char* server, int port)
 {
-	for(int i = 0; i < NUM_ATTEMP_TO_COMNNECT; i++)
-		if(gsm.forceON())
-			if(gsm.isRegistered() == GSM::REG_REGISTERED)
-				if(inetIface.attachGPRS(NETWORK_AP, "", ""))
-					if(inetIface.connectTCP(server, port) == 1)
+	for (int i = 0; i < NUM_ATTEMP_TO_COMNNECT; i++)
+		if (gsm.forceON())
+			if (gsm.isRegistered() == GSM::REG_REGISTERED)
+				if (inetIface.attachGPRS(NETWORK_AP, "", ""))
+					if (inetIface.connectTCP(server, port) == 1)
 						return true;
 	CRITICAL(F("Did not connect at 10 attempts"));
 	gsm.forceOFF();
@@ -153,17 +156,18 @@ bool NetworkWorker::disconnectWithPowerDown()
 {
 	inetIface.disconnectTCP();
 	inetIface.dettachGPRS();
-	if(gsm.forceOFF())
+	if (gsm.forceOFF())
 		return true;
-	else return false;
+	else
+		return false;
 }
 
 bool NetworkWorker::refreshTime()
 {
-	for(int i = 0; i < NUM_ATTEMP_TO_COMNNECT; i++)
-		if(gsm.forceON())
-			if(gsm.isRegistered() == GSM::REG_REGISTERED)
-				if(inetIface.refreshTime(NETWORK_AP, NTP_ADDR))
+	for (int i = 0; i < NUM_ATTEMP_TO_COMNNECT; i++)
+		if (gsm.forceON())
+			if (gsm.isRegistered() == GSM::REG_REGISTERED)
+				if (inetIface.refreshTime(NETWORK_AP, NTP_ADDR))
 					return true;
 	CRITICAL(F("Time wasn't connect at 10 attempts"));
 	return false;

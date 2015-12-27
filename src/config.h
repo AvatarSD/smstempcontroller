@@ -44,6 +44,8 @@
 #define DALL_PWR_DDR DDRA
 #define DALL_PWR_PIN 0
 
+#define NUM_OF_READING_ATEMPT 3
+
 
 /************ Network Settings ************/
 #define NETWORK_TXINT USART2_TX_vect
