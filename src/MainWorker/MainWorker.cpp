@@ -30,7 +30,8 @@ ISR(DALL_TXINT)
 }
 
 MainWorker::MainWorker() :
-		_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors, HWdata)
+		_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
+				HWdata)
 {
 	init();
 	HWdata.pinsSetup();
@@ -145,12 +146,12 @@ void MainWorker::startingProcedure()
 		/*if wasbtnNewSrcPressed == true, cleaning data*/
 		if (wasbtnNewSrcPressed)
 		{
-			memset(_mainbuf, 0, ROM_MAINBFF_SIZE*sizeof(ROM));
+			memset(_mainbuf, 0, ROM_MAINBFF_SIZE * sizeof(ROM));
 			saveMainbuff();
 		}
 
 		//todo: search algoritm
-
+//
 
 	}
 	else
@@ -159,9 +160,10 @@ void MainWorker::startingProcedure()
 
 void MainWorker::loadMainbuff()
 {
-	//todo
+	eeprom_read_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
 }
 
 void MainWorker::saveMainbuff()
 {
+	eeprom_write_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
 }
