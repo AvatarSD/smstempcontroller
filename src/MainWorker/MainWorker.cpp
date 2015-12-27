@@ -31,7 +31,7 @@ ISR(DALL_TXINT)
 
 MainWorker::MainWorker() :
 		_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
-				HWdata)
+				HWdata, _mainbuf)
 {
 	init();
 	HWdata.pinsSetup();
@@ -148,10 +148,22 @@ void MainWorker::startingProcedure()
 		{
 			memset(_mainbuf, 0, ROM_MAINBFF_SIZE * sizeof(ROM));
 			saveMainbuff();
+			INFO(F("Saved sensor ROMs was cleaned"));
+			INFO(F("New search perform"));
 		}
+		else
+			INFO(F("Search perform with only adding new sensors"));
+
+
+
+
 
 		//todo: search algoritm
 //
+
+
+
+
 
 	}
 	else
