@@ -30,8 +30,8 @@ ISR(DALL_TXINT)
 }
 
 MainWorker::MainWorker() :
-		_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
-				HWdata, _mainbuf)
+																		_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
+																				HWdata, _mainbuf)
 {
 	init();
 	HWdata.pinsSetup();
@@ -116,9 +116,9 @@ void MainWorker::timerStart()
 	// Compare B Match Interrupt: Off
 	// Compare C Match Interrupt: Off
 	TCCR1A = (0 << COM1A1) | (0 << COM1A0) | (0 << COM1B1) | (0 << COM1B0)
-			| (0 << COM1C1) | (0 << COM1C0) | (0 << WGM11) | (0 << WGM10);
+																			| (0 << COM1C1) | (0 << COM1C0) | (0 << WGM11) | (0 << WGM10);
 	TCCR1B = (0 << ICNC1) | (0 << ICES1) | (1 << WGM13) | (1 << WGM12)
-			| (1 << CS12) | (0 << CS11) | (0 << CS10);
+																			| (1 << CS12) | (0 << CS11) | (0 << CS10);
 	TCNT1H = 0x00;
 	TCNT1L = 0x00;
 	ICR1H = 0xF4;
@@ -143,9 +143,9 @@ void MainWorker::startingProcedure()
 	/*searching procedure*/
 	if ((wasbtnNewSrcPressed) || (wasbtnAddSrcPressed))
 	{
-		/*if wasbtnNewSrcPressed == true, cleaning data*/
 		if (wasbtnNewSrcPressed)
 		{
+			/*cleaning data*/
 			memset(_mainbuf, 0, ROM_MAINBFF_SIZE * sizeof(ROM));
 			saveMainbuff();
 			INFO(F("Saved sensor ROMs was cleaned"));
@@ -154,17 +154,28 @@ void MainWorker::startingProcedure()
 		else
 			INFO(F("Search perform with only adding new sensors"));
 
+		uint16_t sensorsCount = 0;
+		while(true)
+		{
+			auto sensorsRom = _sensors.searchAllTempSensors();
 
+			for(auto it = sensorsRom.begin(); it != sensorsRom.end(); it++)
+				for (uint16_t i = 0; _mainbuf[i][0] != 0, i < ROM_MAINBFF_SIZE; i++)
+					if(_mainbuf[i] == *it)
+						break;
+					else if(_mainbuf[i][0] == 0)
+					{
+						_mainbuf[i] = *it;
+						sensorsCount++;
+						INFO(F("New sensor:"));
+						INFO(it->toString());
+					}
+			INFO(F("Sensor founded: "));
+			INFO(sensorsCount);
 
+			//todo //////////////////////.............
 
-
-		//todo: search algoritm
-//
-
-
-
-
-
+		}
 	}
 	else
 		timerStart();
