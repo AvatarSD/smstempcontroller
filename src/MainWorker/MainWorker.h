@@ -19,6 +19,11 @@ public:
 	void timerStart();
 	void timerStop();
 	void startingProcedure();
+
+private:
+	DallasOneWire _sensorsIface;
+	DallasTemp _sensors;
+	NetworkWorker _network;
 };
 
 #endif /* MAINWORKER_MAINWORKER_H_ */

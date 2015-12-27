@@ -16,15 +16,11 @@
 #include "../LOG/SDCardLogger.h"
 #include "../init/rtc.h"
 
-
-
 #define LED_ON //PORTB |= (1<<PORTB7)
 #define LED_OFF //PORTB &=~ (1<<PORTB7)
 #define LED_TRN //PORTB ^= (1<<PORTB7)
 
 UART * _iface;
-NetworkWorker * _network;
-
 ISR(USART1_RX_vect)
 {
 	_iface->rx_byte_int();
@@ -34,33 +30,19 @@ ISR(USART1_TX_vect)
 	_iface->tx_byte_int();
 }
 
-MainWorker::MainWorker()
+MainWorker::MainWorker() :
+		_sensorsIface(UDR1), _sensors(_sensorsIface), _network(_sensors, HWdata)
 {
 	init();
 	HWdata.pinsSetup();
 	startClock();
-
+	_iface = &_sensorsIface;
 
 	debugSDcardLog.begin();
-
+	debug(F("-------Hello-------\r\n"));
 	lcd_init(LCD_DISP_ON);
 	lcd_led(0);
-
-
-
-
-	DallasOneWire iface(UDR1);
-	_iface = &iface;
-
-	DallasTemp sensors(iface);
-
-	NetworkWorker network(sensors, HWdata);
-	_network = &network;
-
-	debug(F("-------Hello-------\r\n"));
-
-	iface.DS2480B_Detect();
-
+	_sensorsIface.DS2480B_Detect();
 	debugSDcardLog.end();
 }
 
@@ -71,10 +53,10 @@ void MainWorker::mainLoop()
 	debug(F("--------INT---------\r\n"));
 	static int ntcRefrwshPeriodCount = 0;
 	if (!ntcRefrwshPeriodCount)
-		_network->refreshTime();
+		_network.refreshTime();
 	if (++ntcRefrwshPeriodCount == (NTC_REFRESH_PERIOD * 60 / TIMER_PERIOD))
 		ntcRefrwshPeriodCount = 0;
-	while (!_network->sendTemp())
+	while (!_network.sendTemp())
 		;
 	debug(F("-------INTEND-------\r\n"));
 	debugSDcardLog.end();
@@ -145,7 +127,6 @@ void MainWorker::timerStart()
 	TIMSK1 |= (1 << ICIE1);
 }
 
-
 void MainWorker::timerStop()
 {
 	TIMSK1 &= ~(0 << ICIE1);
@@ -157,19 +138,15 @@ void MainWorker::startingProcedure()
 	bool wasbtnAddSrcPressed = HWdata.isAddSrhBtnPress();
 
 	/*searching procedure*/
-	if((wasbtnNewSrcPressed)||(wasbtnAddSrcPressed))
+	if ((wasbtnNewSrcPressed) || (wasbtnAddSrcPressed))
 	{
 		/*if wasbtnNewSrcPressed == true, cleaning data*/
-		if(wasbtnNewSrcPressed)
+		if (wasbtnNewSrcPressed)
 		{
 
 		}
 
-
-
-
-
-
 	}
-	else timerStart();
+	else
+		timerStart();
 }
