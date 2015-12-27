@@ -27,7 +27,7 @@ ISR(NETWORK_TXINT)
 
 
 NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data, ROM * buffer) :
-gsm(NETWORK_PORT), inetIface(gsm),sensors(Sensors), HWdata(data), _romMainBuff(buffer)
+		gsm(NETWORK_PORT), inetIface(gsm),sensors(Sensors), HWdata(data), _romMainBuff(buffer)
 
 {
 	errorCount = 0;
@@ -81,17 +81,32 @@ bool NetworkWorker::sendTemp()
 		gsm(",");
 		gsm(HWdata.getError());
 
-		//todo reading from mainBuffer of ROM of sensors
-		int i = 0;
-		while(sensors.readOnce(sensorData))
+		//		int i = 0;
+		//		while(sensors.readOnce(sensorData))
+		//		{
+		//			i++;
+		//			gsm("\r");
+		//			gsm(sensorData.getROM().toString());
+		//			gsm(",");
+		//			gsm(sensorData.getTempStr());
+		//		}
+
+		for(uint16_t i = 0; _romMainBuff[i][0] != 0; i++)
 		{
-			i++;
-			gsm("\r");
-			gsm(sensorData.getROM().toString());
-			gsm(",");
-			gsm(sensorData.getTempStr());
+			double temp;
+			for(uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
+				if(sensors.readSensor(_romMainBuff[i], temp))
+				{
+					gsm("\r");
+					gsm(_romMainBuff[i].toString());
+					gsm(",");
+					gsm(temp);
+					break;
+				}
 		}
 		gsm("&");
+
+
 #ifdef LEVEL_INFO
 		debug(F("[INFO]: Sensors count: ")); debug(i); debug(F("\r\n"));
 #endif
