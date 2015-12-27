@@ -21,17 +21,17 @@
 #define LED_TRN //PORTB ^= (1<<PORTB7)
 
 UART * _iface;
-ISR(USART1_RX_vect)
+ISR(DALL_RXINT)
 {
 	_iface->rx_byte_int();
 }
-ISR(USART1_TX_vect)
+ISR(DALL_TXINT)
 {
 	_iface->tx_byte_int();
 }
 
 MainWorker::MainWorker() :
-		_sensorsIface(UDR1), _sensors(_sensorsIface), _network(_sensors, HWdata)
+		_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors, HWdata)
 {
 	init();
 	HWdata.pinsSetup();

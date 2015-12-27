@@ -34,6 +34,10 @@
 
 
 /********** Dallas User Definitions *************/
+#define DALL_TXINT USART1_TX_vect
+#define DALL_RXINT USART1_RX_vect
+#define DALL_PORT    UDR1
+
 #define DETECT_ERROR_COUNT 3
 
 #define DALL_PWR_PORT PORTA
