@@ -92,23 +92,36 @@
 /*********** HARDWARE Settings ************/
 #define VOLTAGE_MULTIPLY_RATIO 7.25
 #define VOLTAGE_ANALOG_PIN 0
-#define CASE_PIN_NUM 2
-#define CASE_PIN PINF
-#define CASE_DDR DDRF
-#define CASE_PORT PORTF
+
 #define POWER_PIN_NUM 1
 #define POWER_PIN PINF
 #define POWER_DDR DDRF
 #define POWER_PORT PORTF
 
-#define NEWSRC_PIN_NUM 2
+#define CASE_PIN_NUM 2
+#define CASE_PIN PINF
+#define CASE_DDR DDRF
+#define CASE_PORT PORTF
+
+#define NEWSRC_PIN_NUM 3
 #define NEWSRC_PIN PINF
 #define NEWSRC_DDR DDRF
 #define NEWSRC_PORT PORTF
-#define ADDSRC_PIN_NUM 1
+
+#define ADDSRC_PIN_NUM 4
 #define ADDSRC_PIN PINF
 #define ADDSRC_DDR DDRF
 #define ADDSRC_PORT PORTF
+
+#define LED_ON //PORTB |= (1<<PORTB7) //now we no have LED indicator
+#define LED_OFF //PORTB &=~ (1<<PORTB7)
+#define LED_TRN //PORTB ^= (1<<PORTB7)
+
+
+/************* MainBuf Size ***************/
+#define ROM_MAINBFF_SIZE 100
+
+
 
 
 #endif /* CONFIG_H_ */

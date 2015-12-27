@@ -12,13 +12,12 @@
 #include "../init/init.h"
 #include "../LOG/debug.h"
 #include "../Network/NetworkWorker.h"
-#include "../config.h"
 #include "../LOG/SDCardLogger.h"
 #include "../init/rtc.h"
 
-#define LED_ON //PORTB |= (1<<PORTB7)
-#define LED_OFF //PORTB &=~ (1<<PORTB7)
-#define LED_TRN //PORTB ^= (1<<PORTB7)
+#include <avr/eeprom.h>
+
+ROM eepromMainbuf[ROM_MAINBFF_SIZE] EEMEM;
 
 UART * _iface;
 ISR(DALL_RXINT)
@@ -40,6 +39,7 @@ MainWorker::MainWorker() :
 
 	debugSDcardLog.begin();
 	debug(F("-------Hello-------\r\n"));
+	//_mainbuf = (ROM*)calloc(ROM_MAINBFF_SIZE, sizeof(ROM));
 	lcd_init(LCD_DISP_ON);
 	lcd_led(0);
 	_sensorsIface.DS2480B_Detect();
@@ -137,16 +137,31 @@ void MainWorker::startingProcedure()
 	bool wasbtnNewSrcPressed = HWdata.isNewSrhBtnPress();
 	bool wasbtnAddSrcPressed = HWdata.isAddSrhBtnPress();
 
+	loadMainbuff();
+
 	/*searching procedure*/
 	if ((wasbtnNewSrcPressed) || (wasbtnAddSrcPressed))
 	{
 		/*if wasbtnNewSrcPressed == true, cleaning data*/
 		if (wasbtnNewSrcPressed)
 		{
-
+			memset(_mainbuf, 0, ROM_MAINBFF_SIZE*sizeof(ROM));
+			saveMainbuff();
 		}
+
+		//todo: search algoritm
+
 
 	}
 	else
 		timerStart();
+}
+
+void MainWorker::loadMainbuff()
+{
+	//todo
+}
+
+void MainWorker::saveMainbuff()
+{
 }

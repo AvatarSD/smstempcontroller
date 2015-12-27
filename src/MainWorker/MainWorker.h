@@ -8,6 +8,8 @@
 #ifndef MAINWORKER_MAINWORKER_H_
 #define MAINWORKER_MAINWORKER_H_
 
+#include "../config.h"
+
 class MainWorker
 {
 public:
@@ -19,11 +21,15 @@ public:
 	void timerStart();
 	void timerStop();
 	void startingProcedure();
+	void loadMainbuff();
+	void saveMainbuff();
 
 private:
 	DallasOneWire _sensorsIface;
 	DallasTemp _sensors;
 	NetworkWorker _network;
+
+	ROM _mainbuf[ROM_MAINBFF_SIZE];
 };
 
 #endif /* MAINWORKER_MAINWORKER_H_ */
