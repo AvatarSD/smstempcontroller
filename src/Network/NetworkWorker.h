@@ -16,7 +16,7 @@
 class NetworkWorker
 {
 public:
-	NetworkWorker(DallasTemp & Sensors, HardwareData & data);
+	NetworkWorker(DallasTemp & Sensors, HardwareData & data, ROM * buffer);
 
 	bool sendTemp();
 	bool refreshTime();
@@ -33,6 +33,7 @@ private:
 	InetGSM  inetIface;
 	DallasTemp & sensors;
 	HardwareData & HWdata;
+	ROM * _romMainBuff;
 };
 
 #endif /* NETWORK_NETWORKWORKER_H_ */

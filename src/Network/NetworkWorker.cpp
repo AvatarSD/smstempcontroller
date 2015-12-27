@@ -26,8 +26,8 @@ ISR(NETWORK_TXINT)
 
 
 
-NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
-gsm(NETWORK_PORT), inetIface(gsm),sensors(Sensors), HWdata(data)
+NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data, ROM * buffer) :
+gsm(NETWORK_PORT), inetIface(gsm),sensors(Sensors), HWdata(data), _romMainBuff(buffer)
 
 {
 	errorCount = 0;
@@ -60,8 +60,8 @@ bool NetworkWorker::sendTemp()
 		char pktCountStr[6];
 		static unsigned int pktCount = 0;
 		sprintf(pktCountStr, "%5u", pktCount);
-		DallasSensorData sensorData;
-		sensors.readingInit();
+		//DallasSensorData sensorData;
+		//sensors.readingInit();
 
 		if(!inetIface.beginWriteInet())
 			return false;
@@ -81,6 +81,7 @@ bool NetworkWorker::sendTemp()
 		gsm(",");
 		gsm(HWdata.getError());
 
+		//todo reading from mainBuffer of ROM of sensors
 		int i = 0;
 		while(sensors.readOnce(sensorData))
 		{
