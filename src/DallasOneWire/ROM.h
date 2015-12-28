@@ -12,7 +12,7 @@ class ROM {
 public:
 	ROM();
 
-	bool isMathFamily(unsigned char family);
+	bool isMathFamily(unsigned char family) const;
 	unsigned char& operator [](int i);
 	const unsigned char& operator [](int i) const;
 	bool operator < (const ROM& cmp) const;

@@ -32,7 +32,7 @@ public:
 private:
 	//int justStartConversion();
 	//const std::list<DallasSensorData>& justGetTemp();
-	float calculateTemperature(ROM & deviceAddress, unsigned char * scratchPad);
+	float calculateTemperature(const ROM & deviceAddress, unsigned char * scratchPad);
 
 	std::list<DallasSensorData> _sensorsRes;
 	std::list<ROM> _sensors;

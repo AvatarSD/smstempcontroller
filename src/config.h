@@ -29,6 +29,7 @@
 #define DEBUG_LEVEL_LCD 	DEBUG_LEVEL_INFO
 #define DEBUG_LEVEL_SDCARD 	DEBUG_LEVEL_DEBUG
 
+#define LEVEL_DEBUG
 #define LEVEL_INFO // todo template, need to fix later
 #define LEVEL_WARNING
 #define LEVEL_CRITICAL

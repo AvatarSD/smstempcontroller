@@ -696,8 +696,13 @@ GSM::RegistrationStatus GSM::isRegistered(void)
 		retVal = CheckRegistration();
 		if (retVal == REG_REGISTERED)
 		{
-			DEBUG(F("Time is"));
-			DEBUG(i * (TIME_OF_ATTRMPT / NUM_OF_ATTEMPT));
+#ifdef LEVEL_DEBUG
+			char buff[40];
+			sprintf(buff, "Time is: %dms",
+					i * (TIME_OF_ATTRMPT / NUM_OF_ATTEMPT));
+			DEBUG(buff);
+#endif
+
 			break;;
 		}
 		if (i < NUM_OF_ATTEMPT)

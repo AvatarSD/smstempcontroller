@@ -376,19 +376,19 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 	int sendlen = 0;
 
 	// verify correct type
-	if ((_iface.ROM_NO.isMathFamily(0x28)) || (_iface.ROM_NO.isMathFamily(0x22))
-			|| (_iface.ROM_NO.isMathFamily(0x10)))
+	if ((sensorRom.isMathFamily(0x28)) || (sensorRom.isMathFamily(0x22))
+			|| (sensorRom.isMathFamily(0x10)))
 	{
 
 		// match sequence for select the device
 		sendpacket[0] = 0x55; // match command
 		for (int i = 0; i < 8; i++)
-			sendpacket[i + 1] = _iface.ROM_NO[i];
+			sendpacket[i + 1] = sensorRom[i];
 
 		// Reset 1-Wire
 		if (_iface.OWReset())
 			// select device
-			if (_iface.OWBlock(sendpacket, 9) != 9)
+			if (_iface.OWBlock(sendpacket, 9) < 8)
 			{
 				WARNING(F("Device not available"));
 				return false;
@@ -405,7 +405,7 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 		// match sequence for select the device
 		sendpacket[0] = 0x55; // match command
 		for (int i = 0; i < 8; i++)
-			sendpacket[i + 1] = _iface.ROM_NO[i];
+			sendpacket[i + 1] = sensorRom[i];
 
 		// Reset 1-Wire
 		if (_iface.OWReset())
@@ -419,9 +419,9 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 			for (int i = 0; i < 9; i++)
 				sendpacket[sendlen++] = 0xFF;
 
-			if (_iface.OWBlock(sendpacket, sendlen))
+			if (_iface.OWBlock(sendpacket, sendlen) == sendlen)
 			{
-				retTemp = calculateTemperature(_iface.ROM_NO, sendpacket + 1);
+				retTemp = calculateTemperature(sensorRom, sendpacket + 1);
 
 #ifdef LEVEL_INFO
 				char buff[20];
@@ -429,6 +429,11 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 				INFO(buff);
 #endif
 				return true;
+			}
+			else
+			{
+				WARNING(F("Device not available"));
+			return false;
 			}
 		}
 		WARNING(F("Some error while reading sensor"));
@@ -446,7 +451,7 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 }
 
 // reads scratchpad and returns the temperature in degrees C
-float DallasTemp::calculateTemperature(ROM & deviceAddress,
+float DallasTemp::calculateTemperature(const ROM & deviceAddress,
 		unsigned char * scratchPad)
 {
 	int16_t rawTemperature = (((int16_t) scratchPad[TEMP_MSB]) << 8)

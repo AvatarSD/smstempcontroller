@@ -37,7 +37,7 @@ const unsigned char& ROM::operator [](int i) const
 	}
 }
 
-bool ROM::isMathFamily(unsigned char family)
+bool ROM::isMathFamily(unsigned char family) const
 {
 	return (family == ROM_NO[0]);
 }
