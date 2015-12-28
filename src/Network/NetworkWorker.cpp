@@ -79,16 +79,6 @@ bool NetworkWorker::sendTemp()
 		gsm(",");
 		gsm(HWdata.getError());
 
-		//		int i = 0;
-		//		while(sensors.readOnce(sensorData))
-		//		{
-		//			i++;
-		//			gsm("\r");
-		//			gsm(sensorData.getROM().toString());
-		//			gsm(",");
-		//			gsm(sensorData.getTempStr());
-		//		}
-
 		uint16_t sensorsCount = 0, i = 0;
 		for (; ((!_romMainBuff[i].isNull()) && (i < ROM_MAINBFF_SIZE)); i++)
 		{

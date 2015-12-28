@@ -1,17 +1,17 @@
 /*
-This is a Beta version.
-last modified 18/08/2012.
+ This is a Beta version.
+ last modified 18/08/2012.
 
-This library is based on one developed by Arduino Labs
-and it is modified to preserve the compability
-with the Arduino's product.
+ This library is based on one developed by Arduino Labs
+ and it is modified to preserve the compability
+ with the Arduino's product.
 
-The library is modified to use the GSM Shield,
-developed by www.open-electronics.org
-(http://www.open-electronics.org/arduino-gsm-shield/)
-and based on SIM900 chip,
-with the same commands of Arduino Shield,
-based on QuectelM10 chip.
+ The library is modified to use the GSM Shield,
+ developed by www.open-electronics.org
+ (http://www.open-electronics.org/arduino-gsm-shield/)
+ and based on SIM900 chip,
+ with the same commands of Arduino Shield,
+ based on QuectelM10 chip.
  */
 
 #include "GSM.h"
@@ -25,7 +25,8 @@ based on QuectelM10 chip.
 #include <string.h>
 #include <stdio.h>
 
-GSM::GSM(volatile unsigned char & port) : UART(port, 9600, 64, 16)
+GSM::GSM(volatile unsigned char & port) :
+		UART(port, 9600, 64, 16)
 {
 	setGSMStatus(GSM_IDLE);
 	setCOMStatus(CLS_FREE);
@@ -40,7 +41,8 @@ GSM::GSM(volatile unsigned char & port) : UART(port, 9600, 64, 16)
 	prev_time = 0;
 
 	last_speaker_volume = 0;
-};
+}
+;
 
 bool GSM::isResponse()
 {
@@ -297,7 +299,6 @@ bool GSM::isResponse()
 //}
 //
 
-
 void GSM::InitParam(char group)
 {
 	switch (group)
@@ -305,11 +306,12 @@ void GSM::InitParam(char group)
 	case PARAM_SET_0:
 		DEBUG(F("Init Param: Set 0"));
 		// check comm line
-		if (CLS_FREE != getCOMStatus()) return;
+		if (CLS_FREE != getCOMStatus())
+			return;
 
 		setCOMStatus(CLS_ATCMD);
 		// Reset to the factory settings
-		SendATCmdWaitResp("AT&F", 1000, 50, "OK", 5);      
+		SendATCmdWaitResp("AT&F", 1000, 50, "OK", 5);
 		// switch off echo
 		SendATCmdWaitResp("ATE0", 500, 50, "OK", 5);
 		// setup fixed baud rate
@@ -330,7 +332,8 @@ void GSM::InitParam(char group)
 	case PARAM_SET_1:
 		DEBUG(F("Init Param: Set 1"));
 		// check comm line
-		if (CLS_FREE != getCOMStatus()) return;
+		if (CLS_FREE != getCOMStatus())
+			return;
 		setCOMStatus(CLS_ATCMD);
 		// Request calling line identification
 		SendATCmdWaitResp("AT+CLIP=1", 500, 50, "OK", 5);
@@ -368,16 +371,16 @@ void GSM::InitParam(char group)
 	}
 }
 
-
-
-GSM::RXstateRes GSM::WaitResp(unsigned long int start_comm_tmout, unsigned long int max_interchar_tmout)
+GSM::RXstateRes GSM::WaitResp(unsigned long int start_comm_tmout,
+		unsigned long int max_interchar_tmout)
 {
 	RXstateRes status;
 
 	RxInit(start_comm_tmout, max_interchar_tmout);
 	DATA(F("wait until response is not finished"));
 	// wait until response is not finished
-	do {
+	do
+	{
 		status = IsRxFinished();
 
 	} while (status == RX_NOT_FINISHED);
@@ -385,28 +388,32 @@ GSM::RXstateRes GSM::WaitResp(unsigned long int start_comm_tmout, unsigned long 
 	return (status);
 }
 
-GSM::RXstateRes GSM::WaitResp(unsigned long int start_comm_tmout, unsigned long int max_interchar_tmout,
-		char const *expected_resp_string)
+GSM::RXstateRes GSM::WaitResp(unsigned long int start_comm_tmout,
+		unsigned long int max_interchar_tmout, char const *expected_resp_string)
 {
 	char status;
 	RXstateRes ret_val;
 
 	status = WaitResp(start_comm_tmout, max_interchar_tmout);
 
-	if (status == RX_FINISHED) {
+	if (status == RX_FINISHED)
+	{
 		// something was received but what was received?
 		// ---------------------------------------------
 
-		if(IsStringReceived(expected_resp_string)) {
+		if (IsStringReceived(expected_resp_string))
+		{
 			// expected string was received
 			// ----------------------------
 			ret_val = RX_FINISHED_STR_RECV;
 		}
-		else {
+		else
+		{
 			ret_val = RX_FINISHED_STR_NOT_RECV;
 		}
 	}
-	else {
+	else
+	{
 		// nothing was received
 		// --------------------
 		ret_val = RX_TMOUT_ERR;
@@ -415,16 +422,16 @@ GSM::RXstateRes GSM::WaitResp(unsigned long int start_comm_tmout, unsigned long 
 }
 
 /**********************************************************
-Method sends AT command and waits for response
+ Method sends AT command and waits for response
 
-return: 
-      AT_RESP_ERR_NO_RESP = -1,   // no response received
-      AT_RESP_ERR_DIF_RESP = 0,   // response_string is different from the response
-      AT_RESP_OK = 1,             // response_string was included in the response
+ return:
+ AT_RESP_ERR_NO_RESP = -1,   // no response received
+ AT_RESP_ERR_DIF_RESP = 0,   // response_string is different from the response
+ AT_RESP_OK = 1,             // response_string was included in the response
  **********************************************************/
 GSM::ATresp GSM::SendATCmdWaitResp(char const *AT_cmd_string,
-		unsigned long int start_comm_tmout, unsigned long int max_interchar_tmout,
-		char const *response_string,
+		unsigned long int start_comm_tmout,
+		unsigned long int max_interchar_tmout, char const *response_string,
 		char no_of_attempts)
 {
 	DATA(F("SendATCmdWaitResp"));
@@ -453,13 +460,14 @@ GSM::ATresp GSM::SendATCmdWaitResp(char const *AT_cmd_string,
 			// something was received but what was received?
 			// ---------------------------------------------
 
-			if(IsStringReceived(response_string))
+			if (IsStringReceived(response_string))
 			{
 				ret_val = AT_RESP_OK;
 				DATA(response_string);
 				break;  // response is OK => finish
 			}
-			else ret_val = AT_RESP_ERR_DIF_RESP;
+			else
+				ret_val = AT_RESP_ERR_DIF_RESP;
 		}
 		else
 		{
@@ -474,16 +482,16 @@ GSM::ATresp GSM::SendATCmdWaitResp(char const *AT_cmd_string,
 }
 
 /**********************************************************
-Method checks received bytes
+ Method checks received bytes
 
-compare_string - pointer to the string which should be find
+ compare_string - pointer to the string which should be find
 
-return: 0 - string was NOT received
-        1 - string was received
+ return: 0 - string was NOT received
+ 1 - string was received
  **********************************************************/
 bool GSM::IsStringReceived(char const *compare_string)
 {
-	if(comm_buf_len > 0)
+	if (comm_buf_len > 0)
 		if (strstr(comm_buf, compare_string) != NULL)
 			return 1;
 	return 0;
@@ -504,7 +512,8 @@ GSM::RXstateRes GSM::IsRxFinished(void)
 		if (available() == 0)
 		{
 			// still no character received => check timeout
-			if ((unsigned long int)(millis() - prev_time) >= start_reception_tmout)
+			if ((unsigned long int) (millis() - prev_time)
+					>= start_reception_tmout)
 			{
 				// timeout elapsed => GSM module didn't start with response
 				// so communication is takes as finished
@@ -512,7 +521,8 @@ GSM::RXstateRes GSM::IsRxFinished(void)
 				ret_val = RX_TMOUT_ERR;
 			}
 		}
-		else {
+		else
+		{
 			// at least one character received => so init inter-character
 			// counting process again and go to the next state
 			prev_time = millis(); // init tmout for inter-character space
@@ -528,7 +538,8 @@ GSM::RXstateRes GSM::IsRxFinished(void)
 		// only in case we have place in the buffer
 		num_of_bytes = available();
 		// if there are some received bytes postpone the timeout
-		if (num_of_bytes) prev_time = millis();
+		if (num_of_bytes)
+			prev_time = millis();
 
 		// read all received bytes
 		while (num_of_bytes > 0)
@@ -541,14 +552,14 @@ GSM::RXstateRes GSM::IsRxFinished(void)
 				// to the rx buffer
 				*p_comm_buf = getch();
 
-
 				p_comm_buf++;
 				comm_buf_len++;
-				comm_buf[comm_buf_len] = 0x00;  // and finish currently received characters
+				comm_buf[comm_buf_len] = 0x00; // and finish currently received characters
 				// so after each character we have
 				// valid string finished by the 0x00
 			}
-			else {
+			else
+			{
 				// comm buffer is full, other incoming characters
 				// will be discarded
 				// but despite of we have no place for other characters
@@ -563,7 +574,7 @@ GSM::RXstateRes GSM::IsRxFinished(void)
 		}
 
 		// finally check the inter-character timeout
-		if ((unsigned long int)(millis() - prev_time) >= interchar_tmout)
+		if ((unsigned long int) (millis() - prev_time) >= interchar_tmout)
 		{
 			// timeout between received character was reached
 			// reception is finished
@@ -576,11 +587,11 @@ GSM::RXstateRes GSM::IsRxFinished(void)
 		}
 	}
 
-
 	return (ret_val);
 }
 
-void GSM::RxInit(unsigned long int start_comm_tmout, unsigned long int max_interchar_tmout)
+void GSM::RxInit(unsigned long int start_comm_tmout,
+		unsigned long int max_interchar_tmout)
 {
 #ifdef LEVEL_DATA
 	char buff[40];
@@ -599,26 +610,27 @@ void GSM::RxInit(unsigned long int start_comm_tmout, unsigned long int max_inter
 }
 
 /**********************************************************
-Method checks if the GSM module is registered in the GSM net
-- this method communicates directly with the GSM module
-  in contrast to the method IsRegistered() which reads the
-  flag from the module_status (this flag is set inside this method)
+ Method checks if the GSM module is registered in the GSM net
+ - this method communicates directly with the GSM module
+ in contrast to the method IsRegistered() which reads the
+ flag from the module_status (this flag is set inside this method)
 
-- must be called regularly - from 1sec. to cca. 10 sec.
+ - must be called regularly - from 1sec. to cca. 10 sec.
 
-return values:
-      REG_NOT_REGISTERED  - not registered
-      REG_REGISTERED      - GSM module is registered
-      REG_NO_RESPONSE     - GSM doesn't response
-      REG_COMM_LINE_BUSY  - comm line between GSM module and Arduino is not free
-                            for communication
+ return values:
+ REG_NOT_REGISTERED  - not registered
+ REG_REGISTERED      - GSM module is registered
+ REG_NO_RESPONSE     - GSM doesn't response
+ REG_COMM_LINE_BUSY  - comm line between GSM module and Arduino is not free
+ for communication
  **********************************************************/
 GSM::RegistrationStatus GSM::CheckRegistration(void)
 {
 	RXstateRes status;
 	RegistrationStatus ret_val = REG_NOT_REGISTERED;
 
-	if (CLS_FREE != getCOMStatus()) return REG_COMM_LINE_BUSY;
+	if (CLS_FREE != getCOMStatus())
+		return REG_COMM_LINE_BUSY;
 	setCOMStatus(CLS_ATCMD);
 	print(F("AT+CREG?"));
 	print("\r");
@@ -626,15 +638,15 @@ GSM::RegistrationStatus GSM::CheckRegistration(void)
 	// 50 msec. for inter character timeout
 	status = WaitResp(5000, 50);
 
-	if (status == RX_FINISHED) {
+	if (status == RX_FINISHED)
+	{
 		// something was received but what was received?
 		// ---------------------------------------------
-		if(IsStringReceived("+CREG: 0,1")
-				|| IsStringReceived("+CREG: 0,5")) {
+		if (IsStringReceived("+CREG: 0,1") || IsStringReceived("+CREG: 0,5"))
+		{
 			// it means module is registered
 			// ----------------------------
 			setRegistrationStatus(REG_REGISTERED);
-
 
 			// in case GSM module is registered first time after reset
 			// sets flag STATUS_INITIALIZED
@@ -651,7 +663,8 @@ GSM::RegistrationStatus GSM::CheckRegistration(void)
 			ret_val = REG_REGISTERED;
 			INFO(F("Status: Registered"));
 		}
-		else {
+		else
+		{
 			// NOT registered
 			// --------------
 			setRegistrationStatus(REG_NOT_REGISTERED);
@@ -659,14 +672,14 @@ GSM::RegistrationStatus GSM::CheckRegistration(void)
 			DATA(F("Status: Not registered"));
 		}
 	}
-	else {
+	else
+	{
 		// nothing was received
 		// --------------------
 		ret_val = REG_NO_RESPONSE;
 		WARNING(F("Status: Not response"));
 	}
 	setCOMStatus(CLS_FREE);
-
 
 	return (ret_val);
 }
@@ -678,23 +691,25 @@ GSM::RegistrationStatus GSM::isRegistered(void)
 
 	DEBUG(F("Checking registration..."));
 	RegistrationStatus retVal;
-	for(int i = 0; i <= NUM_OF_ATTEMPT; i++)
+	for (int i = 0; i <= NUM_OF_ATTEMPT; i++)
 	{
 		retVal = CheckRegistration();
-		if(retVal == REG_REGISTERED)
+		if (retVal == REG_REGISTERED)
 		{
 			DEBUG(F("Time is"));
-			DEBUG(i * (TIME_OF_ATTRMPT/NUM_OF_ATTEMPT));
+			DEBUG(i * (TIME_OF_ATTRMPT / NUM_OF_ATTEMPT));
 			break;;
 		}
-		if(i < NUM_OF_ATTEMPT)
+		if (i < NUM_OF_ATTEMPT)
 			delay(TIME_OF_ATTRMPT/NUM_OF_ATTEMPT);
-		else WARNING(F("Not Registered"));
+		else
+			WARNING(F("Not Registered"));
 	}
 
 #ifdef LEVEL_INFO
-	debug(F("[INFO]: ")); debug(F("Signal level is: "));
-	debug(getSignalLevel()); debug(F(" (0-31 or 99)\r\n"));
+	char buff[40];
+	sprintf(buff, "Signal level is: %d (0-31 or 99)", getSignalLevel());
+	INFO(buff);
 #endif
 
 	return retVal;
@@ -708,7 +723,7 @@ void GSM::Echo(char state)
 		setCOMStatus(CLS_ATCMD);
 
 		print("ATE");
-		print((int)state);
+		print((int) state);
 		print("\r");
 		delay(500);
 		setCOMStatus(CLS_FREE);
@@ -717,8 +732,8 @@ void GSM::Echo(char state)
 
 int GSM::isIP(const char* cadena)
 {
-	for (unsigned int i=0; i<strlen(cadena); i++)
-		if (!(cadena[i]=='.' || ( cadena[i]>=48 && cadena[i] <=57)))
+	for (unsigned int i = 0; i < strlen(cadena); i++)
+		if (!(cadena[i] == '.' || (cadena[i] >= 48 && cadena[i] <= 57)))
 			return 0;
 	return 1;
 }
@@ -727,11 +742,12 @@ char * GSM::readIPfromBuff()
 {
 	unsigned char pIPstr = 0;
 	unsigned int pBuff = strlen(comm_buf);
-	if(comm_buf[--pBuff] != '\n')//||(pBuff < 6))
+	if (comm_buf[--pBuff] != '\n')		//||(pBuff < 6))
 		return 0;
 	pBuff -= 2;
-	while((comm_buf[--pBuff] != '\n')||(pBuff == 0));
-	while(comm_buf[++pBuff] != '\r')
+	while ((comm_buf[--pBuff] != '\n') || (pBuff == 0))
+		;
+	while (comm_buf[++pBuff] != '\r')
 		ipaddr[pIPstr++] = comm_buf[pBuff];
 	ipaddr[pIPstr] = '\0';
 	return ipaddr;
@@ -741,7 +757,6 @@ char GSM::isInitialized(void)
 {
 	return (_registrationStatus & STATUS_INITIALIZED);
 }
-
 
 //void GSM::SimpleWrite(const char *comm)
 //{
@@ -760,7 +775,8 @@ char GSM::isInitialized(void)
 
 volatile GSM::COMStatus GSM::getCOMStatus(void)
 {
-	if(_clsStatus != CLS_FREE) DEBUG(F("COMM LINE BUSY"));
+	if (_clsStatus != CLS_FREE)
+		DEBUG(F("COMM LINE BUSY"));
 	return _clsStatus;
 }
 
@@ -769,12 +785,13 @@ void GSM::setGSMStatus(GSMStatus status)
 	_gsmSstatus = status;
 }
 
-void GSM::setCOMStatus(COMStatus  new_status)
+void GSM::setCOMStatus(COMStatus new_status)
 {
 	_clsStatus = new_status;
-};
+}
+;
 
-void GSM::setRegistrationStatus(RegistrationStatus  new_status)
+void GSM::setRegistrationStatus(RegistrationStatus new_status)
 {
 	_registrationStatus = new_status;
 }
@@ -784,24 +801,25 @@ void GSM::setGPRSStatus(GPRSStatus status)
 	_gprsStatus = status;
 }
 
-
 /*
  * Already need to have pre and post string
  * Length is max length
  */
-int GSM::getString(const char *pre_string, const char *post_string, char *buffer, int length)
+int GSM::getString(const char *pre_string, const char *post_string,
+		char *buffer, int length)
 {
 	char * pBegin = strstr(comm_buf, pre_string) + strlen(pre_string);
-	char * pEnd = strstr(pBegin+1, post_string);
+	char * pEnd = strstr(pBegin + 1, post_string);
 
 	int i = 0, retVal;
-	if((pBegin != NULL) && (pEnd != NULL))
+	if ((pBegin != NULL) && (pEnd != NULL))
 	{
-		for( ;	((pBegin != pEnd)&&(i < length)); pBegin++, i++)
+		for (; ((pBegin != pEnd) && (i < length)); pBegin++, i++)
 			buffer[i] = *pBegin;
 		retVal = 1;
 	}
-	else retVal = 0;
+	else
+		retVal = 0;
 	buffer[i] = '\0';
 	return retVal;
 }
