@@ -90,7 +90,7 @@ bool NetworkWorker::sendTemp()
 		//		}
 
 		uint16_t sensorsCount = 0;
-		for (uint16_t i = 0; _romMainBuff[i][0] != 0, i < ROM_MAINBFF_SIZE; i++)
+		for (uint16_t i = 0; ((_romMainBuff[i][0] != 0)&&(i < ROM_MAINBFF_SIZE)); i++)
 		{
 			double temp;
 			for (uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
