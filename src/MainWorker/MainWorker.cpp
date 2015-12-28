@@ -9,9 +9,7 @@
 
 #include "avr/interrupt.h"
 #include "stdio.h"
-#include "../init/init.h"
 #include "../LOG/debug.h"
-
 #include "../LOG/SDCardLogger.h"
 #include "../init/rtc.h"
 
@@ -184,7 +182,7 @@ void MainWorker::loadMainbuff()
 
 void MainWorker::initial()
 {
-	init();
+
 	//sei();
 	HWdata.pinsSetup();
 	startClock();

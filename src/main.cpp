@@ -8,6 +8,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "MainWorker/MainWorker.h"
+#include "init/init.h"
 
 MainWorker * _worker;
 ISR(TIMER1_CAPT_vect)
@@ -17,6 +18,7 @@ ISR(TIMER1_CAPT_vect)
 
 int main()
 {
+	init();
 
 	MainWorker worker;
 	_worker = &worker;
