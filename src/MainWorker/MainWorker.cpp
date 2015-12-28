@@ -57,7 +57,9 @@ MainWorker::MainWorker() :
 	uint16_t i = 0;
 	INFO(F("Sensor ROMs in memory:"));
 	for (; ((!_mainbuf[i].isNull()) && (i < ROM_MAINBFF_SIZE)); i++)
+	{
 		debug(_mainbuf[i].toString()); debug("\r\n");
+	}
 	char buff[10];
 	sprintf(buff, "count: %d", i);
 	debug(buff); debug("\r\n");
