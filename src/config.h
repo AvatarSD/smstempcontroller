@@ -23,8 +23,9 @@
 #define DEBUG_RXBUF 8
 
 
+
 /**************** Level *************************/
-#define DEBUG_LEVEL_PORT 	DEBUG_LEVEL_DEBUG
+#define DEBUG_LEVEL_PORT 	DEBUG_LEVEL_DATA
 #define DEBUG_LEVEL_LCD 	DEBUG_LEVEL_INFO
 #define DEBUG_LEVEL_SDCARD 	DEBUG_LEVEL_DEBUG
 

@@ -27,8 +27,6 @@ based on QuectelM10 chip.
 
 GSM::GSM(volatile unsigned char & port) : UART(port, 9600, 64, 16)
 {
-	millisInit();
-
 	setGSMStatus(GSM_IDLE);
 	setCOMStatus(CLS_FREE);
 	setRegistrationStatus(REG_NOT_REGISTERED);
@@ -381,6 +379,7 @@ GSM::RXstateRes GSM::WaitResp(unsigned long int start_comm_tmout, unsigned long 
 	// wait until response is not finished
 	do {
 		status = IsRxFinished();
+
 	} while (status == RX_NOT_FINISHED);
 	DATA(F("status != RX_NOT_FINISHED"));
 	return (status);
@@ -497,6 +496,7 @@ GSM::RXstateRes GSM::IsRxFinished(void)
 
 	// Rx state machine
 	// ----------------
+	DATA(F("..is rx finished..."));
 
 	if (rx_state == RX_NOT_STARTED)
 	{

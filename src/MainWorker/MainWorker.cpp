@@ -10,7 +10,6 @@
 #include "avr/interrupt.h"
 #include "stdio.h"
 #include "../LOG/debug.h"
-#include "../LOG/SDCardLogger.h"
 #include "../init/rtc.h"
 #include "../init/init.h"
 
@@ -43,7 +42,6 @@ HWdata, _mainbuf)
 
 	debugSDcardLog.begin();
 	debug(F("-------Hello-------\r\n"));
-	//_mainbuf = (ROM*)calloc(ROM_MAINBFF_SIZE, sizeof(ROM));
 
 	_sensorsIface.DS2480B_Detect();
 	debugSDcardLog.end();

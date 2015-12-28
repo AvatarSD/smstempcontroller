@@ -7,6 +7,7 @@
 
 #include "init.h"
 #include <util/atomic.h>
+#include "millis.h"
 
 
 void init()
@@ -267,6 +268,7 @@ void init()
 	// TWI disabled
 	//TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
 
+	millisInit();
 	// Global enable interrupts
 	sei();
 
