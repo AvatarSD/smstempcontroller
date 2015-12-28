@@ -37,15 +37,14 @@ NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data,
 
 bool NetworkWorker::sendTemp()
 {
+#ifdef LEVEL_DEBUG
 	bool retVal = false;
 	attemptCount++;
 	errorPercent = ((float) (errorCount * 100)) / attemptCount;
-#ifdef LEVEL_DEBUG
-	debug(F("[DEBUG]: "));
-	debug(F("Error Percent is: "));
-	debug((double)errorPercent);
-	debug("%");
-	debug(F("\r\n"));
+
+	char buff[40];
+	sprintf(buff, "Error Percent is: %f%%", (double)errorPercent);
+	DEBUG(buff);
 #endif
 
 	errorCount++;
@@ -115,7 +114,7 @@ bool NetworkWorker::sendTemp()
 				int flag;
 				sscanf(buf, "%ld,%d", &i, &flag);
 #ifdef LEVEL_INFO
-				sprintf(charbuf, "Package number: %d", i);
+				sprintf(charbuf, "Package number: %ld", i);
 				INFO(charbuf);
 #endif
 				if (i == pktCount)

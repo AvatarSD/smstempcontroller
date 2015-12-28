@@ -46,12 +46,14 @@ MainWorker::MainWorker() :
 	_sensorsIface.DS2480B_Detect();
 	debugSDcardLog.end();
 
-	loadMainbuff();
+
 
 	/*** todo for debug ***/
 	_mainbuf[0] = "28:2F:15:F5:04:00:00:4C";
 	_mainbuf[1] = "28:41:14:70:03:00:00:73";
 	/**********************/
+
+	loadMainbuff();
 
 #ifdef LEVEL_INFO
 	uint16_t i = 0;
