@@ -23,5 +23,7 @@ int main()
 	worker.startingProcedure();
 
 	while (true)
-		;
+	{
+
+	};
 }

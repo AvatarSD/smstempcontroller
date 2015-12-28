@@ -18,6 +18,7 @@ HardwareData::HardwareData()
 {
 	noSupplyFlag = 0;
 	caseOpenedFlag = 0;
+	pinsSetup();
 }
 
 double HardwareData::getVoltage()
@@ -91,17 +92,17 @@ bool HardwareData::didHadCaseOpen()
 
 void HardwareData::pinsSetup()
 {
-	POWER_DDR &= ~(1 << POWER_PIN_NUM);
-	POWER_PORT |= (1 << POWER_PIN_NUM);
+	POWER_DDR 	&=~	(1 << POWER_PIN_NUM);
+	POWER_PORT 	|=	(1 << POWER_PIN_NUM);
 
-	CASE_DDR &= ~(1 << CASE_PIN_NUM);
-	CASE_PORT |= (1 << CASE_PIN_NUM);
+	CASE_DDR 	&=~	(1 << CASE_PIN_NUM);
+	CASE_PORT 	|= 	(1 << CASE_PIN_NUM);
 
-	NEWSRC_DDR &= ~(1 << NEWSRC_PIN_NUM);
-	NEWSRC_PORT |= (1 << NEWSRC_PIN_NUM);
+	NEWSRC_DDR 	&=~	(1 << NEWSRC_PIN_NUM);
+	NEWSRC_PORT	|= 	(1 << NEWSRC_PIN_NUM);
 
-	ADDSRC_DDR &= ~(1 << ADDSRC_PIN_NUM);
-	ADDSRC_PORT |= (1 << ADDSRC_PIN_NUM);
+	ADDSRC_DDR 	&=~	(1 << ADDSRC_PIN_NUM);
+	ADDSRC_PORT |= 	(1 << ADDSRC_PIN_NUM);
 }
 
 bool HardwareData::isNewSrhBtnPress()
