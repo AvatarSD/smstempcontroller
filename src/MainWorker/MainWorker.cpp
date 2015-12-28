@@ -45,6 +45,21 @@ HWdata, _mainbuf)
 
 	_sensorsIface.DS2480B_Detect();
 	debugSDcardLog.end();
+
+
+
+
+	/*** todo for debug ***/
+	_mainbuf[0] = "28:2F:15:F5:04:00:00:4C";
+	_mainbuf[1] = "28:41:14:70:03:00:00:73";
+
+	INFO(_mainbuf[0].toString());
+	INFO(_mainbuf[0].isNull());
+	INFO(_mainbuf[1].toString());
+	INFO(_mainbuf[1].isNull());
+	INFO(_mainbuf[2].toString());
+	INFO(_mainbuf[2].isNull());
+	/**********************/
 }
 
 void MainWorker::mainLoop()

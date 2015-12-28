@@ -434,7 +434,14 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 		WARNING(F("Some error while reading sensor"));
 	}
 	else
-		WARNING(F("This is not temp sensor"));
+	{
+#ifdef LEVEL_WARNING
+		char charbuf[40];
+		sprintf(charbuf, "This is not temp sensor: %s", sensorRom.toString());
+		WARNING(charbuf);
+#endif
+
+	}
 	return false;
 }
 

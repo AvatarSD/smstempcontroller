@@ -25,11 +25,11 @@
 
 
 /**************** Level *************************/
-#define DEBUG_LEVEL_PORT 	DEBUG_LEVEL_DATA
+#define DEBUG_LEVEL_PORT 	DEBUG_LEVEL_DEBUG
 #define DEBUG_LEVEL_LCD 	DEBUG_LEVEL_INFO
 #define DEBUG_LEVEL_SDCARD 	DEBUG_LEVEL_DEBUG
 
-#define LEVEL_INFO // todo temp, need to fix later
+#define LEVEL_INFO // todo template, need to fix later
 #define LEVEL_WARNING
 #define LEVEL_CRITICAL
 

@@ -21,6 +21,7 @@ public:
 	const unsigned long long int& operator &() const;
 	const char* toString() const;
 	void zeroing();
+	bool operator = (const char * str);
 private:
 	unsigned char ROM_NO[8];
 };

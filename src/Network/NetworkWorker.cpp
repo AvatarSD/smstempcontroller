@@ -89,8 +89,8 @@ bool NetworkWorker::sendTemp()
 		//			gsm(sensorData.getTempStr());
 		//		}
 
-		uint16_t sensorsCount = 0;
-		for (uint16_t i = 0; ((_romMainBuff[i][0] != 0)&&(i < ROM_MAINBFF_SIZE)); i++)
+		uint16_t sensorsCount = 0, i = 0;
+		for (; ((!_romMainBuff[i].isNull()) && (i < ROM_MAINBFF_SIZE)); i++)
 		{
 			double temp;
 			for (uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
@@ -104,13 +104,17 @@ bool NetworkWorker::sendTemp()
 					break;
 				}
 		}
-		gsm("&");
 
 #ifdef LEVEL_INFO
-		debug(F("[INFO]: Read sensors count: "));
-		debug(sensorsCount);
-		debug(F("\r\n"));
+		char charbuf[40];
+		sprintf(charbuf, "Num of sensors in memory: %d", i);
+		INFO(charbuf);
+
+		sprintf(charbuf, "Read sensors count: %d", sensorsCount);
+		INFO(charbuf);
 #endif
+
+		gsm("&");
 
 		if (inetIface.endWriteInet())
 		{
@@ -121,9 +125,8 @@ bool NetworkWorker::sendTemp()
 				int flag;
 				sscanf(buf, "%ld,%d", &i, &flag);
 #ifdef LEVEL_INFO
-				debug(F("[INFO]: Package number: "));
-				debug(i);
-				debug(F("\r\n"));
+				sprintf(charbuf, "Package number: %d", i);
+				INFO(charbuf);
 #endif
 				if (i == pktCount)
 				{
