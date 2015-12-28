@@ -16,7 +16,6 @@ class MainWorker
 public:
 	MainWorker();
 
-	void initial();
 	void mainLoop();
 	void screensaver(int time);
 	void iterationTimerLoop();

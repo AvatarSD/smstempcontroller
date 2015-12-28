@@ -12,10 +12,11 @@
 #include "../LOG/debug.h"
 #include "../LOG/SDCardLogger.h"
 #include "../init/rtc.h"
+#include "../init/init.h"
 
 #include <avr/eeprom.h>
 
-ROM eepromMainbuf[ROM_MAINBFF_SIZE] EEMEM;
+//ROM eepromMainbuf[ROM_MAINBFF_SIZE] EEMEM;
 
 UART * _iface;
 ISR(DALL_RXINT)
@@ -31,7 +32,21 @@ MainWorker::MainWorker() :
 _sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
 HWdata, _mainbuf)
 {
+	init();
 
+	HWdata.pinsSetup();
+	startClock();
+	_iface = &_sensorsIface;
+
+	lcd_init(LCD_DISP_ON);
+	lcd_led(0);
+
+	debugSDcardLog.begin();
+	debug(F("-------Hello-------\r\n"));
+	//_mainbuf = (ROM*)calloc(ROM_MAINBFF_SIZE, sizeof(ROM));
+
+	_sensorsIface.DS2480B_Detect();
+	debugSDcardLog.end();
 }
 
 void MainWorker::mainLoop()
@@ -125,8 +140,6 @@ void MainWorker::startingProcedure()
 	bool wasbtnNewSrcPressed = HWdata.isNewSrhBtnPress();
 	bool wasbtnAddSrcPressed = HWdata.isAddSrhBtnPress();
 
-	initial();
-
 	loadMainbuff();
 
 	/*searching procedure*/
@@ -177,29 +190,10 @@ void MainWorker::startingProcedure()
 
 void MainWorker::loadMainbuff()
 {
-	eeprom_read_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
-}
-
-void MainWorker::initial()
-{
-
-	//sei();
-	HWdata.pinsSetup();
-	startClock();
-	_iface = &_sensorsIface;
-
-	lcd_init(LCD_DISP_ON);
-	lcd_led(0);
-
-	debugSDcardLog.begin();
-	debug(F("-------Hello-------\r\n"));
-	//_mainbuf = (ROM*)calloc(ROM_MAINBFF_SIZE, sizeof(ROM));
-
-	_sensorsIface.DS2480B_Detect();
-	debugSDcardLog.end();
+	//eeprom_read_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
 }
 
 void MainWorker::saveMainbuff()
 {
-	eeprom_write_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
+	//eeprom_write_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
 }
