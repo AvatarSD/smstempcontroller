@@ -9,11 +9,22 @@
 #include "stdio.h"
 
 ROM::ROM() {
-	for(auto i = 0; i<8; i++)
-		ROM_NO[i] = 0x00;
+zeroing();
 }
 
 unsigned char& ROM::operator [](int i)
+{
+	if((i>=0)&&(i<8))
+		return ROM_NO[i];
+	else
+	{
+		static unsigned char null;
+		null = 0;
+		return null;
+	}
+}
+
+const unsigned char& ROM::operator [](int i) const
 {
 	if((i>=0)&&(i<8))
 		return ROM_NO[i];
@@ -46,4 +57,26 @@ const char * ROM::toString() const
 	for(auto i = 0; i<8; i++)
 		sprintf(&buf[i*2], "%02X", ROM_NO[i]);
 	return buf;
+}
+
+bool ROM::operator ==(const ROM& cmp) const
+{
+	for(uint8_t i = 0; i<8; i++)
+		if(ROM_NO[i] != cmp[i])
+			return true;
+	return false;
+}
+
+bool ROM::isNull() const
+{
+	for(uint8_t i = 0; i<8; i++)
+		if(ROM_NO[i] != 0)
+			return true;
+	return false;
+}
+
+void ROM::zeroing()
+{
+	for(auto i = 0; i<8; i++)
+		ROM_NO[i] = 0x00;
 }

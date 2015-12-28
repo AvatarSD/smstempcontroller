@@ -11,7 +11,7 @@
 #include "stdio.h"
 #include "../init/init.h"
 #include "../LOG/debug.h"
-#include "../Network/NetworkWorker.h"
+
 #include "../LOG/SDCardLogger.h"
 #include "../init/rtc.h"
 
@@ -30,21 +30,10 @@ ISR(DALL_TXINT)
 }
 
 MainWorker::MainWorker() :
-																		_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
-																				HWdata, _mainbuf)
+_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
+HWdata, _mainbuf)
 {
-	init();
-	HWdata.pinsSetup();
-	startClock();
-	_iface = &_sensorsIface;
 
-	debugSDcardLog.begin();
-	debug(F("-------Hello-------\r\n"));
-	//_mainbuf = (ROM*)calloc(ROM_MAINBFF_SIZE, sizeof(ROM));
-	lcd_init(LCD_DISP_ON);
-	lcd_led(0);
-	_sensorsIface.DS2480B_Detect();
-	debugSDcardLog.end();
 }
 
 void MainWorker::mainLoop()
@@ -138,6 +127,8 @@ void MainWorker::startingProcedure()
 	bool wasbtnNewSrcPressed = HWdata.isNewSrhBtnPress();
 	bool wasbtnAddSrcPressed = HWdata.isAddSrhBtnPress();
 
+	initial();
+
 	loadMainbuff();
 
 	/*searching procedure*/
@@ -160,7 +151,7 @@ void MainWorker::startingProcedure()
 			auto sensorsRom = _sensors.searchAllTempSensors();
 
 			for(auto it = sensorsRom.begin(); it != sensorsRom.end(); it++)
-				for (uint16_t i = 0; _mainbuf[i][0] != 0, i < ROM_MAINBFF_SIZE; i++)
+				for (uint16_t i = 0; ((_mainbuf[i][0] != 0)&&(i < ROM_MAINBFF_SIZE)); i++)
 					if(_mainbuf[i] == *it)
 						break;
 					else if(_mainbuf[i][0] == 0)
@@ -189,6 +180,25 @@ void MainWorker::startingProcedure()
 void MainWorker::loadMainbuff()
 {
 	eeprom_read_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
+}
+
+void MainWorker::initial()
+{
+	init();
+	//sei();
+	HWdata.pinsSetup();
+	startClock();
+	_iface = &_sensorsIface;
+
+	lcd_init(LCD_DISP_ON);
+	lcd_led(0);
+
+	debugSDcardLog.begin();
+	debug(F("-------Hello-------\r\n"));
+	//_mainbuf = (ROM*)calloc(ROM_MAINBFF_SIZE, sizeof(ROM));
+
+	_sensorsIface.DS2480B_Detect();
+	debugSDcardLog.end();
 }
 
 void MainWorker::saveMainbuff()

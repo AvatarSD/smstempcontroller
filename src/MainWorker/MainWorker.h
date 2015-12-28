@@ -9,12 +9,14 @@
 #define MAINWORKER_MAINWORKER_H_
 
 #include "../config.h"
+#include "../Network/NetworkWorker.h"
 
 class MainWorker
 {
 public:
 	MainWorker();
 
+	void initial();
 	void mainLoop();
 	void screensaver(int time);
 	void iterationTimerLoop();

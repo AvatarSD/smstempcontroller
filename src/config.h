@@ -121,7 +121,7 @@
 
 
 /************* MainBuf Size ***************/
-#define ROM_MAINBFF_SIZE 100
+#define ROM_MAINBFF_SIZE 30
 
 
 
