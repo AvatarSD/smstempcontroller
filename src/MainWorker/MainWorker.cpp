@@ -46,8 +46,6 @@ MainWorker::MainWorker() :
 	_sensorsIface.DS2480B_Detect();
 	debugSDcardLog.end();
 
-
-
 	/*** todo for debug ***/
 	_mainbuf[0] = "28:2F:15:F5:04:00:00:4C";
 	_mainbuf[1] = "28:41:14:70:03:00:00:73";
@@ -60,11 +58,13 @@ MainWorker::MainWorker() :
 	INFO(F("Sensor ROMs in memory:"));
 	for (; ((!_mainbuf[i].isNull()) && (i < ROM_MAINBFF_SIZE)); i++)
 	{
-		debug(_mainbuf[i].toString()); debug("\r\n");
+		debug(_mainbuf[i].toString());
+		debug("\r\n");
 	}
 	char buff[10];
 	sprintf(buff, "count: %d", i);
-	debug(buff); debug("\r\n");
+	debug(buff);
+	debug("\r\n");
 #endif
 }
 
@@ -187,12 +187,18 @@ void MainWorker::startingProcedure()
 					{
 						_mainbuf[i] = *it;
 						sensorsCount++;
-						INFO(F("New sensor:"));
-						INFO(it->toString());
+#ifdef LEVEL_INFO
+						char buff[40];
+						sprintf(buff, "New sensor: %s", it->toString());
+						INFO(buff);
+#endif
 						break;
 					}
-			INFO(F("New sensor founded: "));
-			INFO(sensorsCount);
+#ifdef LEVEL_INFO
+						char buff[40];
+						sprintf(buff, "New sensor founded: %d", sensorsCount);
+						INFO(buff);
+#endif
 
 			if ((HWdata.isNewSrhBtnPress()) || (HWdata.isAddSrhBtnPress()))
 			{

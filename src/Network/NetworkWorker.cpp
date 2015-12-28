@@ -57,8 +57,6 @@ bool NetworkWorker::sendTemp()
 		char pktCountStr[6];
 		static unsigned int pktCount = 0;
 		sprintf(pktCountStr, "%5u", pktCount);
-		//DallasSensorData sensorData;
-		//sensors.readingInit();
 
 		if (!inetIface.beginWriteInet())
 			return false;
