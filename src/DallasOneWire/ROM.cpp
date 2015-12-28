@@ -64,8 +64,8 @@ bool ROM::operator ==(const ROM& cmp) const
 {
 	for (uint8_t i = 0; i < 8; i++)
 		if (ROM_NO[i] != cmp[i])
-			return true;
-	return false;
+			return false;
+	return true;
 }
 
 bool ROM::isNull() const

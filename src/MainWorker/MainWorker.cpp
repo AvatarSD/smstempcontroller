@@ -179,11 +179,13 @@ void MainWorker::startingProcedure()
 			auto sensorsRom = _sensors.searchAllTempSensors();
 
 			for (auto it = sensorsRom.begin(); it != sensorsRom.end(); it++)
-				for (uint16_t i = 0;
-						((_mainbuf[i][0] != 0) && (i < ROM_MAINBFF_SIZE)); i++)
+			{
+				uint16_t i = 0;
+				for (;((!_mainbuf[i].isNull()) && (i < ROM_MAINBFF_SIZE));i++)
 					if (_mainbuf[i] == *it)
 						break;
-					else if (_mainbuf[i][0] == 0)
+
+					if((_mainbuf[i].isNull()) && (i < ROM_MAINBFF_SIZE))
 					{
 						_mainbuf[i] = *it;
 						sensorsCount++;
@@ -194,10 +196,11 @@ void MainWorker::startingProcedure()
 #endif
 						break;
 					}
+			}
 #ifdef LEVEL_INFO
-						char buff[40];
-						sprintf(buff, "New sensor founded: %d", sensorsCount);
-						INFO(buff);
+			char buff[40];
+			sprintf(buff, "New sensor founded: %d", sensorsCount);
+			INFO(buff);
 #endif
 
 			if ((HWdata.isNewSrhBtnPress()) || (HWdata.isAddSrhBtnPress()))
