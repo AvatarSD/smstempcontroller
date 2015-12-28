@@ -28,8 +28,8 @@ ISR(DALL_TXINT)
 }
 
 MainWorker::MainWorker() :
-_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
-HWdata, _mainbuf)
+		_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
+				HWdata, _mainbuf)
 {
 	init();
 
@@ -46,20 +46,22 @@ HWdata, _mainbuf)
 	_sensorsIface.DS2480B_Detect();
 	debugSDcardLog.end();
 
-
-
+	loadMainbuff();
 
 	/*** todo for debug ***/
 	_mainbuf[0] = "28:2F:15:F5:04:00:00:4C";
 	_mainbuf[1] = "28:41:14:70:03:00:00:73";
-
-	INFO(_mainbuf[0].toString());
-	INFO(_mainbuf[0].isNull());
-	INFO(_mainbuf[1].toString());
-	INFO(_mainbuf[1].isNull());
-	INFO(_mainbuf[2].toString());
-	INFO(_mainbuf[2].isNull());
 	/**********************/
+
+#ifdef LEVEL_INFO
+	uint16_t i = 0;
+	INFO(F("Sensor ROMs in memory:"));
+	for (; ((!_mainbuf[i].isNull()) && (i < ROM_MAINBFF_SIZE)); i++)
+		debug(_mainbuf[i].toString()); debug("\r\n");
+	char buff[10];
+	sprintf(buff, "count: %d", i);
+	debug(buff); debug("\r\n");
+#endif
 }
 
 void MainWorker::mainLoop()
@@ -131,9 +133,9 @@ void MainWorker::timerStart()
 	// Compare B Match Interrupt: Off
 	// Compare C Match Interrupt: Off
 	TCCR1A = (0 << COM1A1) | (0 << COM1A0) | (0 << COM1B1) | (0 << COM1B0)
-																			| (0 << COM1C1) | (0 << COM1C0) | (0 << WGM11) | (0 << WGM10);
+			| (0 << COM1C1) | (0 << COM1C0) | (0 << WGM11) | (0 << WGM10);
 	TCCR1B = (0 << ICNC1) | (0 << ICES1) | (1 << WGM13) | (1 << WGM12)
-																			| (1 << CS12) | (0 << CS11) | (0 << CS10);
+			| (1 << CS12) | (0 << CS11) | (0 << CS10);
 	TCNT1H = 0x00;
 	TCNT1L = 0x00;
 	ICR1H = 0xF4;
@@ -153,8 +155,6 @@ void MainWorker::startingProcedure()
 	bool wasbtnNewSrcPressed = HWdata.isNewSrhBtnPress();
 	bool wasbtnAddSrcPressed = HWdata.isAddSrhBtnPress();
 
-	loadMainbuff();
-
 	/*searching procedure*/
 	if ((wasbtnNewSrcPressed) || (wasbtnAddSrcPressed))
 	{
@@ -170,15 +170,16 @@ void MainWorker::startingProcedure()
 			INFO(F("Search perform with only adding new sensors"));
 
 		uint16_t sensorsCount = 0;
-		while(true)
+		while (true)
 		{
 			auto sensorsRom = _sensors.searchAllTempSensors();
 
-			for(auto it = sensorsRom.begin(); it != sensorsRom.end(); it++)
-				for (uint16_t i = 0; ((_mainbuf[i][0] != 0)&&(i < ROM_MAINBFF_SIZE)); i++)
-					if(_mainbuf[i] == *it)
+			for (auto it = sensorsRom.begin(); it != sensorsRom.end(); it++)
+				for (uint16_t i = 0;
+						((_mainbuf[i][0] != 0) && (i < ROM_MAINBFF_SIZE)); i++)
+					if (_mainbuf[i] == *it)
 						break;
-					else if(_mainbuf[i][0] == 0)
+					else if (_mainbuf[i][0] == 0)
 					{
 						_mainbuf[i] = *it;
 						sensorsCount++;
@@ -189,7 +190,7 @@ void MainWorker::startingProcedure()
 			INFO(F("New sensor founded: "));
 			INFO(sensorsCount);
 
-			if((HWdata.isNewSrhBtnPress())||(HWdata.isAddSrhBtnPress()))
+			if ((HWdata.isNewSrhBtnPress()) || (HWdata.isAddSrhBtnPress()))
 			{
 				INFO(F("Perform to saving founding ROMs in eeprom memory"));
 				saveMainbuff();
