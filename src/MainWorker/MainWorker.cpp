@@ -156,6 +156,8 @@ void MainWorker::timerStop()
 
 void MainWorker::startingProcedure()
 {
+	char buff[40];
+
 	bool wasbtnNewSrcPressed = HWdata.isNewSrhBtnPress();
 	bool wasbtnAddSrcPressed = HWdata.isAddSrhBtnPress();
 
@@ -176,22 +178,19 @@ void MainWorker::startingProcedure()
 		uint16_t sensorsCount = 0;
 		while (true)
 		{
-			auto sensorsRom = _sensors.searchAllTempSensors();
+			const std::list<ROM>& sensorsRom = _sensors.searchAllTempSensors();
 
 			for (auto it = sensorsRom.begin(); it != sensorsRom.end(); it++)
-				for (uint16_t i = 0;
-						/*((!_mainbuf[i].isNull()) && (*/i < ROM_MAINBFF_SIZE/*))*/;
-						i++)
+				for (uint16_t i = 0;i < ROM_MAINBFF_SIZE;i++)
 				{
 					if (_mainbuf[i] == *it)
 						break;
 
-					if /*(*/(_mainbuf[i].isNull())/* && (i < ROM_MAINBFF_SIZE))*/
+					if(_mainbuf[i].isNull())
 					{
 						_mainbuf[i] = *it;
 						sensorsCount++;
 #ifdef LEVEL_INFO
-						char buff[40];
 						sprintf(buff, "New sensor: %s", it->toString());
 						INFO(buff);
 #endif
@@ -200,7 +199,6 @@ void MainWorker::startingProcedure()
 				}
 
 #ifdef LEVEL_INFO
-			char buff[40];
 			sprintf(buff, "New sensor founded: %d", sensorsCount);
 			INFO(buff);
 #endif

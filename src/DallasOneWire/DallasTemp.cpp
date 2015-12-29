@@ -43,7 +43,7 @@ void operator delete(void * ptr)
 #define TEMP_12_BIT 0x7F // 12 bit
 
 DallasTemp::DallasTemp(DallasOneWire& iface) :
-		_iface(iface)
+		_iface(iface), _sensors()
 {
 
 }
@@ -336,6 +336,8 @@ const std::list<ROM>& DallasTemp::searchAllTempSensors()
 
 	//TODO ...
 	_sensors.clear();
+
+	DATA(F("clear _sensors"));
 
 	if (_iface.OWReset() == FALSE)
 	{
