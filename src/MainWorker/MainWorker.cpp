@@ -15,7 +15,7 @@
 
 #include <avr/eeprom.h>
 
-//ROM eepromMainbuf[ROM_MAINBFF_SIZE] EEMEM;
+uint8_t eepromMainbuf[ROM_MAINBFF_SIZE*sizeof(ROM)] EEMEM;
 
 UART * _iface;
 ISR(DALL_RXINT)
@@ -47,8 +47,8 @@ MainWorker::MainWorker() :
 	debugSDcardLog.end();
 
 	/*** todo for debug ***/
-	_mainbuf[0] = "28:2F:15:F5:04:00:00:4C";
-	_mainbuf[1] = "28:41:14:70:03:00:00:73";
+//	_mainbuf[0] = "28:2F:15:F5:04:00:00:4C";
+//	_mainbuf[1] = "28:41:14:70:03:00:00:73";
 	/**********************/
 
 	loadMainbuff();
@@ -217,10 +217,10 @@ void MainWorker::startingProcedure()
 
 void MainWorker::loadMainbuff()
 {
-	//eeprom_read_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
+	eeprom_read_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
 }
 
 void MainWorker::saveMainbuff()
 {
-	//eeprom_write_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
+	eeprom_write_block(_mainbuf, eepromMainbuf, ROM_MAINBFF_SIZE * sizeof(ROM));
 }
