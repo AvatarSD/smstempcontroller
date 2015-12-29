@@ -14,6 +14,8 @@
 #include "../init/init.h"
 
 #include <avr/eeprom.h>
+#include <stdio.h>
+#include <string>
 
 uint8_t eepromMainbuf[ROM_MAINBFF_SIZE * sizeof(ROM)] EEMEM;
 

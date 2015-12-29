@@ -9,6 +9,9 @@
 #include "util/delay.h"
 
 #include "../LOG/debug.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
 
 void * operator new(size_t size)
 {
@@ -47,7 +50,7 @@ DallasTemp::DallasTemp(DallasOneWire& iface) :
 {
 
 }
-
+/*
 const std::list<DallasSensorData>& DallasTemp::readAllTempSerial(bool isCurr)
 {
 	INFO(F("Reading sensors with serial conversion..."));
@@ -134,6 +137,8 @@ const std::list<DallasSensorData>& DallasTemp::readAllTempSerial(bool isCurr)
 	return _sensorsRes;
 
 }
+
+*/
 /*
  const std::list<DallasSensorData>&  DallasTemp::readAllTempParalel(char attemptNum)
  {
@@ -329,7 +334,7 @@ void DallasTemp::readingInit()
 	//_sensorsRes.clear();
 }
 
-const std::list<ROM>& DallasTemp::searchAllTempSensors()
+/*const std::list<ROM>& DallasTemp::searchAllTempSensors()
 {
 	INFO(F("Searching sensors..."));
 
@@ -369,7 +374,7 @@ const std::list<ROM>& DallasTemp::searchAllTempSensors()
 
 	return _sensors;
 
-}
+}*/
 
 bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 {

@@ -10,6 +10,7 @@
 #include "../LOG/debug.h"
 #include "../init/rtc.h"
 #include "../config.h"
+#include <stdio.h>
 
 UART * _gsm;
 
