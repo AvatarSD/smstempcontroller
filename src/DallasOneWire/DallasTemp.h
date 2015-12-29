@@ -29,6 +29,10 @@ public:
 	const std::list<ROM>&  searchAllTempSensors();
 	bool readSensor(const ROM & sensorRom, double & retTemp);
 
+	/****************/
+	uint16_t searchAllTempSensors(ROM * buff, uint16_t size);
+
+
 private:
 	//int justStartConversion();
 	//const std::list<DallasSensorData>& justGetTemp();

@@ -178,7 +178,7 @@ void MainWorker::startingProcedure()
 		uint16_t sensorsCount = 0;
 		while (true)
 		{
-			const std::list<ROM>& sensorsRom = _sensors.searchAllTempSensors();
+			/*const std::list<ROM>& sensorsRom = _sensors.searchAllTempSensors();
 
 			for (auto it = sensorsRom.begin(); it != sensorsRom.end(); it++)
 				for (uint16_t i = 0;i < ROM_MAINBFF_SIZE;i++)
@@ -196,7 +196,8 @@ void MainWorker::startingProcedure()
 #endif
 						break;
 					}
-				}
+				}*/
+			sensorsCount += _sensors.searchAllTempSensors(_mainbuf, ROM_MAINBFF_SIZE);
 
 #ifdef LEVEL_INFO
 			sprintf(buff, "New sensor founded: %d", sensorsCount);

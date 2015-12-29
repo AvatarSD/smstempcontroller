@@ -43,7 +43,7 @@ void operator delete(void * ptr)
 #define TEMP_12_BIT 0x7F // 12 bit
 
 DallasTemp::DallasTemp(DallasOneWire& iface) :
-		_iface(iface), _sensors()
+		_iface(iface)
 {
 
 }
@@ -82,8 +82,7 @@ const std::list<DallasSensorData>& DallasTemp::readAllTempSerial(bool isCurr)
 				_delay_ms(1000);
 				if (_iface.OWReadByte() != 0xFF)
 					WARNING(
-							F(
-									"ERROR, temperature conversion was not complete\n\r"));
+							F("ERROR, temperature conversion was not complete\n\r"));
 			}
 
 			// select the device
@@ -297,7 +296,7 @@ bool DallasTemp::readOnce(DallasSensorData & data)
 					if (_iface.OWBlock(sendpacket, sendlen))
 					{
 						double temp = calculateTemperature(_iface.ROM_NO,
-								sendpacket + 1); //((double)((int)(sendpacket[2]<<8)|(sendpacket[1])))/0xf;
+								sendpacket + 1);
 						data(_iface.ROM_NO, temp);
 
 #ifdef LEVEL_INFO
@@ -430,7 +429,7 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 			{
 				retTemp = calculateTemperature(sensorRom, sendpacket + 1);
 
-				if(retTemp == -127)
+				if (retTemp == -127)
 				{
 					WARNING(F("Device reading error: answer 0xFF"));
 					return false;
@@ -514,4 +513,60 @@ float DallasTemp::calculateTemperature(const ROM & deviceAddress,
 		break;
 	}
 	return -127;
+}
+
+uint16_t DallasTemp::searchAllTempSensors(ROM* _mainbuf, uint16_t size)
+{
+	uint16_t newSensorsCount = 0, sensorsCount = 0;
+
+	INFO(F("Searching sensors..."));
+
+	if (_iface.OWReset() == FALSE)
+	{
+		WARNING(F("1-Wire bus reset error"));
+		return 0;
+	}
+
+	while (_iface.OWNext())
+	{
+		// verify correct type
+		if ((_iface.ROM_NO.isMathFamily(0x28))
+				|| (_iface.ROM_NO.isMathFamily(0x22))
+				|| (_iface.ROM_NO.isMathFamily(0x10)))
+		{
+			DEBUG(_iface.ROM_NO.toString());
+			sensorsCount++;
+			for (uint16_t i = 0; i < size; i++)
+			{
+				if (_mainbuf[i] == _iface.ROM_NO)
+					break;
+
+				if (_mainbuf[i].isNull())
+				{
+					_mainbuf[i] = _iface.ROM_NO;
+					newSensorsCount++;
+#ifdef LEVEL_INFO
+					char buff[30];
+					sprintf(buff, "New sensor: %s", _iface.ROM_NO.toString());
+					INFO(buff);
+#endif
+					break;
+				}
+
+			}
+		}
+		else
+		{
+			WARNING(F("Found else devise"));
+			WARNING(_iface.ROM_NO.toString());
+		}
+	}
+
+#ifdef LEVEL_INFO
+	char buf[20];
+	sprintf(buf, "Sensor founded: %d", sensorsCount);
+	INFO(buf);
+#endif
+
+	return newSensorsCount;
 }
