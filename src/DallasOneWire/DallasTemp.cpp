@@ -410,8 +410,12 @@ bool DallasTemp::readSensor(const ROM& sensorRom, double& retTemp)
 
 		// sleep for 1 second
 		_delay_ms(1000);
+
 		if (_iface.OWReadByte() != 0xFF)
+		{
 			WARNING(F("ERROR, temperature conversion was not complete\n\r"));
+			return false;
+		}
 
 		// match sequence for select the device
 		sendpacket[0] = 0x55; // match command

@@ -81,16 +81,20 @@ bool NetworkWorker::sendTemp()
 		for (; ((!_romMainBuff[i].isNull()) && (i < ROM_MAINBFF_SIZE)); i++)
 		{
 			double temp;
+			gsm("\r");
+			gsm(_romMainBuff[i].toString());
+			gsm(",");
 			for (uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
+			{
 				if (sensors.readSensor(_romMainBuff[i], temp))
 				{
-					gsm("\r");
-					gsm(_romMainBuff[i].toString());
-					gsm(",");
 					gsm(temp);
 					sensorsCount++;
 					break;
 				}
+				else if(n == NUM_OF_READING_ATEMPT - 1)
+					gsm(-127);
+			}
 		}
 
 #ifdef LEVEL_INFO
