@@ -23,22 +23,30 @@
 #define DEBUG_RXBUF 8
 
 
+
 /**************** Level *************************/
 #define DEBUG_LEVEL_PORT 	DEBUG_LEVEL_DEBUG
 #define DEBUG_LEVEL_LCD 	DEBUG_LEVEL_INFO
 #define DEBUG_LEVEL_SDCARD 	DEBUG_LEVEL_DEBUG
 
-#define LEVEL_INFO // todo temp, need to fix later
+#define LEVEL_DEBUG
+#define LEVEL_INFO // todo template, need to fix later
 #define LEVEL_WARNING
 #define LEVEL_CRITICAL
 
 
 /********** Dallas User Definitions *************/
+#define DALL_TXINT USART1_TX_vect
+#define DALL_RXINT USART1_RX_vect
+#define DALL_PORT    UDR1
+
 #define DETECT_ERROR_COUNT 3
 
 #define DALL_PWR_PORT PORTA
 #define DALL_PWR_DDR DDRA
 #define DALL_PWR_PIN 0
+
+#define NUM_OF_READING_ATEMPT 3
 
 
 /************ Network Settings ************/
@@ -88,14 +96,35 @@
 /*********** HARDWARE Settings ************/
 #define VOLTAGE_MULTIPLY_RATIO 7.25
 #define VOLTAGE_ANALOG_PIN 0
-#define CASE_PIN_NUM 2
-#define CASE_PIN PINF
-#define CASE_DDR DDRF
-#define CASE_PORT PORTF
+
 #define POWER_PIN_NUM 1
 #define POWER_PIN PINF
 #define POWER_DDR DDRF
 #define POWER_PORT PORTF
+
+#define CASE_PIN_NUM 2
+#define CASE_PIN PINF
+#define CASE_DDR DDRF
+#define CASE_PORT PORTF
+
+#define NEWSRC_PIN_NUM 3
+#define NEWSRC_PIN PINF
+#define NEWSRC_DDR DDRF
+#define NEWSRC_PORT PORTF
+
+#define ADDSRC_PIN_NUM 4
+#define ADDSRC_PIN PINF
+#define ADDSRC_DDR DDRF
+#define ADDSRC_PORT PORTF
+
+#define LED_ON //PORTB |= (1<<PORTB7) //now we no have LED indicator
+#define LED_OFF //PORTB &=~ (1<<PORTB7)
+#define LED_TRN //PORTB ^= (1<<PORTB7)
+
+
+/************* MainBuf Size ***************/
+#define ROM_MAINBFF_SIZE 128
+
 
 
 

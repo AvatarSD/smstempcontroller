@@ -465,7 +465,7 @@ int DallasOneWire::OWSearch(void)
 	// if the last call was the last one
 	if (LastDeviceFlag)
 	{
-		DEBUG(F("OWSearch: the last call was the last one"));
+		DATA(F("OWSearch: the last call was the last one"));
 		// reset the search
 		LastDiscrepancy = 0;
 		LastDeviceFlag = FALSE;

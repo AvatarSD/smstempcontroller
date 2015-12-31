@@ -12,11 +12,16 @@ class ROM {
 public:
 	ROM();
 
-	bool isMathFamily(unsigned char family);
+	bool isMathFamily(unsigned char family) const;
 	unsigned char& operator [](int i);
+	const unsigned char& operator [](int i) const;
 	bool operator < (const ROM& cmp) const;
+	bool operator == (const ROM& cmp) const;
+	bool isNull() const;
 	const unsigned long long int& operator &() const;
 	const char* toString() const;
+	void zeroing();
+	bool operator = (const char * str);
 private:
 	unsigned char ROM_NO[8];
 };

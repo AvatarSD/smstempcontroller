@@ -15,6 +15,7 @@ RM := rm -rf
 -include src/UART/subdir.mk
 -include src/Network/GSM/subdir.mk
 -include src/Network/subdir.mk
+-include src/MainWorker/subdir.mk
 -include src/LiquidCrystal_I2C/pcf8574/subdir.mk
 -include src/LiquidCrystal_I2C/lcdpcf8574/subdir.mk
 -include src/LiquidCrystal_I2C/lcdTerminal/subdir.mk
@@ -113,7 +114,7 @@ sizedummy: project.elf
 
 avrdudedummy: project.elf
 	@echo 'Invoking: AVRDude'
-	/usr/bin/avrdude -pm2560 -cwiring -P/dev/ttyACM0 -D -Uflash:w:project.hex:a
+	/usr/bin/avrdude -pm2560 -cwiring -P/dev/ttyUSB0 -D -Uflash:w:project.hex:a -Ueeprom:w:project.eep:a
 	@echo 'Finished building: $@'
 	@echo ' '
 

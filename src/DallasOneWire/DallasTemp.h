@@ -9,7 +9,7 @@
 #define DALLASONEWIRE_DALLASTEMP_H_
 
 
-#include <list>
+//#include <list>
 #include "DallasSensorData.h"
 
 
@@ -17,17 +17,29 @@ class DallasTemp {
 public:
 	DallasTemp(DallasOneWire& iface);
 
-	//const std::list<DallasSensorData>&  readAllTempSerial(bool isCurr = true);
+	/*Second algoritm*/
+	/*const std::list<DallasSensorData>&  readAllTempSerial(bool isCurr = true);*/
 	//const std::list<DallasSensorData>&  readAllTempParalel(char attemptNum);
 
+	/*Second algoritm*/
 	void readingInit();
-	int readOnce(DallasSensorData & data);
+	bool readOnce(DallasSensorData & data);
+
+	/*Third algoritm*/
+	/*const std::list<ROM>&  searchAllTempSensors();*/
+	bool readSensor(const ROM & sensorRom, double & retTemp);
+
+	/****************/
+	uint16_t searchAllTempSensors(ROM * buff, uint16_t size);
+
+
 private:
 	//int justStartConversion();
 	//const std::list<DallasSensorData>& justGetTemp();
-	float calculateTemperature(ROM & deviceAddress, unsigned char * scratchPad);
-
-	//std::list<DallasSensorData> _sensorsRes;
+	float calculateTemperature(const ROM & deviceAddress, unsigned char * scratchPad);
+//
+//	std::list<DallasSensorData> _sensorsRes;
+//	std::list<ROM> _sensors;
 	DallasOneWire& _iface;
 };
 

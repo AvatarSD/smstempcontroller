@@ -10,7 +10,7 @@
 #include "../LOG/debug.h"
 #include "../init/rtc.h"
 #include "../config.h"
-
+#include <stdio.h>
 
 UART * _gsm;
 
@@ -23,11 +23,10 @@ ISR(NETWORK_TXINT)
 	_gsm->tx_byte_int();
 }
 
-
-
-
-NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
-gsm(NETWORK_PORT), inetIface(gsm),sensors(Sensors), HWdata(data)
+NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data,
+		ROM * buffer) :
+		gsm(NETWORK_PORT), inetIface(gsm), sensors(Sensors), HWdata(data), _romMainBuff(
+				buffer)
 
 {
 	errorCount = 0;
@@ -39,20 +38,19 @@ gsm(NETWORK_PORT), inetIface(gsm),sensors(Sensors), HWdata(data)
 
 bool NetworkWorker::sendTemp()
 {
+#ifdef LEVEL_DEBUG
 	bool retVal = false;
 	attemptCount++;
-	errorPercent = ((float)(errorCount*100))/attemptCount;
-#ifdef LEVEL_DEBUG
-	debug.print(F("[DEBUG]: "));
-	debug.print(F("Error Percent is: "));
-	debug.print((double)errorPercent);
-	debug.print("%");
-	debug.print(F("\r\n"));
+	errorPercent = ((float) (errorCount * 100)) / attemptCount;
+
+	char buff[40];
+	sprintf(buff, "Error Percent is: %f%%", (double)errorPercent);
+	DEBUG(buff);
 #endif
 
 	errorCount++;
 	INFO(F("Starting network procedure..."));
-	if(forceConnectToServer(NETWORK_SERVER_ADDR, NETWORK_SERVER_PORT))
+	if (forceConnectToServer(NETWORK_SERVER_ADDR, NETWORK_SERVER_PORT))
 	{
 		unsigned long int data = gsm.getUNIXdate();
 		setUnixTime(data);
@@ -60,10 +58,8 @@ bool NetworkWorker::sendTemp()
 		char pktCountStr[6];
 		static unsigned int pktCount = 0;
 		sprintf(pktCountStr, "%5u", pktCount);
-		DallasSensorData sensorData;
-		sensors.readingInit();
 
-		if(!inetIface.beginWriteInet())
+		if (!inetIface.beginWriteInet())
 			return false;
 
 		gsm("$");
@@ -81,32 +77,50 @@ bool NetworkWorker::sendTemp()
 		gsm(",");
 		gsm(HWdata.getError());
 
-		int i = 0;
-		while(sensors.readOnce(sensorData))
+		uint16_t sensorsCount = 0, i = 0;
+		for (; ((!_romMainBuff[i].isNull()) && (i < ROM_MAINBFF_SIZE)); i++)
 		{
-			i++;
+			double temp;
 			gsm("\r");
-			gsm(sensorData.getROM().toString());
+			gsm(_romMainBuff[i].toString());
 			gsm(",");
-			gsm(sensorData.getTempStr());
+			for (uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
+			{
+				if (sensors.readSensor(_romMainBuff[i], temp))
+				{
+					gsm(temp);
+					sensorsCount++;
+					break;
+				}
+				else if(n == NUM_OF_READING_ATEMPT - 1)
+					gsm(-127);
+			}
 		}
-		gsm("&");
+
 #ifdef LEVEL_INFO
-		debug(F("[INFO]: Sensors count: ")); debug(i); debug(F("\r\n"));
+		char charbuf[40];
+		sprintf(charbuf, "Num of sensors in memory: %d", i);
+		INFO(charbuf);
+
+		sprintf(charbuf, "Read sensors count: %d", sensorsCount);
+		INFO(charbuf);
 #endif
 
-		if(inetIface.endWriteInet())
+		gsm("&");
+
+		if (inetIface.endWriteInet())
 		{
 			char buf[9];
-			if(gsm.getString("$", "&", buf, 8))
+			if (gsm.getString("$", "&", buf, 8))
 			{
 				long int i;
 				int flag;
 				sscanf(buf, "%ld,%d", &i, &flag);
 #ifdef LEVEL_INFO
-				debug(F("[INFO]: Package number: ")); debug(i); debug(F("\r\n"));
+				sprintf(charbuf, "Package number: %ld", i);
+				INFO(charbuf);
 #endif
-				if(i == pktCount)
+				if (i == pktCount)
 				{
 					INFO(F("Server answered"));
 					pktCount++;
@@ -122,11 +136,11 @@ bool NetworkWorker::sendTemp()
 
 bool NetworkWorker::forceConnectToServer(const char* server, int port)
 {
-	for(int i = 0; i < NUM_ATTEMP_TO_COMNNECT; i++)
-		if(gsm.forceON())
-			if(gsm.isRegistered() == GSM::REG_REGISTERED)
-				if(inetIface.attachGPRS(NETWORK_AP, "", ""))
-					if(inetIface.connectTCP(server, port) == 1)
+	for (int i = 0; i < NUM_ATTEMP_TO_COMNNECT; i++)
+		if (gsm.forceON())
+			if (gsm.isRegistered() == GSM::REG_REGISTERED)
+				if (inetIface.attachGPRS(NETWORK_AP, "", ""))
+					if (inetIface.connectTCP(server, port) == 1)
 						return true;
 	CRITICAL(F("Did not connect at 10 attempts"));
 	gsm.forceOFF();
@@ -137,17 +151,18 @@ bool NetworkWorker::disconnectWithPowerDown()
 {
 	inetIface.disconnectTCP();
 	inetIface.dettachGPRS();
-	if(gsm.forceOFF())
+	if (gsm.forceOFF())
 		return true;
-	else return false;
+	else
+		return false;
 }
 
 bool NetworkWorker::refreshTime()
 {
-	for(int i = 0; i < NUM_ATTEMP_TO_COMNNECT; i++)
-		if(gsm.forceON())
-			if(gsm.isRegistered() == GSM::REG_REGISTERED)
-				if(inetIface.refreshTime(NETWORK_AP, NTP_ADDR))
+	for (int i = 0; i < NUM_ATTEMP_TO_COMNNECT; i++)
+		if (gsm.forceON())
+			if (gsm.isRegistered() == GSM::REG_REGISTERED)
+				if (inetIface.refreshTime(NETWORK_AP, NTP_ADDR))
 					return true;
 	CRITICAL(F("Time wasn't connect at 10 attempts"));
 	return false;

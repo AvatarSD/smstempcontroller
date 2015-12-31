@@ -40,6 +40,7 @@ src/init \
 src/UART \
 src/Network \
 src/Network/GSM \
+src/MainWorker \
 src/LiquidCrystal_I2C/pcf8574 \
 src/LiquidCrystal_I2C/lcdpcf8574 \
 src/LiquidCrystal_I2C/lcdTerminal \
