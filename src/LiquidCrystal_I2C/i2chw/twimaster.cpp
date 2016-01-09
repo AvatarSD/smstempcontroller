@@ -19,7 +19,7 @@
 /* I2C clock in Hz */
 #define SCL_CLOCK  400000ul
 
-#define WAIT_COUNTER 1000000
+#define I2C_WAIT_COUNTER 1000000
 
 /*************************************************************************
  Initialization of the I2C bus interface. Need to be called only once
@@ -46,7 +46,7 @@ unsigned char i2c_start(unsigned char address)
 
 	// wait until transmission completed
 	uint32_t counter = 0;
-	while ((!(TWCR & (1 << TWINT))) && (counter++ < WAIT_COUNTER))
+	while ((!(TWCR & (1 << TWINT))) && (counter++ < I2C_WAIT_COUNTER))
 		;
 
 	// check value of TWI Status Register. Mask prescaler bits.
@@ -60,7 +60,7 @@ unsigned char i2c_start(unsigned char address)
 
 	// wail until transmission completed and ACK/NACK has been received
 	counter = 0;
-	while ((!(TWCR & (1 << TWINT))) && (counter++ < WAIT_COUNTER))
+	while ((!(TWCR & (1 << TWINT))) && (counter++ < I2C_WAIT_COUNTER))
 		;
 
 	// check value of TWI Status Register. Mask prescaler bits.
@@ -89,7 +89,7 @@ void i2c_start_wait(unsigned char address)
 
 		// wait until transmission completed
 		uint32_t counter = 0;
-		while ((!(TWCR & (1 << TWINT))) && (counter++ < WAIT_COUNTER))
+		while ((!(TWCR & (1 << TWINT))) && (counter++ < I2C_WAIT_COUNTER))
 			;
 
 		// check value of TWI Status Register. Mask prescaler bits.
@@ -103,7 +103,7 @@ void i2c_start_wait(unsigned char address)
 
 		// wail until transmission completed
 		counter = 0;
-		while ((!(TWCR & (1 << TWINT))) && (counter++ < WAIT_COUNTER))
+		while ((!(TWCR & (1 << TWINT))) && (counter++ < I2C_WAIT_COUNTER))
 			;
 
 		// check value of TWI Status Register. Mask prescaler bits.
@@ -115,7 +115,7 @@ void i2c_start_wait(unsigned char address)
 
 			// wait until stop condition is executed and bus released
 			uint32_t counter = 0;
-			while ((TWCR & (1 << TWSTO)) && (counter++ < WAIT_COUNTER))
+			while ((TWCR & (1 << TWSTO)) && (counter++ < I2C_WAIT_COUNTER))
 				;
 
 			continue;
@@ -150,7 +150,7 @@ void i2c_stop(void)
 
 	// wait until stop condition is executed and bus released
 	uint32_t counter = 0;
-	while ((TWCR & (1 << TWSTO)) && (counter++ < WAIT_COUNTER))
+	while ((TWCR & (1 << TWSTO)) && (counter++ < I2C_WAIT_COUNTER))
 		;
 
 }/* i2c_stop */
@@ -172,7 +172,7 @@ unsigned char i2c_write(unsigned char data)
 
 	// wait until transmission completed
 	uint32_t counter = 0;
-	while ((!(TWCR & (1 << TWINT))) && (counter++ < WAIT_COUNTER))
+	while ((!(TWCR & (1 << TWINT))) && (counter++ < I2C_WAIT_COUNTER))
 		;
 
 	// check value of TWI Status Register. Mask prescaler bits
@@ -192,7 +192,7 @@ unsigned char i2c_readAck(void)
 {
 	TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA);
 	uint32_t counter = 0;
-	while ((!(TWCR & (1 << TWINT))) && (counter++ < WAIT_COUNTER))
+	while ((!(TWCR & (1 << TWINT))) && (counter++ < I2C_WAIT_COUNTER))
 		;
 
 	return TWDR;
@@ -208,7 +208,7 @@ unsigned char i2c_readNak(void)
 {
 	TWCR = (1 << TWINT) | (1 << TWEN);
 	uint32_t counter = 0;
-	while ((!(TWCR & (1 << TWINT))) && (counter++ < WAIT_COUNTER))
+	while ((!(TWCR & (1 << TWINT))) && (counter++ < I2C_WAIT_COUNTER))
 		;
 
 	return TWDR;
