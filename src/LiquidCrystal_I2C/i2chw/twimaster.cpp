@@ -59,7 +59,7 @@ unsigned char i2c_start(unsigned char address)
 	TWCR = (1 << TWINT) | (1 << TWEN);
 
 	// wail until transmission completed and ACK/NACK has been received
-	uint32_t counter = 0;
+	counter = 0;
 	while ((!(TWCR & (1 << TWINT))) && (counter++ < WAIT_COUNTER))
 		;
 
@@ -102,7 +102,7 @@ void i2c_start_wait(unsigned char address)
 		TWCR = (1 << TWINT) | (1 << TWEN);
 
 		// wail until transmission completed
-		uint32_t counter = 0;
+		counter = 0;
 		while ((!(TWCR & (1 << TWINT))) && (counter++ < WAIT_COUNTER))
 			;
 
