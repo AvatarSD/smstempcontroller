@@ -18,10 +18,8 @@ ISR(TIMER5_CAPT_vect)
 }
 
 WachDog::WachDog() :
-		_curr(0), _timeout(0)
+		_timeout(0), _curr(0)
 {
-	// TODO Auto-generated constructor stub
-
 }
 
 void WachDog::begin()
@@ -61,7 +59,6 @@ void WachDog::begin()
 	// Timer/Counter 5 Interrupt(s) initialization
 	TIMSK5 = (1 << ICIE5) | (0 << OCIE5C) | (0 << OCIE5B) | (0 << OCIE5A)
 			| (0 << TOIE5);
-
 
 	wdt_reset();
 

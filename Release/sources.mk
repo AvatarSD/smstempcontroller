@@ -36,6 +36,7 @@ src/stream \
 src/sdcard/uni_avr \
 src/sdcard \
 src \
+src/init/wachdog \
 src/init \
 src/UART \
 src/Network \

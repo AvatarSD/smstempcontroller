@@ -8,7 +8,7 @@
 #ifndef INIT_WACHDOG_WACHDOG_H_
 #define INIT_WACHDOG_WACHDOG_H_
 
-#define
+#include <inttypes.h>
 
 class WachDog
 {
