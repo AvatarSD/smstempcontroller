@@ -23,7 +23,6 @@
 #define DEBUG_RXBUF 8
 
 
-
 /**************** Level *************************/
 #define DEBUG_LEVEL_PORT 	DEBUG_LEVEL_DEBUG
 #define DEBUG_LEVEL_LCD 	DEBUG_LEVEL_INFO
@@ -124,6 +123,10 @@
 
 /************* MainBuf Size ***************/
 #define ROM_MAINBFF_SIZE 128
+
+
+/**************** WachDog *****************/
+#define WDT_SEC 360
 
 
 

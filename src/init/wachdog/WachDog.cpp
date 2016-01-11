@@ -26,6 +26,8 @@ WachDog::WachDog() :
 
 void WachDog::begin()
 {
+	cli();
+
 	// Timer/Counter 5 initialization
 	// Clock source: System Clock
 	// Clock value: 62,500 kHz
@@ -60,6 +62,9 @@ void WachDog::begin()
 	TIMSK5 = (1 << ICIE5) | (0 << OCIE5C) | (0 << OCIE5B) | (0 << OCIE5A)
 			| (0 << TOIE5);
 
+
+	wdt_reset();
+
 	// Watchdog Timer initialization
 	// Watchdog Timer Prescaler: OSC/1024k
 	// Watchdog timeout action: Reset
@@ -67,6 +72,7 @@ void WachDog::begin()
 			| (0 << WDP2) | (0 << WDP1) | (1 << WDP0);
 	WDTCSR = (0 << WDIF) | (0 << WDIE) | (1 << WDP3) | (0 << WDCE) | (1 << WDE)
 			| (0 << WDP2) | (0 << WDP1) | (1 << WDP0);
+	sei();
 }
 
 void WachDog::doCheckpoint()
@@ -82,7 +88,7 @@ void WachDog::begin(uint16_t timeoutSec)
 
 void WachDog::end()
 {
-	//WDTCSR = 0;
+	wdt_reset();
 	TIMSK5 = 0;
 	wdt_disable();
 }

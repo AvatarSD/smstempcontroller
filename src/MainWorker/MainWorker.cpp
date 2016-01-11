@@ -7,12 +7,13 @@
 
 #include "MainWorker.h"
 
-#include "avr/interrupt.h"
-#include "stdio.h"
 #include "../LOG/debug.h"
 #include "../init/rtc.h"
 #include "../init/init.h"
+#include "../init/wachdog/WachDog.h"
+#include "../config.h"
 
+#include <avr/interrupt.h>
 #include <avr/eeprom.h>
 #include <stdio.h>
 #include <string>
@@ -54,6 +55,8 @@ MainWorker::MainWorker() :
 	/**********************/
 
 	loadMainbuff();
+
+
 
 #ifdef LEVEL_INFO
 	uint16_t i = 0;
@@ -110,7 +113,9 @@ void MainWorker::iterationTimerLoop()
 	if ((breakCounter == 0) && (!mutex))
 	{
 		mutex = true;
+		wachdog.doCheckpoint();
 		mainLoop();
+		wachdog.doCheckpoint();
 		mutex = false;
 	}
 	else if ((breakCounter != 0) && (!mutex))
@@ -147,13 +152,16 @@ void MainWorker::timerStart()
 	ICR1H = 0xF4;
 	ICR1L = 0x23;
 
+	wachdog.begin(WDT_SEC)	;
 	//enable maim timer interrupt
 	TIMSK1 |= (1 << ICIE1);
+
 }
 
 void MainWorker::timerStop()
 {
 	TIMSK1 &= ~(0 << ICIE1);
+	wachdog.end();
 }
 
 void MainWorker::startingProcedure()
