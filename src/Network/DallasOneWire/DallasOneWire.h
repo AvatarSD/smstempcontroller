@@ -9,8 +9,8 @@
 
 
 #include "ROM.h"
-#include "../UART/UART.h"
-#include "../config.h"
+#include "../../UART/UART.h"
+#include "../../config.h"
 
 
 

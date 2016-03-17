@@ -15,8 +15,6 @@
 //#define TIM_ TIMER3_CAPT_vect
 /**************/
 
-#define BUFFER_SIZE 50
-char buff[BUFFER_SIZE];
 volatile unsigned long long int currentTime = 0;
 
 ISR(INT_VECTOR)
@@ -70,23 +68,23 @@ void stopClock()
 			| (0 << TOIE3);
 }
 
-const char* getDateStr()
+const char* getDateStr(const tm & _time)
 {
-	const tm & time = gmtime(currentTime);
-	sprintf(buff, "%02d-%02d-%04d", time.tm_mday, time.tm_mon, time.tm_year);
+	static char buff[25];
+	sprintf(buff, "%02d-%02d-%04d", _time.tm_day, _time.tm_mon, _time.tm_year);
 	return buff;
 }
 
-const char* getDateTimeStr()
+const char* getDateTimeStr(const tm & _time)
 {
-	const tm & time = gmtime(currentTime);
-	sprintf(buff, "%02d.%02d.%04d %02d:%02d:%02d", time.tm_mday, time.tm_mon, time.tm_year,
-			time.tm_hour, time.tm_min, time.tm_sec);
+	static char buff[25];
+	sprintf(buff, "%02d.%02d.%04d %02d:%02d:%02d", _time.tm_day, _time.tm_mon,
+			_time.tm_year, _time.tm_hour, _time.tm_min, _time.tm_sec);
 	return buff;
 }
 
 /* Set the tm_t fields for the local time. */
-const tm & gmtime(unsigned long long int time) //const time_t *timep;
+const tm & convertFromUNIXtime(unsigned long long int time) //const time_t *timep;
 {
 	static tm tp;
 
@@ -97,15 +95,51 @@ const tm & gmtime(unsigned long long int time) //const time_t *timep;
 	mins = secs / 60;
 	tp.tm_hour = mins / 60;
 	tp.tm_min = mins % 60;
-	tp.tm_wday = (day + 4) % 7;
+	//tp.tm_wday = (day + 4) % 7;
 	year = (((day * 4) + 2) / 1461);
 	tp.tm_year = year + 1970;
 	leap = !(tp.tm_year & 3);
 	day -= ((year * 1461) + 1) / 4;
-	tp.tm_yday = day;
+	//tp.tm_yday = day;
 	day += (day > 58 + leap) ? ((leap) ? 1 : 2) : 0;
 	tp.tm_mon = ((day * 12) + 6) / 367;
-	tp.tm_mday = day + 1 - ((tp.tm_mon * 367) + 5) / 12;
+	tp.tm_day = day + 1 - ((tp.tm_mon * 367) + 5) / 12;
 	tp.tm_mon++;
 	return tp;
 }
+
+const unsigned long long int & convertToUNIXtime(const tm & time)
+{
+	static unsigned long long int UNIXdate;
+
+#define SEC_IN_MIN	60ul
+#define MIN_IN_HH 	60ul
+#define HH_IN_DD	24ul
+#define DD_IN_YY	365ul
+#define SEC_IN_HH	SEC_IN_MIN*MIN_IN_HH
+#define SEC_IN_DD	SEC_IN_HH*HH_IN_DD
+#define SEC_IN_YY 	SEC_IN_DD*DD_IN_YY
+
+#define YEAR0 1970
+
+	// if the current year is a leap one -> add one day (86400 sec)
+	if ((!(time.tm_year % 4)) && (time.tm_mon > 2))
+		UNIXdate += SEC_IN_DD;
+
+	// Next, add to s variable: (the number of days from each year (even leap years)) * 86400 sec,
+	// the number of days from the current month
+	// the each hour & minute & second from the current day
+	UNIXdate += (time.tm_year - YEAR0) * SEC_IN_YY
+			+ ((unsigned long) ((time.tm_year - YEAR0) / 4)) * SEC_IN_DD
+			+ (time.tm_day - 1) * SEC_IN_DD + time.tm_hour * SEC_IN_HH + time.tm_min * SEC_IN_MIN + time.tm_sec;
+
+	const char calendar[12] =
+	{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	int mon = time.tm_mon;
+	mon--; // dec the current month (find how many months have passed from the current year)
+	while (time.tm_mon > 0) // sum the days from January to the current month
+		UNIXdate += calendar[--mon] * SEC_IN_DD; // add the number of days from a month * 86400 sec
+
+	return UNIXdate;
+}
+

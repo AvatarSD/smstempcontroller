@@ -56,7 +56,7 @@ int SDCardLogger::begin()
 		WARNING(F("SD card not mount"));
 		return -3;
 	}
-	if (f_open(&logFile, getDateStr(), FA_WRITE | FA_OPEN_ALWAYS) != FR_OK)
+	if (f_open(&logFile, getDateStr(convertFromUNIXtime(getUnixTime())), FA_WRITE | FA_OPEN_ALWAYS) != FR_OK)
 	{
 		WARNING(F("Log file not created"));
 		return -2;

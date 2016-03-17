@@ -5,6 +5,7 @@
  *  Author: sd
  */
 
+#include "MainWorker/MainWorker.h"
 
 int main()
 {

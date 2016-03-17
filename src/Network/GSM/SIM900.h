@@ -2,6 +2,7 @@
 #define SIMCOM900_H
 
 #include "GSM.h"
+#include "../../init/rtc.h"
 
 class SIMCOM900 : public virtual GSM
 {
@@ -10,7 +11,7 @@ public:
 	virtual ~SIMCOM900();
 	int getCCI(char* cci);
 	const char * getIMEI();
-	const unsigned long int getUNIXdate();
+	const tm & getDateTime();
 	int sendSMS(const char* to, const char* msg);
 	bool readCall(char* number, int nlength);
 	bool call(char* number, unsigned int milliseconds);

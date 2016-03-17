@@ -6,10 +6,13 @@
  */
 
 #include "RuleNode.h"
+#include <string.h>
 
 RuleNode::RuleNode()
 {
-	this->zeroing();
+	memset(phone, 0, PHONE_LEN);
+	min = 0;
+	max = 0;
 }
 
 RuleNode::~RuleNode()

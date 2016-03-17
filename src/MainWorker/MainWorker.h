@@ -17,10 +17,6 @@ public:
 	MainWorker();
 
 	void mainLoop();
-	//void screensaver(int time);
-//	void iterationTimerLoop();
-//	void timerStart();
-	//void timerStop();
 	void startingProcedure();
 
 

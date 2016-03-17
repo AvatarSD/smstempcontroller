@@ -7,7 +7,7 @@
 
 #include "DallasOneWire.h"
 #include "util/delay.h"
-#include "../LOG/debug.h"
+#include "../../LOG/debug.h"
 #include "avr/io.h"
 #include <stdio.h>
 

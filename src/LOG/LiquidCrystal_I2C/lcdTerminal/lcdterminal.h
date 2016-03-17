@@ -9,7 +9,7 @@
 #define LIQUIDCRYSTAL_I2C_LCDTERMINAL_LCDTERMINAL_H_
 
 #include "../lcdpcf8574/lcdpcf8574.h"
-#include "../../stream/Stream.h"
+#include "../../../stream/Stream.h"
 
 class LCDterm : public Stream
 {

@@ -10,9 +10,11 @@
 
 
 #include "GSM/sms.h"
+#include "GSM/inetGSM.h"
 #include "GSM/SIM900.h"
 #include "DallasOneWire/DallasTemp.h"
 #include "HardwareData/HardwareData.h"
+#include "RuleNode.h"
 
 class NetworkWorker
 {
@@ -23,16 +25,16 @@ public:
 	bool refreshTime();
 
 private:
-
-
 	void loadROMs();
 	void saveROMs();
 	void loadNodes();
 	void saveNodes();
 
+
+
 	SIMCOM900  gsm;
-	SMSGSM  smsIface;
 	InetGSM inetIface;
+	SMSGSM  smsIface;
 	DallasTemp & sensors;
 	HardwareData & HWdata;
 

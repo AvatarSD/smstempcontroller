@@ -41,6 +41,7 @@
 								<option id="de.innot.avreclipse.compiler.option.incpath.1061990849" name="Include Paths (-I)" superClass="de.innot.avreclipse.compiler.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/lib/avr/include/std"/>
 								</option>
+								<option id="de.innot.avreclipse.compiler.option.optimize.packstruct.1642761311" superClass="de.innot.avreclipse.compiler.option.optimize.packstruct" value="false" valueType="boolean"/>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.113530527" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.cppcompiler.app.release.1854022598" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.release">
@@ -52,6 +53,7 @@
 								<option id="de.innot.avreclipse.cppcompiler.option.incpath.766516870" name="Include Paths (-I)" superClass="de.innot.avreclipse.cppcompiler.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/lib/avr/include/std"/>
 								</option>
+								<option id="de.innot.avreclipse.cppcompiler.option.optimize.packstruct.775688262" superClass="de.innot.avreclipse.cppcompiler.option.optimize.packstruct" value="false" valueType="boolean"/>
 								<inputType id="de.innot.avreclipse.cppcompiler.input.1816498655" superClass="de.innot.avreclipse.cppcompiler.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.linker.winavr.app.release.169634341" name="AVR C Linker" superClass="de.innot.avreclipse.tool.linker.winavr.app.release"/>

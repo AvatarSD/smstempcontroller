@@ -8,7 +8,7 @@
 #include "DallasTemp.h"
 #include "util/delay.h"
 
-#include "../LOG/debug.h"
+#include "../../LOG/debug.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>

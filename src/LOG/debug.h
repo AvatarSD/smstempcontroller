@@ -10,7 +10,7 @@
 
 #include "../UART/UART.h"
 extern UART debugPort;
-#include "../LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
+#include "LiquidCrystal_I2C/lcdTerminal/lcdterminal.h"
 #include "SDCardLogger.h"
 #include "../config.h"
 #include "../init/freeram.h"
@@ -42,7 +42,7 @@ void CRITICAL(T msg)
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_CRITICAL)
 	debugSDcardLog("[");
-	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog(getDateTimeStr(convertFromUNIXtime(getUnixTime())));
 	debugSDcardLog("]");
 	debugSDcardLog(F("[CRITICAL]: "));
 	debugSDcardLog(msg);
@@ -68,7 +68,7 @@ void WARNING(T msg)
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_WARNING)
 	debugSDcardLog("[");
-	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog(getDateTimeStr(convertFromUNIXtime(getUnixTime())));
 	debugSDcardLog("]");
 	debugSDcardLog(F("[WARNING]: "));
 	debugSDcardLog(msg);
@@ -94,7 +94,7 @@ void INFO(T msg)
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_INFO)
 	debugSDcardLog("[");
-	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog(getDateTimeStr(convertFromUNIXtime(getUnixTime())));
 	debugSDcardLog("]");
 	debugSDcardLog(F("[INFO]: "));
 	debugSDcardLog(msg);
@@ -120,7 +120,7 @@ void DEBUG(T msg)
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_DEBUG)
 	debugSDcardLog("[");
-	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog(getDateTimeStr(convertFromUNIXtime(getUnixTime())));
 	debugSDcardLog("]");
 	debugSDcardLog(F("[DEBUG]: "));
 	debugSDcardLog(msg);
@@ -146,7 +146,7 @@ void DATA(T msg)
 #endif
 #if (DEBUG_LEVEL_SDCARD>=DEBUG_LEVEL_DATA)
 	debugSDcardLog("[");
-	debugSDcardLog(getDateTimeStr());
+	debugSDcardLog(getDateTimeStr(convertFromUNIXtime(getUnixTime())));
 	debugSDcardLog("]");
 	debugSDcardLog(F("[DATA]: "));
 	debugSDcardLog(msg);

@@ -34,7 +34,7 @@
 #include <util/delay.h>
 #include <util/atomic.h>
 #include <avr/io.h>			/* Include device specific declareation file here */
-#include "../config.h"
+#include "../../config.h"
 
 #define DLY_US(n)	_delay_us(n)	/* Delay n microseconds */
 #define	INIT_PORT()	init_port()	/* Initialize MMC control port (CS=H, CLK=L, DI=H, DO=pu) */

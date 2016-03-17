@@ -8,11 +8,9 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-
 /******************* NTC ************************/
 //#define TIMER_PERIOD 5			//in minutes
 #define NTC_REFRESH_PERIOD 24 	//in hours
-
 
 /************ Debug Settings ********************/
 #define DEBUG_TXINT USART3_TX_vect
@@ -21,7 +19,6 @@
 #define DEBUG_SPEED 115200
 #define DEBUG_TXBUF 64
 #define DEBUG_RXBUF 8
-
 
 /**************** Level *************************/
 #define DEBUG_LEVEL_PORT 	DEBUG_LEVEL_DEBUG
@@ -32,7 +29,6 @@
 //#define LEVEL_INFO // todo template, need to fix later
 //#define LEVEL_WARNING
 //#define LEVEL_CRITICAL
-
 
 /********** Dallas User Definitions *************/
 #define DALL_TXINT USART1_TX_vect
@@ -47,7 +43,6 @@
 
 #define NUM_OF_READING_ATEMPT 3
 
-
 /************ Network Settings ************/
 #define NETWORK_TXINT USART2_TX_vect
 #define NETWORK_RXINT USART2_RX_vect
@@ -60,12 +55,11 @@
 //#define NETWORK_SERVER_PORT 3050
 
 #define NUM_ATTEMP_TO_NTP_COMNNECT 3
-//#define NUM_OF_ACK_ATTEMPT 2
+#define NUM_OF_FORCEON_ACK_ATTEMPT 2
 
 #define PWR_PORT PORTH
 #define PWR_DDR DDRH
 #define PWR_PIN 4
-
 
 /*************** SD card ******************/
 // Set DQ as AVR MISO
@@ -90,7 +84,6 @@
 #define CS_INIT()	DDRB  |= (1<<CS_DQ)	/* Initialize port MMC CS as output */
 #define	CS_H()		PORTB |= (1<<CS_DQ)	/* Set MMC CS "high" */
 #define CS_L()		PORTB &= ~(1<<CS_DQ)	/* Set MMC CS "low" */
-
 
 /*********** HARDWARE Settings ************/
 #define VOLTAGE_MULTIPLY_RATIO 7.25
@@ -120,16 +113,11 @@
 #define LED_OFF //PORTB &=~ (1<<PORTB7)
 #define LED_TRN //PORTB ^= (1<<PORTB7)
 
-
 /************* MainBuf Size ***************/
 #define ROM_MAINBUFF_SIZE 128 //max sensor size
 #define RULENODE_BUFF_SIZE 256
 
-
 /**************** WachDog *****************/
 #define WDT_SEC 360
-
-
-
 
 #endif /* CONFIG_H_ */

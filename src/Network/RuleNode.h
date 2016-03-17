@@ -9,6 +9,7 @@
 #define MAINWORKER_RULENODE_H_
 
 #include "DallasOneWire/ROM.h"
+#include <inttypes.h>
 
 #define PHONE_LEN 14
 

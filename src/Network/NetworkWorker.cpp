@@ -28,7 +28,7 @@ ISR(NETWORK_TXINT)
 }
 
 NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
-		gsm(NETWORK_PORT), inetIface(gsm), sensors(Sensors), HWdata(data)
+		gsm(NETWORK_PORT), inetIface(gsm), smsIface(gsm), sensors(Sensors), HWdata(data)
 {
 
 	loadROMs();
@@ -46,126 +46,11 @@ NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
 	_gsm = &gsm;
 }
 
-//bool NetworkWorker::sendTemp()
-//{
-//#ifdef LEVEL_DEBUG
-//	bool retVal = false;
-//	attemptCount++;
-//	errorPercent = ((float) (errorCount * 100)) / attemptCount;
-//
-//	char buff[40];
-//	sprintf(buff, "Error Percent is: %f%%", (double)errorPercent);
-//	DEBUG(buff);
-//#endif
-//
-//	errorCount++;
-//	INFO(F("Starting network procedure..."));
-//	if (forceConnectToServer(NETWORK_SERVER_ADDR, NETWORK_SERVER_PORT))
-//	{
-//		unsigned long int data = gsm.getUNIXdate();
-//		setUnixTime(data);
-//		const char * imei = gsm.getIMEI();
-//		char pktCountStr[6];
-//		static unsigned int pktCount = 0;
-//		sprintf(pktCountStr, "%5u", pktCount);
-//
-//		if (!inetIface.beginWriteInet())
-//			return false;
-//
-//		gsm("$");
-//		gsm(imei);
-//		gsm(",");
-//		gsm(pktCountStr);
-//		gsm(",");
-//		gsm(data);
-//		gsm(",");
-//		gsm(HWdata.getVoltage());
-//		gsm(",");
-//		gsm(!HWdata.didHadNoVoltageSupply());
-//		gsm(",");
-//		gsm(HWdata.didHadCaseOpen());
-//		gsm(",");
-//		gsm(HWdata.getError());
-//
-//		uint16_t sensorsCount = 0, i = 0;
-//		for (; ((!_romMainBuff[i].isNull()) && (i < ROM_MAINBFF_SIZE)); i++)
-//		{
-//			double temp;
-//			gsm("\r");
-//			gsm(_romMainBuff[i].toString());
-//			gsm(",");
-//			for (uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
-//			{
-//				if (sensors.readSensor(_romMainBuff[i], temp))
-//				{
-//					gsm(temp);
-//					sensorsCount++;
-//					break;
-//				}
-//				else if(n == NUM_OF_READING_ATEMPT - 1)
-//					gsm(-127);
-//			}
-//		}
-//
-//#ifdef LEVEL_INFO
-//		char charbuf[40];
-//		sprintf(charbuf, "Num of sensors in memory: %d", i);
-//		INFO(charbuf);
-//
-//		sprintf(charbuf, "Read sensors count: %d", sensorsCount);
-//		INFO(charbuf);
-//#endif
-//
-//		gsm("&");
-//
-//		if (inetIface.endWriteInet())
-//		{
-//			char buf[9];
-//			if (gsm.getString("$", "&", buf, 8))
-//			{
-//				long int i;
-//				int flag;
-//				sscanf(buf, "%ld,%d", &i, &flag);
-//#ifdef LEVEL_INFO
-//				sprintf(charbuf, "Package number: %ld", i);
-//				INFO(charbuf);
-//#endif
-//				if (i == pktCount)
-//				{
-//					INFO(F("Server answered"));
-//					pktCount++;
-//					errorCount--;
-//					retVal = true;
-//				}
-//			}
-//		}
-//	}
-//	inetIface.disconnectTCP();
-//	return retVal;
-//}
+bool NetworkWorker::mainLoop()
+{
 
-//bool NetworkWorker::forceConnectToServer(const char* server, int port)
-//{
-//	for (int i = 0; i < NUM_ATTEMP_TO_COMNNECT; i++)
-//		if (gsm.forceON())
-//			if (gsm.isRegistered() == GSM::REG_REGISTERED)
-//				if (inetIface.attachGPRS(NETWORK_AP, "", ""))
-//					if (inetIface.connectTCP(server, port) == 1)
-//						return true;
-//	CRITICAL(F("Did not connect at 10 attempts"));
-//	gsm.forceOFF();
-//	return false;
-//}
-
-//bool NetworkWorker::disconnectWithPowerDown()
-//{
-//	inetIface.disconnectTCP();
-//	inetIface.dettachGPRS();
-//	if (gsm.forceOFF())
-//		return true;
-//	else
-//		return false;
-//}
+	return true;
+}
 
 bool NetworkWorker::refreshTime()
 {
@@ -173,7 +58,10 @@ bool NetworkWorker::refreshTime()
 		if (gsm.forceON())
 			if (gsm.isRegistered() == GSM::REG_REGISTERED)
 				if (inetIface.refreshTime(NETWORK_AP, NTP_ADDR))
+				{
+					setUnixTime(convertToUNIXtime(gsm.getDateTime()));
 					return true;
+				}
 	CRITICAL(F("Time wasn't connect at 10 attempts"));
 	return false;
 }
@@ -201,3 +89,5 @@ void NetworkWorker::saveNodes()
 	eeprom_write_block(_nodeBuff, eepromNodesBuff,
 				RULENODE_BUFF_SIZE * sizeof(RuleNode));
 }
+
+
