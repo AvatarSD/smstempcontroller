@@ -5,25 +5,14 @@
  *  Author: sd
  */
 
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include "MainWorker/MainWorker.h"
-
-MainWorker * _worker;
-ISR(TIMER1_CAPT_vect)
-{
-	_worker->iterationTimerLoop();
-}
 
 int main()
 {
 	MainWorker worker;
-	_worker = &worker;
 
 	worker.startingProcedure();
 
 	while (true)
-	{
+		worker.mainLoop();
 
-	};
 }

@@ -9,22 +9,22 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include src/stream/subdir.mk
--include src/sdcard/uni_avr/subdir.mk
--include src/sdcard/subdir.mk
 -include src/init/wachdog/subdir.mk
 -include src/init/subdir.mk
 -include src/UART/subdir.mk
+-include src/Network/HardwareData/ADC/subdir.mk
+-include src/Network/HardwareData/subdir.mk
 -include src/Network/GSM/subdir.mk
+-include src/Network/DallasOneWire/subdir.mk
 -include src/Network/subdir.mk
 -include src/MainWorker/subdir.mk
--include src/LiquidCrystal_I2C/pcf8574/subdir.mk
--include src/LiquidCrystal_I2C/lcdpcf8574/subdir.mk
--include src/LiquidCrystal_I2C/lcdTerminal/subdir.mk
--include src/LiquidCrystal_I2C/i2chw/subdir.mk
+-include src/LOG/sdcard/uni_avr/subdir.mk
+-include src/LOG/sdcard/subdir.mk
+-include src/LOG/LiquidCrystal_I2C/pcf8574/subdir.mk
+-include src/LOG/LiquidCrystal_I2C/lcdpcf8574/subdir.mk
+-include src/LOG/LiquidCrystal_I2C/lcdTerminal/subdir.mk
+-include src/LOG/LiquidCrystal_I2C/i2chw/subdir.mk
 -include src/LOG/subdir.mk
--include src/HardwareData/ADC/subdir.mk
--include src/HardwareData/subdir.mk
--include src/DallasOneWire/subdir.mk
 -include src/subdir.mk
 -include subdir.mk
 -include objects.mk
@@ -63,13 +63,13 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 LSS += \
-project.lss \
+gsmonewire.lss \
 
 FLASH_IMAGE += \
-project.hex \
+gsmonewire.hex \
 
 EEPROM_IMAGE += \
-project.eep \
+gsmonewire.eep \
 
 SIZEDUMMY += \
 sizedummy \
@@ -79,49 +79,49 @@ avrdudedummy \
 
 
 # All Target
-all: project.elf secondary-outputs
+all: gsmonewire.elf secondary-outputs
 
 # Tool invocations
-project.elf: $(OBJS) $(USER_OBJS)
+gsmonewire.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C++ Linker'
-	avr-g++ -Wl,-Map,project.map,--cref -mrelax -Wl,--gc-sections -Wl,-u,vfprintf -lprintf_flt -lm -mmcu=atmega2560 -o "project.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	avr-g++ -Wl,-Map,gsmonewire.map,--cref -mrelax -Wl,--gc-sections -Wl,-u,vfprintf -lprintf_flt -lm -mmcu=atmega2560 -o "gsmonewire.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-project.lss: project.elf
+gsmonewire.lss: gsmonewire.elf
 	@echo 'Invoking: AVR Create Extended Listing'
-	-avr-objdump -h -S project.elf  >"project.lss"
+	-avr-objdump -h -S gsmonewire.elf  >"gsmonewire.lss"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-project.hex: project.elf
+gsmonewire.hex: gsmonewire.elf
 	@echo 'Create Flash image (ihex format)'
-	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex project.elf  "project.hex"
+	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex gsmonewire.elf  "gsmonewire.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-project.eep: project.elf
+gsmonewire.eep: gsmonewire.elf
 	@echo 'Create eeprom image (ihex format)'
-	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex project.elf  "project.eep"
+	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex gsmonewire.elf  "gsmonewire.eep"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-sizedummy: project.elf
+sizedummy: gsmonewire.elf
 	@echo 'Invoking: Print Size'
-	-avr-size --format=avr --mcu=atmega2560 project.elf
+	-avr-size --format=avr --mcu=atmega2560 gsmonewire.elf
 	@echo 'Finished building: $@'
 	@echo ' '
 
-avrdudedummy: project.elf
+avrdudedummy: gsmonewire.elf
 	@echo 'Invoking: AVRDude'
-	/usr/bin/avrdude -pm2560 -cwiring -P/dev/ttyUSB0 -D -Uflash:w:project.hex:a
+	/usr/bin/avrdude -pm2560 -cwiring -P/dev/ttyACM0 -D -Uflash:w:gsmonewire.hex:a
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(C_UPPER_DEPS)$(AVRDUDEDUMMY)$(S_DEPS)$(LSS)$(C_DEPS)$(FLASH_IMAGE)$(CC_DEPS)$(ELFS)$(C++_DEPS)$(OBJS)$(CXX_DEPS)$(ASM_DEPS)$(EEPROM_IMAGE)$(SIZEDUMMY)$(S_UPPER_DEPS)$(CPP_DEPS) project.elf
+	-$(RM) $(C_UPPER_DEPS)$(AVRDUDEDUMMY)$(S_DEPS)$(LSS)$(C_DEPS)$(FLASH_IMAGE)$(CC_DEPS)$(ELFS)$(C++_DEPS)$(OBJS)$(CXX_DEPS)$(ASM_DEPS)$(EEPROM_IMAGE)$(SIZEDUMMY)$(S_UPPER_DEPS)$(CPP_DEPS) gsmonewire.elf
 	-@echo ' '
 
 secondary-outputs: $(LSS) $(FLASH_IMAGE) $(EEPROM_IMAGE) $(SIZEDUMMY) $(AVRDUDEDUMMY)

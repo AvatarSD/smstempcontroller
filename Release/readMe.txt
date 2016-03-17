@@ -1,1 +1,0 @@
-avrdude -pm2560 -cwiring -P/dev/ttyACM0 -b115200 -D -Uflash:w:gsmonewire.hex:a

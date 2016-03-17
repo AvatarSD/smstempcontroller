@@ -33,21 +33,21 @@ CPP_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 src/stream \
-src/sdcard/uni_avr \
-src/sdcard \
 src \
 src/init/wachdog \
 src/init \
 src/UART \
 src/Network \
+src/Network/HardwareData \
+src/Network/HardwareData/ADC \
 src/Network/GSM \
+src/Network/DallasOneWire \
 src/MainWorker \
-src/LiquidCrystal_I2C/pcf8574 \
-src/LiquidCrystal_I2C/lcdpcf8574 \
-src/LiquidCrystal_I2C/lcdTerminal \
-src/LiquidCrystal_I2C/i2chw \
+src/LOG/sdcard/uni_avr \
+src/LOG/sdcard \
 src/LOG \
-src/HardwareData \
-src/HardwareData/ADC \
-src/DallasOneWire \
+src/LOG/LiquidCrystal_I2C/pcf8574 \
+src/LOG/LiquidCrystal_I2C/lcdpcf8574 \
+src/LOG/LiquidCrystal_I2C/lcdTerminal \
+src/LOG/LiquidCrystal_I2C/i2chw \
 

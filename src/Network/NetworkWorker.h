@@ -8,32 +8,37 @@
 #ifndef NETWORK_NETWORKWORKER_H_
 #define NETWORK_NETWORKWORKER_H_
 
-#include "../DallasOneWire/DallasTemp.h"
-#include "GSM/inetGSM.h"
+
+#include "GSM/sms.h"
 #include "GSM/SIM900.h"
-#include "../HardwareData/HardwareData.h"
+#include "DallasOneWire/DallasTemp.h"
+#include "HardwareData/HardwareData.h"
 
 class NetworkWorker
 {
 public:
-	NetworkWorker(DallasTemp & Sensors, HardwareData & data, ROM * buffer);
+	NetworkWorker(DallasTemp & Sensors, HardwareData & data);
 
-	bool sendTemp();
+	bool mainLoop();
 	bool refreshTime();
 
 private:
-	bool forceConnectToServer(const char* server, int port);
-	bool disconnectWithPowerDown();
 
-	unsigned long long int errorCount;
-	unsigned long long int attemptCount;
-	float errorPercent;
+
+	void loadROMs();
+	void saveROMs();
+	void loadNodes();
+	void saveNodes();
 
 	SIMCOM900  gsm;
-	InetGSM  inetIface;
+	SMSGSM  smsIface;
+	InetGSM inetIface;
 	DallasTemp & sensors;
 	HardwareData & HWdata;
-	ROM * _romMainBuff;
+
+
+	ROM _romBuff[ROM_MAINBUFF_SIZE];
+	RuleNode _nodeBuff[RULENODE_BUFF_SIZE];
 };
 
 #endif /* NETWORK_NETWORKWORKER_H_ */

@@ -22,8 +22,8 @@ public:
 
 	void pinsSetup();
 
-	bool isNewSrhBtnPress();
-	bool isAddSrhBtnPress();
+	//bool isNewSrhBtnPress();
+	//bool isAddSrhBtnPress();
 
 private:
 	bool isHaveVoltageSupply();

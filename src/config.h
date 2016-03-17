@@ -10,7 +10,7 @@
 
 
 /******************* NTC ************************/
-#define TIMER_PERIOD 5			//in minutes
+//#define TIMER_PERIOD 5			//in minutes
 #define NTC_REFRESH_PERIOD 24 	//in hours
 
 
@@ -28,10 +28,10 @@
 #define DEBUG_LEVEL_LCD 	DEBUG_LEVEL_INFO
 #define DEBUG_LEVEL_SDCARD 	DEBUG_LEVEL_DEBUG
 
-#define LEVEL_DEBUG
-#define LEVEL_INFO // todo template, need to fix later
-#define LEVEL_WARNING
-#define LEVEL_CRITICAL
+//#define LEVEL_DEBUG
+//#define LEVEL_INFO // todo template, need to fix later
+//#define LEVEL_WARNING
+//#define LEVEL_CRITICAL
 
 
 /********** Dallas User Definitions *************/
@@ -53,14 +53,14 @@
 #define NETWORK_RXINT USART2_RX_vect
 #define NETWORK_PORT    UDR2
 
-#define NETWORK_AP "www.kyivstar.net"
+#define NETWORK_AP "" //www.kyivstar.net"
 #define NTP_ADDR "pool.ntp.org"
 
-#define NETWORK_SERVER_ADDR "termo.big-gps.com"//"avatarsd.com"
-#define NETWORK_SERVER_PORT 3050
+//#define NETWORK_SERVER_ADDR "termo.big-gps.com"//"avatarsd.com"
+//#define NETWORK_SERVER_PORT 3050
 
-#define NUM_ATTEMP_TO_COMNNECT 10
-#define NUM_OF_ACK_ATTEMPT 2
+#define NUM_ATTEMP_TO_NTP_COMNNECT 3
+//#define NUM_OF_ACK_ATTEMPT 2
 
 #define PWR_PORT PORTH
 #define PWR_DDR DDRH
@@ -106,15 +106,15 @@
 #define CASE_DDR DDRF
 #define CASE_PORT PORTF
 
-#define NEWSRC_PIN_NUM 3
-#define NEWSRC_PIN PINF
-#define NEWSRC_DDR DDRF
-#define NEWSRC_PORT PORTF
-
-#define ADDSRC_PIN_NUM 4
-#define ADDSRC_PIN PINF
-#define ADDSRC_DDR DDRF
-#define ADDSRC_PORT PORTF
+//#define NEWSRC_PIN_NUM 3
+//#define NEWSRC_PIN PINF
+//#define NEWSRC_DDR DDRF
+//#define NEWSRC_PORT PORTF
+//
+//#define ADDSRC_PIN_NUM 4
+//#define ADDSRC_PIN PINF
+//#define ADDSRC_DDR DDRF
+//#define ADDSRC_PORT PORTF
 
 #define LED_ON //PORTB |= (1<<PORTB7) //now we no have LED indicator
 #define LED_OFF //PORTB &=~ (1<<PORTB7)
@@ -122,7 +122,8 @@
 
 
 /************* MainBuf Size ***************/
-#define ROM_MAINBFF_SIZE 128
+#define ROM_MAINBUFF_SIZE 128 //max sensor size
+#define RULENODE_BUFF_SIZE 256
 
 
 /**************** WachDog *****************/

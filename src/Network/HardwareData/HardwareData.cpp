@@ -9,8 +9,8 @@
 #include <avr/io.h>
 #include "HardwareData.h"
 #include "ADC/Analog.h"
-#include "../config.h"
-#include "../LOG/debug.h"
+#include "../../config.h"
+#include "../../LOG/debug.h"
 
 HardwareData HWdata;
 
@@ -98,19 +98,19 @@ void HardwareData::pinsSetup()
 	CASE_DDR 	&=~	(1 << CASE_PIN_NUM);
 	CASE_PORT 	|= 	(1 << CASE_PIN_NUM);
 
-	NEWSRC_DDR 	&=~	(1 << NEWSRC_PIN_NUM);
-	NEWSRC_PORT	|= 	(1 << NEWSRC_PIN_NUM);
-
-	ADDSRC_DDR 	&=~	(1 << ADDSRC_PIN_NUM);
-	ADDSRC_PORT |= 	(1 << ADDSRC_PIN_NUM);
+//	NEWSRC_DDR 	&=~	(1 << NEWSRC_PIN_NUM);
+//	NEWSRC_PORT	|= 	(1 << NEWSRC_PIN_NUM);
+//
+//	ADDSRC_DDR 	&=~	(1 << ADDSRC_PIN_NUM);
+//	ADDSRC_PORT |= 	(1 << ADDSRC_PIN_NUM);
 }
-
-bool HardwareData::isNewSrhBtnPress()
-{
-	return !((NEWSRC_PIN >> NEWSRC_PIN_NUM) & 0x01);
-}
-
-bool HardwareData::isAddSrhBtnPress()
-{
-	return !((ADDSRC_PIN >> ADDSRC_PIN_NUM) & 0x01);
-}
+//
+//bool HardwareData::isNewSrhBtnPress()
+//{
+//	return !((NEWSRC_PIN >> NEWSRC_PIN_NUM) & 0x01);
+//}
+//
+//bool HardwareData::isAddSrhBtnPress()
+//{
+//	return !((ADDSRC_PIN >> ADDSRC_PIN_NUM) & 0x01);
+//}
