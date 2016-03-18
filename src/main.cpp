@@ -6,10 +6,14 @@
  */
 
 #include "MainWorker/MainWorker.h"
+#include "init/init.h"
 
 int main()
 {
+	init();
+
 	MainWorker worker;
-	while (true)
+
+	while (true);
 		worker.mainLoop();
 }

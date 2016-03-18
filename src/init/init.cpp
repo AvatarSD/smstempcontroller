@@ -8,6 +8,7 @@
 #include "init.h"
 #include <util/atomic.h>
 #include "millis.h"
+#include "rtc.h"
 
 
 void init()
@@ -269,6 +270,7 @@ void init()
 	//TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
 
 	millisInit();
+	startClock();
 	// Global enable interrupts
 	sei();
 

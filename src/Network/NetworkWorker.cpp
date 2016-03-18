@@ -30,6 +30,7 @@ ISR(NETWORK_TXINT)
 NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
 		gsm(NETWORK_PORT), inetIface(gsm), smsIface(gsm), sensors(Sensors), HWdata(data)
 {
+	_gsm = &gsm;
 
 	loadROMs();
 	loadNodes();
@@ -41,9 +42,9 @@ NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
 	char buff[10];
 	sprintf(buff, "count: %d", i);
 	INFO(buff);
-	INFO("\r\n");
+	//INFO("\r\n");
 
-	_gsm = &gsm;
+
 }
 
 void NetworkWorker::mainLoop()
@@ -53,9 +54,22 @@ void NetworkWorker::mainLoop()
 	char smsBuff[SMS_BUFF_LEN];
 	char phoneBuff[PHONE_LEN];
 
-	if(smsIface.GetSMS(0, phoneBuff, smsBuff, SMS_BUFF_LEN))
+//	if(smsIface.GetSMS(0, phoneBuff, smsBuff, SMS_BUFF_LEN))
+//	{};
 
-	return true;
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 bool NetworkWorker::refreshTime()

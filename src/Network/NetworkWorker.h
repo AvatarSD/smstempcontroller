@@ -24,7 +24,7 @@ public:
 	void mainLoop();
 	bool refreshTime();
 
-	bool setupSms();
+
 
 private:
 	void loadROMs();
@@ -32,6 +32,7 @@ private:
 	void loadNodes();
 	void saveNodes();
 
+	bool setupSms();
 
 
 	SIMCOM900  gsm;

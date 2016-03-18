@@ -32,10 +32,8 @@ MainWorker::MainWorker() :
 		_sensorsIface(DALL_PORT), _sensors(_sensorsIface), _network(_sensors,
 				HWdata)
 {
-	init();
-
 	HWdata.pinsSetup();
-	startClock();
+
 	_iface = &_sensorsIface;
 
 	lcd_init(LCD_DISP_ON);
@@ -56,11 +54,11 @@ void MainWorker::mainLoop()
 
 	static int lastDay = -1;
 	int currDay = convertFromUNIXtime(getUnixTime()).tm_day;
-	if (lastDay != currDay)
-		_network.refreshTime();
-	lastDay = currDay;
-
-	_network.mainLoop();
+//	if (lastDay != currDay)
+//		_network.refreshTime();
+//	lastDay = currDay;
+//
+//	_network.mainLoop();
 
 	LED_OFF;
 	debugSDcardLog.end();
