@@ -24,7 +24,7 @@ public:
 	void mainLoop();
 	bool refreshTime();
 
-
+	void init();
 
 private:
 	void loadROMs();

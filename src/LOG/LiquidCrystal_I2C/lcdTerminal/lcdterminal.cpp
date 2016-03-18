@@ -22,6 +22,9 @@ LCDterm debugLCD;
 
 LCDterm::LCDterm()
 {
+	lcd_init(LCD_DISP_ON);
+	lcd_led(0);
+
 	memset(videoBuff, ' ', LCD_DISP_LENGTH*LCD_LINES);
 	videoBuff[LCD_DISP_LENGTH*LCD_LINES] = '\0';
 	pBuff = 0;

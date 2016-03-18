@@ -71,7 +71,7 @@ bool ROM::operator ==(const ROM& cmp) const
 bool ROM::isNull() const
 {
 	for (uint8_t i = 0; i < 8; i++)
-		if (ROM_NO[i] != 0)
+		if ((ROM_NO[i] != 0x00)&&(ROM_NO[i] != 0xFF))
 			return false;
 	return true;
 }

@@ -17,7 +17,7 @@ public:
 	MainWorker();
 
 	void mainLoop();
-	//void startingProcedure();
+	void startingProcedure();
 
 
 private:

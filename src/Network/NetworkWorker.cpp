@@ -32,18 +32,6 @@ NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
 {
 	_gsm = &gsm;
 
-	loadROMs();
-	loadNodes();
-
-	uint16_t i = 0;
-	INFO(F("Sensor ROMs in memory:"));
-	for (; ((!_romBuff[i].isNull()) && (i < ROM_MAINBUFF_SIZE)); i++)
-		INFO(_romBuff[i].toString());
-	char buff[10];
-	sprintf(buff, "count: %d", i);
-	INFO(buff);
-	//INFO("\r\n");
-
 
 }
 
@@ -107,7 +95,7 @@ void NetworkWorker::loadNodes()
 void NetworkWorker::saveNodes()
 {
 	eeprom_write_block(_nodeBuff, eepromNodesBuff,
-				RULENODE_BUFF_SIZE * sizeof(RuleNode));
+			RULENODE_BUFF_SIZE * sizeof(RuleNode));
 }
 
 bool NetworkWorker::setupSms()
@@ -119,4 +107,19 @@ bool NetworkWorker::setupSms()
 					return true;
 	CRITICAL(F("Modem wasn't initialized"));
 	return false;
+}
+
+void NetworkWorker::init()
+{
+	loadROMs();
+	loadNodes();
+
+	uint16_t i = 0;
+	INFO(F("Sensor ROMs in memory:"));
+	for (; ((!_romBuff[i].isNull()) && (i < ROM_MAINBUFF_SIZE)); i++)
+		INFO(_romBuff[i].toString());
+	char buff[10];
+	sprintf(buff, "count: %d", i);
+	INFO(buff);
+
 }
