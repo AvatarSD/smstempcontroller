@@ -21,8 +21,10 @@ class NetworkWorker
 public:
 	NetworkWorker(DallasTemp & Sensors, HardwareData & data);
 
-	bool mainLoop();
+	void mainLoop();
 	bool refreshTime();
+
+	bool setupSms();
 
 private:
 	void loadROMs();

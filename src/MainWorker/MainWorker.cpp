@@ -66,8 +66,8 @@ void MainWorker::mainLoop()
 	debugSDcardLog.end();
 }
 
-void MainWorker::startingProcedure()
-{
-
-}
+//void MainWorker::startingProcedure()
+//{
+//
+//}
 

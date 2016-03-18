@@ -8,9 +8,6 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-/******************* NTC ************************/
-//#define TIMER_PERIOD 5			//in minutes
-#define NTC_REFRESH_PERIOD 24 	//in hours
 
 /************ Debug Settings ********************/
 #define DEBUG_TXINT USART3_TX_vect
@@ -56,6 +53,7 @@
 
 #define NUM_ATTEMP_TO_NTP_COMNNECT 3
 #define NUM_OF_FORCEON_ACK_ATTEMPT 2
+#define NUM_ATTEMP_TO_SMS_SETUP 2
 
 #define PWR_PORT PORTH
 #define PWR_DDR DDRH

@@ -46,8 +46,14 @@ NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
 	_gsm = &gsm;
 }
 
-bool NetworkWorker::mainLoop()
+void NetworkWorker::mainLoop()
 {
+#define SMS_BUFF_LEN 160
+
+	char smsBuff[SMS_BUFF_LEN];
+	char phoneBuff[PHONE_LEN];
+
+	if(smsIface.GetSMS(0, phoneBuff, smsBuff, SMS_BUFF_LEN))
 
 	return true;
 }
@@ -90,4 +96,13 @@ void NetworkWorker::saveNodes()
 				RULENODE_BUFF_SIZE * sizeof(RuleNode));
 }
 
-
+bool NetworkWorker::setupSms()
+{
+	for (int i = 0; i < NUM_ATTEMP_TO_SMS_SETUP; i++)
+		if (gsm.forceON())
+			if (gsm.isRegistered() == GSM::REG_REGISTERED)
+				if (smsIface.InitSMSMemory() > 0)
+					return true;
+	CRITICAL(F("Modem wasn't initialized"));
+	return false;
+}
