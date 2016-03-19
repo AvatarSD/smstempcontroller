@@ -661,7 +661,7 @@ GSM::RegistrationStatus GSM::CheckRegistration(void)
 				DEBUG(F("Status: Initialized"));
 			}
 			ret_val = REG_REGISTERED;
-			INFO(F("Status: Registered"));
+			DATA(F("Status: Registered"));
 		}
 		else
 		{
@@ -689,7 +689,7 @@ GSM::RegistrationStatus GSM::isRegistered(void)
 #define NUM_OF_ATTEMPT 40
 #define TIME_OF_ATTRMPT 10000
 
-	DEBUG(F("Checking registration..."));
+	DATA(F("Checking registration..."));
 	RegistrationStatus retVal;
 	for (int i = 0; i <= NUM_OF_ATTEMPT; i++)
 	{

@@ -44,20 +44,18 @@ void NetworkWorker::mainLoop()
 	while (!setupSms())
 		;
 
-	//if
-	INFO("-------------\r\nNew SMS!!");
 	char position = smsIface.IsSMSPresent(SMSGSM::SMS_ALL);
-	INFO(position);
-	SMSGSM::getsms_ret_val_enum ret = smsIface.GetSMS(position, phoneBuff,
+	auto ret = smsIface.GetSMS(position, phoneBuff,
 			smsBuff, SMS_BUFF_LEN); // == SMSGSM::GETSMS_UNREAD_SMS)
-	INFO(ret);
-	if (ret > 0)
+	if ((ret == SMSGSM::GETSMS_READ_SMS)||(ret == SMSGSM::GETSMS_UNREAD_SMS))
 	{
-
+		INFO("-------------\r\nNew SMS!!");
 		INFO(phoneBuff);
 		INFO(smsBuff);
 		//smsIface.DeleteSMS(position);
 	};
+
+	//smsIface.SendSMS("+380635765200", "Heloo!");
 
 }
 
@@ -68,7 +66,7 @@ bool NetworkWorker::refreshModemTimeFromNTP()
 			if (gsm.isRegistered() == GSM::REG_REGISTERED)
 				if (inetIface.refreshTime(NETWORK_AP, NTP_ADDR))
 					return true;
-	CRITICAL(F("Time wasn't connect at 10 attempts"));
+	CRITICAL(F("Time wasn't refreshed at several attempts"));
 	return false;
 }
 

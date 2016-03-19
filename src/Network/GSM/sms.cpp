@@ -201,6 +201,9 @@ char SMSGSM::IsSMSPresent(sms_type_enum required_status)
 	gsm.setCOMStatus(GSM::CLS_ATCMD);
 	ret_val = 0; // still not present
 
+	// Set text mode
+	//gsm.SendATCmdWaitResp("AT+CMGF=1", 1000, 50, "OK", 2);
+
 	switch (required_status)
 	{
 	case SMS_UNREAD:
@@ -637,10 +640,10 @@ char SMSGSM::InitSMSMemory(void)
 	ret_val = 0; // not initialized yet
 
 	// Disable messages about new SMS from the GSM module
-	gsm.SendATCmdWaitResp("AT+CNMI=2,0", 1000, 50, "OK", 2);
+	//gsm.SendATCmdWaitResp("AT+CNMI=2,0", 1000, 50, "OK", 2);
 
-	// Set text mode
-	gsm.SendATCmdWaitResp("AT+CMGF=1", 1000, 50, "OK", 2);
+//	// Set text mode
+//	gsm.SendATCmdWaitResp("AT+CMGF=1", 1000, 50, "OK", 2);
 
 	// send AT command to init memory for SMS in the SIM card
 	// response:

@@ -26,7 +26,7 @@ SIMCOM900::~SIMCOM900()
 
 bool SIMCOM900::forceON()
 {
-	DEBUG(F("Modem forceON"));
+	DATA(F("Modem forceON"));
 	if (isResponse())
 	{
 		setGSMStatus(GSM::GSM_READY);

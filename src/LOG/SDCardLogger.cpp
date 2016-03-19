@@ -53,7 +53,7 @@ int SDCardLogger::begin()
 
 	if (f_mount(&fatFs, "", 1) != FR_OK)
 	{
-		WARNING(F("SD card not mount"));
+		DATA(F("SD card not mount"));
 		return -3;
 	}
 	if (f_open(&logFile, getDateStr(convertFromUNIXtime(getUnixTime())), FA_WRITE | FA_OPEN_ALWAYS) != FR_OK)
@@ -72,7 +72,7 @@ int SDCardLogger::begin()
 
 int SDCardLogger::end()
 {
-	DEBUG(F("SD card unmount"));
+	DATA(F("SD card unmount"));
 	f_close(&logFile);
 
 	return 0;
