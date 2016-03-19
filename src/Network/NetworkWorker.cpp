@@ -151,6 +151,7 @@ void NetworkWorker::iterateNodes()
 				readingOk = true;
 				break;
 			}
+
 		if (readingOk == false)
 		{
 			char buff[100];
@@ -171,6 +172,5 @@ void NetworkWorker::iterateNodes()
 			smsIface.SendSMS(_nodeBuff[i].getPhone(), buff);
 		}
 	}
-
 }
 
