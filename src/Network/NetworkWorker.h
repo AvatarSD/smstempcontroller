@@ -42,6 +42,10 @@ private:
 	void printSMS(const char* msg, const char* phone);
 
 
+	void searchSensors(uint8_t searchAttempts);
+
+
+
 	SIMCOM900  gsm;
 	InetGSM inetIface;
 	SMSGSM  smsIface;

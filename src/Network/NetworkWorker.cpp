@@ -12,6 +12,8 @@
 #include "../init/rtc.h"
 #include "../config.h"
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 uint8_t eepromROMsBuff[ROM_MAINBUFF_SIZE * sizeof(ROM)] EEMEM;
 uint8_t eepromNodesBuff[RULENODE_BUFF_SIZE * sizeof(RuleNode)] EEMEM;
@@ -134,6 +136,31 @@ void NetworkWorker::printSMS(const char* msg, const char* phone)
 
 void NetworkWorker::parseSMS(const char* msg, const char* phone)
 {
+	if (strstr(msg, "search") == msg)
+	{
+		uint8_t attmpt = strtol(strchr(msg, ' ') + 1, NULL, 10);
+		if (attmpt <= 0)
+			attmpt = DEFAULT_SEARCH_ATTEMPTS;
+		else if (attmpt > MAX_SEARCH_ATTEMPTS)
+			attmpt = MAX_SEARCH_ATTEMPTS;
+		searchSensors(attmpt);
+	}
+	else if (strstr(msg, "status") == msg)
+	{
+
+	}
+	else if (strstr(msg, "setnode") == msg)
+	{
+
+	}
+	else if (strstr(msg, "shownode") == msg)
+	{
+
+	}
+	else if (strstr(msg, "deletenode") == msg)
+	{
+
+	}
 
 }
 
@@ -174,3 +201,26 @@ void NetworkWorker::iterateNodes()
 	}
 }
 
+void NetworkWorker::searchSensors(uint8_t searchAttempts)
+{
+	char buff[40];
+	sprintf(buff, "Search perform with %d attempts", searchAttempts);
+	INFO(buff);
+
+	memset(_romBuff, 0, ROM_MAINBUFF_SIZE * sizeof(ROM));
+
+	INFO(F("Saved sensor ROMs was cleaned"));
+
+	uint16_t sensorsCount = 0;
+	for (; searchAttempts > 0; searchAttempts--)
+		sensorsCount += sensors.searchAllTempSensors(_romBuff,
+		ROM_MAINBUFF_SIZE);
+
+	sprintf(buff, "New sensor founded: %d", sensorsCount);
+	INFO(buff);
+
+	INFO(F("Perform to saving founding ROMs in eeprom memory"));
+	saveROMs();
+	INFO(F("Saving successful"));
+
+}

@@ -32,13 +32,14 @@
 #define DALL_RXINT USART1_RX_vect
 #define DALL_PORT    UDR1
 
-#define DETECT_ERROR_COUNT 3
-
 #define DALL_PWR_PORT PORTA
 #define DALL_PWR_DDR DDRA
 #define DALL_PWR_PIN 0
 
+#define DETECT_ERROR_COUNT 3
 #define NUM_OF_READING_ATEMPT 3
+#define DEFAULT_SEARCH_ATTEMPTS 10
+#define MAX_SEARCH_ATTEMPTS 100
 
 /************ Network Settings ************/
 #define NETWORK_TXINT USART2_TX_vect

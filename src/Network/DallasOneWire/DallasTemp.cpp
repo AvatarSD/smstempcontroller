@@ -528,7 +528,7 @@ uint16_t DallasTemp::searchAllTempSensors(ROM* _mainbuf, uint16_t size)
 {
 	uint16_t newSensorsCount = 0, sensorsCount = 0;
 
-	INFO(F("Searching sensors..."));
+	DATA(F("Searching sensors..."));
 
 	if (_iface.OWReset() == FALSE)
 	{
@@ -554,11 +554,11 @@ uint16_t DallasTemp::searchAllTempSensors(ROM* _mainbuf, uint16_t size)
 				{
 					_mainbuf[i] = _iface.ROM_NO;
 					newSensorsCount++;
-#ifdef LEVEL_INFO
-					char buff[30];
-					sprintf(buff, "New sensor: %s", _iface.ROM_NO.toString());
-					INFO(buff);
-#endif
+//#ifdef LEVEL_INFO
+//					char buff[30];
+//					sprintf(buff, "New sensor: %s", _iface.ROM_NO.toString());
+//					INFO(buff);
+//#endif
 					break;
 				}
 
@@ -571,11 +571,11 @@ uint16_t DallasTemp::searchAllTempSensors(ROM* _mainbuf, uint16_t size)
 		}
 	}
 
-#ifdef LEVEL_INFO
-	char buf[20];
-	sprintf(buf, "Sensor founded: %d", sensorsCount);
-	INFO(buf);
-#endif
+//#ifdef LEVEL_INFO
+//	char buf[20];
+//	sprintf(buf, "Sensor founded: %d", sensorsCount);
+//	INFO(buf);
+//#endif
 
 	return newSensorsCount;
 }
