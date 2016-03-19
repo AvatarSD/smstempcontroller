@@ -700,7 +700,7 @@ bool InetGSM::refreshTime(const char* domain, const char* ntp)
 		gsm.setCOMStatus(GSM::CLS_FREE);
 		return false;
 	}
-	else INFO(F("SAPBR connected"));
+	else DEBUG(F("SAPBR connected"));
 
 	gsm.print(F("AT+SAPBR=2,1\r"));
 	if(gsm.WaitResp(3000, 2000, "OK") == GSM::RX_FINISHED_STR_RECV)
