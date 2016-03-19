@@ -44,15 +44,15 @@ void NetworkWorker::mainLoop()
 	while (!setupSms())
 		;
 
-	char position = smsIface.IsSMSPresent(SMSGSM::SMS_ALL);
+	char position = smsIface.IsSMSPresent(SMSGSM::SMS_UNREAD);
 	auto ret = smsIface.GetSMS(position, phoneBuff,
 			smsBuff, SMS_BUFF_LEN); // == SMSGSM::GETSMS_UNREAD_SMS)
-	if ((ret == SMSGSM::GETSMS_READ_SMS)||(ret == SMSGSM::GETSMS_UNREAD_SMS))
+	if (ret == SMSGSM::GETSMS_UNREAD_SMS)
 	{
-		INFO("-------------\r\nNew SMS!!");
+		smsIface.DeleteSMS(position);
+		debug("\r\n-------------\r\nNew SMS!!\r\n");
 		INFO(phoneBuff);
 		INFO(smsBuff);
-		//smsIface.DeleteSMS(position);
 	};
 
 	//smsIface.SendSMS("+380635765200", "Heloo!");

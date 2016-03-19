@@ -201,9 +201,6 @@ char SMSGSM::IsSMSPresent(sms_type_enum required_status)
 	gsm.setCOMStatus(GSM::CLS_ATCMD);
 	ret_val = 0; // still not present
 
-	// Set text mode
-	//gsm.SendATCmdWaitResp("AT+CMGF=1", 1000, 50, "OK", 2);
-
 	switch (required_status)
 	{
 	case SMS_UNREAD:
