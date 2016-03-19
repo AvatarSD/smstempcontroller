@@ -39,7 +39,6 @@ void MainWorker::mainLoop()
 {
 	debugSDcardLog.begin();
 	LED_ON;
-
 	static int lastDay = 0;
 	int currDay = convertFromUNIXtime(getUnixTime()).tm_day;
 	if (lastDay != currDay)
@@ -49,11 +48,9 @@ void MainWorker::mainLoop()
 		currDay = convertFromUNIXtime(getUnixTime()).tm_day;
 	}
 	lastDay = currDay;
-
+	wachdog.doCheckpoint();
 	_network.refreshInternalTimeFromModem();
-
 	_network.mainLoop();
-
 	LED_OFF;
 	debugSDcardLog.end();
 }
@@ -66,5 +63,7 @@ void MainWorker::startingProcedure()
 	_network.init();
 	_sensorsIface.DS2480B_Detect();
 	debugSDcardLog.end();
+
+	wachdog.begin(WDT_SEC);
 }
 

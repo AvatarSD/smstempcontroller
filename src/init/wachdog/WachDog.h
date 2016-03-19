@@ -19,7 +19,7 @@ public:
 	void end();
 	void doCheckpoint();
 	void setTimeout(uint16_t sec);
-	void _intReset();
+	void internalReset();
 
 private:
 	uint16_t _timeout;

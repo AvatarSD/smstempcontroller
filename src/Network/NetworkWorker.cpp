@@ -45,18 +45,17 @@ void NetworkWorker::mainLoop()
 		;
 
 	char position = smsIface.IsSMSPresent(SMSGSM::SMS_UNREAD);
-	auto ret = smsIface.GetSMS(position, phoneBuff,
-			smsBuff, SMS_BUFF_LEN); // == SMSGSM::GETSMS_UNREAD_SMS)
-	if (ret == SMSGSM::GETSMS_UNREAD_SMS)
+	auto ret = smsIface.GetSMS(position, phoneBuff, smsBuff, SMS_BUFF_LEN);
+	smsIface.DeleteSMS(position);
+	if ((ret == SMSGSM::GETSMS_READ_SMS) || (ret == SMSGSM::GETSMS_UNREAD_SMS))
 	{
-		smsIface.DeleteSMS(position);
-		debug("\r\n-------------\r\nNew SMS!!\r\n");
-		INFO(phoneBuff);
-		INFO(smsBuff);
+		printSMS(smsBuff, phoneBuff);
+		parseSMS(smsBuff, phoneBuff);
 	};
 
-	//smsIface.SendSMS("+380635765200", "Heloo!");
+	iterateNodes();
 
+	//smsIface.SendSMS("+380635765200", "Heloo!");
 }
 
 bool NetworkWorker::refreshModemTimeFromNTP()
@@ -123,4 +122,55 @@ void NetworkWorker::init()
 	sprintf(buff, "count: %d", i);
 	INFO(buff);
 
+	gsm.forceON();
 }
+
+void NetworkWorker::printSMS(const char* msg, const char* phone)
+{
+	char buff[200];
+	sprintf(buff, "New SMS: Ph:%s, Msg:%s", phone, msg);
+	INFO(buff);
+}
+
+void NetworkWorker::parseSMS(const char* msg, const char* phone)
+{
+
+}
+
+void NetworkWorker::iterateNodes()
+{
+	for (uint16_t i = 0;
+			((i < RULENODE_BUFF_SIZE) && (!_nodeBuff[i].getRom().isNull()));
+			i++)
+	{
+		double temperarure;
+		bool readingOk = false;
+		for (uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
+			if (sensors.readSensor(_nodeBuff[i].getRom(), temperarure))
+			{
+				readingOk = true;
+				break;
+			}
+		if (readingOk == false)
+		{
+			char buff[100];
+			sprintf(buff, "Sensor wasn't read: %s",
+					_nodeBuff[i].getRom().toString());
+			WARNING(buff);
+			smsIface.SendSMS(_nodeBuff[i].getPhone(), buff);
+			continue;
+		}
+
+		if ((temperarure < _nodeBuff[i].getMin())
+				|| (temperarure > _nodeBuff[i].getMax()))
+		{
+			char buff[100];
+			sprintf(buff, "Out of range [%d;%d]: %s", _nodeBuff[i].getMin(),
+					_nodeBuff[i].getMax(), _nodeBuff[i].getRom().toString());
+			WARNING(buff);
+			smsIface.SendSMS(_nodeBuff[i].getPhone(), buff);
+		}
+	}
+
+}
+

@@ -116,6 +116,6 @@
 #define RULENODE_BUFF_SIZE 128
 
 /**************** WachDog *****************/
-#define WDT_SEC 360
+#define WDT_SEC 30
 
 #endif /* CONFIG_H_ */

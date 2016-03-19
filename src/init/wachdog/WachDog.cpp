@@ -14,7 +14,7 @@ WachDog wachdog;
 
 ISR(TIMER5_CAPT_vect)
 {
-	wachdog._intReset();
+	wachdog.internalReset();
 }
 
 WachDog::WachDog() :
@@ -90,7 +90,7 @@ void WachDog::end()
 	wdt_disable();
 }
 
-void WachDog::_intReset()
+void WachDog::internalReset()
 {
 	_curr--;
 	if (_curr > 0)

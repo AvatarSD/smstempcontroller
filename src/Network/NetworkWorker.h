@@ -36,6 +36,11 @@ private:
 
 	bool setupSms();
 
+	void parseSMS(const char* msg, const char* phone);
+	void iterateNodes();
+
+	void printSMS(const char* msg, const char* phone);
+
 
 	SIMCOM900  gsm;
 	InetGSM inetIface;
