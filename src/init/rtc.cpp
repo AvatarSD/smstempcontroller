@@ -10,9 +10,10 @@
 #include "avr/interrupt.h"
 #include "stdio.h"
 
+#include "../LOG/debug.h"
+
 /** Settings **/
 #define INT_VECTOR TIMER3_CAPT_vect
-//#define TIM_ TIMER3_CAPT_vect
 /**************/
 
 volatile unsigned long long int currentTime = 0;
@@ -110,8 +111,6 @@ const tm & convertFromUNIXtime(unsigned long long int time) //const time_t *time
 
 const unsigned long long int & convertToUNIXtime(const tm & time)
 {
-	static unsigned long long int UNIXdate;
-
 #define SEC_IN_MIN	60ul
 #define MIN_IN_HH 	60ul
 #define HH_IN_DD	24ul
@@ -121,6 +120,9 @@ const unsigned long long int & convertToUNIXtime(const tm & time)
 #define SEC_IN_YY 	SEC_IN_DD*DD_IN_YY
 
 #define YEAR0 1970
+
+	static unsigned long long int UNIXdate;
+	UNIXdate = 0;
 
 	// if the current year is a leap one -> add one day (86400 sec)
 	if ((!(time.tm_year % 4)) && (time.tm_mon > 2))
@@ -137,7 +139,7 @@ const unsigned long long int & convertToUNIXtime(const tm & time)
 	{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	int mon = time.tm_mon;
 	mon--; // dec the current month (find how many months have passed from the current year)
-	while (time.tm_mon > 0) // sum the days from January to the current month
+	while (mon > 0) // sum the days from January to the current month
 		UNIXdate += calendar[--mon] * SEC_IN_DD; // add the number of days from a month * 86400 sec
 
 	return UNIXdate;

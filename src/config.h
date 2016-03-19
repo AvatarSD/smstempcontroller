@@ -45,7 +45,7 @@
 #define NETWORK_RXINT USART2_RX_vect
 #define NETWORK_PORT    UDR2
 
-#define NETWORK_AP "" //www.kyivstar.net"
+#define NETWORK_AP "www.kyivstar.net"
 #define NTP_ADDR "pool.ntp.org"
 
 //#define NETWORK_SERVER_ADDR "termo.big-gps.com"//"avatarsd.com"

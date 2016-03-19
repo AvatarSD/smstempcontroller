@@ -16,6 +16,6 @@ int main()
 
 	worker.startingProcedure();
 
-	while (true);
+	while (true)
 		worker.mainLoop();
 }

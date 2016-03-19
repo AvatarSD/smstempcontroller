@@ -16,7 +16,6 @@
 uint8_t eepromROMsBuff[ROM_MAINBUFF_SIZE * sizeof(ROM)] EEMEM;
 uint8_t eepromNodesBuff[RULENODE_BUFF_SIZE * sizeof(RuleNode)] EEMEM;
 
-
 UART * _gsm;
 ISR(NETWORK_RXINT)
 {
@@ -28,10 +27,10 @@ ISR(NETWORK_TXINT)
 }
 
 NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
-		gsm(NETWORK_PORT), inetIface(gsm), smsIface(gsm), sensors(Sensors), HWdata(data)
+		gsm(NETWORK_PORT), inetIface(gsm), smsIface(gsm), sensors(Sensors), HWdata(
+				data)
 {
 	_gsm = &gsm;
-
 
 }
 
@@ -42,21 +41,23 @@ void NetworkWorker::mainLoop()
 	char smsBuff[SMS_BUFF_LEN];
 	char phoneBuff[PHONE_LEN];
 
-//	if(smsIface.GetSMS(0, phoneBuff, smsBuff, SMS_BUFF_LEN))
-//	{};
+	while (!setupSms())
+		;
 
+	//if
+	INFO("-------------\r\nNew SMS!!");
+	char position = smsIface.IsSMSPresent(SMSGSM::SMS_ALL);
+	INFO(position);
+	SMSGSM::getsms_ret_val_enum ret = smsIface.GetSMS(position, phoneBuff,
+			smsBuff, SMS_BUFF_LEN); // == SMSGSM::GETSMS_UNREAD_SMS)
+	INFO(ret);
+	if (ret > 0)
+	{
 
-
-
-
-
-
-
-
-
-
-
-
+		INFO(phoneBuff);
+		INFO(smsBuff);
+		//smsIface.DeleteSMS(position);
+	};
 
 }
 
@@ -77,25 +78,25 @@ bool NetworkWorker::refreshTime()
 void NetworkWorker::loadROMs()
 {
 	eeprom_read_block(_romBuff, eepromROMsBuff,
-			ROM_MAINBUFF_SIZE * sizeof(ROM));
+	ROM_MAINBUFF_SIZE * sizeof(ROM));
 }
 
 void NetworkWorker::saveROMs()
 {
 	eeprom_write_block(_romBuff, eepromROMsBuff,
-			ROM_MAINBUFF_SIZE * sizeof(ROM));
+	ROM_MAINBUFF_SIZE * sizeof(ROM));
 }
 
 void NetworkWorker::loadNodes()
 {
 	eeprom_read_block(_nodeBuff, eepromNodesBuff,
-			RULENODE_BUFF_SIZE * sizeof(RuleNode));
+	RULENODE_BUFF_SIZE * sizeof(RuleNode));
 }
 
 void NetworkWorker::saveNodes()
 {
 	eeprom_write_block(_nodeBuff, eepromNodesBuff,
-			RULENODE_BUFF_SIZE * sizeof(RuleNode));
+	RULENODE_BUFF_SIZE * sizeof(RuleNode));
 }
 
 bool NetworkWorker::setupSms()

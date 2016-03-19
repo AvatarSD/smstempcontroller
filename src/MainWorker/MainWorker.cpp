@@ -33,7 +33,6 @@ MainWorker::MainWorker() :
 				HWdata)
 {
 	_iface = &_sensorsIface;
-
 }
 
 void MainWorker::mainLoop()
