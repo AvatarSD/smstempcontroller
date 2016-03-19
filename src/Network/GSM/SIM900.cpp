@@ -844,7 +844,7 @@ const tm & SIMCOM900::getDateTime()
 	WaitResp(5000, 500);
 	char buf[21];
 	getString("\"", "\"", buf, 20);
-	INFO(buf);
+	//INFO(buf);
 	int zz;
 	sscanf(buf, "%d/%d/%d,%d:%d:%d+%d", &time.tm_year, &time.tm_mon,
 			&time.tm_day, &time.tm_hour, &time.tm_min, &time.tm_sec, &zz);

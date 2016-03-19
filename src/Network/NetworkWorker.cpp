@@ -61,18 +61,20 @@ void NetworkWorker::mainLoop()
 
 }
 
-bool NetworkWorker::refreshTime()
+bool NetworkWorker::refreshModemTimeFromNTP()
 {
 	for (int i = 0; i < NUM_ATTEMP_TO_NTP_COMNNECT; i++)
 		if (gsm.forceON())
 			if (gsm.isRegistered() == GSM::REG_REGISTERED)
 				if (inetIface.refreshTime(NETWORK_AP, NTP_ADDR))
-				{
-					setUnixTime(convertToUNIXtime(gsm.getDateTime()));
 					return true;
-				}
 	CRITICAL(F("Time wasn't connect at 10 attempts"));
 	return false;
+}
+
+void NetworkWorker::refreshInternalTimeFromModem()
+{
+	setUnixTime(convertToUNIXtime(gsm.getDateTime()));
 }
 
 void NetworkWorker::loadROMs()

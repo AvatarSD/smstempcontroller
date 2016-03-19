@@ -22,7 +22,9 @@ public:
 	NetworkWorker(DallasTemp & Sensors, HardwareData & data);
 
 	void mainLoop();
-	bool refreshTime();
+
+	bool refreshModemTimeFromNTP();
+	void refreshInternalTimeFromModem();
 
 	void init();
 
