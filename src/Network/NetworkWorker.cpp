@@ -377,10 +377,18 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 			return;
 		}
 
+		//temp node
+		RuleNode node(_romBuff[romNum - 1], minTemp, maxTemp, phoneBuff);
+
 		i = 0;
 		for (; ((i < RULENODE_BUFF_SIZE) && (!_nodeBuff[i].getRom().isNull()));
 				i++)
-			;
+			if (_nodeBuff[i] == node)
+			{
+				INFO(F("This node already exists"));
+				smsIface.SendSMS(phone, "This node already exists");
+				return;
+			}
 		if (i == RULENODE_BUFF_SIZE - 1)
 		{
 			INFO(F("Not enough memory to append node"));
@@ -388,10 +396,7 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 		}
 		else
 		{
-			_nodeBuff[i].setRom(_romBuff[romNum - 1]);
-			_nodeBuff[i].setMin(minTemp);
-			_nodeBuff[i].setMax(maxTemp);
-			_nodeBuff[i].setPhone(phoneBuff);
+			_nodeBuff[i] = node;
 			saveNodes();
 			sprintf(smsBuff, "Node %d appended:\r\n%d: %s\r\nMin temp: "
 					"%d.0`C\r\nMax temp: %d.0`C\r\nPh: %s", i + 1, romNum,

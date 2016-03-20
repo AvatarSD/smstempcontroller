@@ -70,3 +70,30 @@ void RuleNode::zeroing()
 	min = 0;
 	max = 0;
 }
+
+RuleNode::RuleNode(const ROM& rom, int8_t min, int8_t max, const char* phone) :
+		RuleNode()
+{
+	setRom(rom);
+	setMin(min);
+	setMax(max);
+	setPhone(phone);
+}
+
+bool RuleNode::operator ==(const RuleNode& cmp) const
+{
+	if (this->rom != cmp.getRom())
+		return false;
+	if (this->min != cmp.getMin())
+		return false;
+	if (this->max != cmp.getMax())
+		return false;
+	if (strcmp(this->phone, cmp.getPhone()) != 0)
+		return false;
+	return true;
+}
+
+bool RuleNode::operator !=(const RuleNode& cmp) const
+{
+	return !operator ==(cmp);
+}

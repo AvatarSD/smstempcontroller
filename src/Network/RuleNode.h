@@ -17,6 +17,7 @@ class RuleNode
 {
 public:
 	RuleNode();
+	RuleNode(const ROM& rom, int8_t min, int8_t max, const char * phone);
 	~RuleNode();
 
 	int8_t getMax() const;
@@ -29,6 +30,9 @@ public:
 	void setRom(const ROM& rom);
 
 	void zeroing();
+
+	bool operator ==(const RuleNode& cmp) const;
+	bool operator !=(const RuleNode& cmp) const;
 
 private:
 	ROM rom;
