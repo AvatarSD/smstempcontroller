@@ -51,6 +51,8 @@ private:
 	int8_t deleteNode(uint16_t num);
 	void returnHelp(const char* phone);
 
+	uint16_t getRomBuffSize();
+	uint16_t getNodeBuffSize();
 
 	char smsBuff[SMS_BUFF_LEN];
 	char phoneBuff[PHONE_LEN];
