@@ -52,9 +52,7 @@ void NetworkWorker::mainLoop()
 		parseSMS(smsBuff, phoneBuff);
 	};
 
-	iterateNodes();
-
-	//smsIface.SendSMS("+380635765200", "Heloo!");
+	//iterateNodes();
 }
 
 bool NetworkWorker::refreshModemTimeFromNTP()
@@ -173,6 +171,8 @@ void NetworkWorker::parseSMS(const char* msg, const char* phone)
 	}
 	else if (strstr(msg, "help") == msg)
 		returnHelp(phone);
+	else
+		INFO(F("Invalid parse messege"));
 }
 
 void NetworkWorker::iterateNodes()
@@ -218,7 +218,7 @@ void NetworkWorker::searchSensors(uint8_t searchAttempts, const char* phone)
 	sprintf(buff, "Search perform with %d attempts", searchAttempts);
 	INFO(buff);
 
-	smsIface.SendSMS(phone, "Searches perform...");
+	smsIface.SendSMS(phone, "Searches perform... Wait");
 
 	memset(_romBuff, 0, ROM_MAINBUFF_SIZE * sizeof(ROM));
 	INFO(F("Saved sensor ROMs was cleaned"));
@@ -226,30 +226,36 @@ void NetworkWorker::searchSensors(uint8_t searchAttempts, const char* phone)
 	uint16_t sensorsCount = 0;
 	for (; searchAttempts > 0; searchAttempts--)
 	{
-		int16_t retVal = sensors.searchAllTempSensors(_romBuff,
-		ROM_MAINBUFF_SIZE);
+		uint16_t newSensors;
+		int8_t retVal = sensors.searchAllTempSensors(_romBuff,
+		ROM_MAINBUFF_SIZE, newSensors);
 		wachdog.doCheckpoint();
-		if (retVal >= 0)
+		if (retVal == 0)
 		{
-			sensorsCount += retVal;
-			for (uint16_t i = sensorsCount - retVal; i < sensorsCount; i++)
+			sensorsCount += newSensors;
+			for (uint16_t i = sensorsCount - newSensors; i < sensorsCount; i++)
 			{
 				char buff[30];
 				sprintf(buff, "New sensor: %s", _romBuff[i].toString());
 				INFO(buff);
 			}
 		}
-		else
+		else if (retVal == -1)
 		{
 			CRITICAL(F("Line error"));
 			smsIface.SendSMS(phone, "Critical error! Line not answer.");
 			loadROMs();
 			return;
 		}
+		else if (retVal == -2)
+		{
+			smsIface.SendSMS(phone, "Not enough memory for all sensors!");
+			break;
+		}
 
 	}
 
-	sprintf(buff, "New sensor founded: %d", sensorsCount);
+	sprintf(buff, "Sensors founded: %d", sensorsCount);
 	INFO(buff);
 
 	INFO(F("Perform to saving founding ROMs in eeprom memory"));
@@ -264,6 +270,7 @@ void NetworkWorker::searchSensors(uint8_t searchAttempts, const char* phone)
 		uint16_t byteCounter = strlen(smsBuff);
 		for (uint16_t i = 0; i < sensorsCount; i++)
 		{
+			wachdog.doCheckpoint();
 			char tempBuff[25];
 			byteCounter += sprintf(tempBuff, "%d: %s\r\n", i + 1,
 					_romBuff[i].toString());
@@ -283,10 +290,116 @@ void NetworkWorker::searchSensors(uint8_t searchAttempts, const char* phone)
 
 void NetworkWorker::returnStatus(const char* arg, const char* phone)
 {
+	//todo parse args
+
+	INFO(F("Sensors reading... Wait"));
+	smsIface.SendSMS(phone, "Sensors reading... Wait");
+
+	sprintf(smsBuff, "Status is: \r\n");
+	uint16_t byteCounter = strlen(smsBuff);
+	for (uint16_t i = 0; ((i < ROM_MAINBUFF_SIZE) && (!_romBuff[i].isNull()));
+			i++)
+	{
+		wachdog.doCheckpoint();
+		char buff[35];
+
+		double temp;
+		if (sensors.readSensor(_romBuff[i], temp))
+			byteCounter += sprintf(buff, "%d: %s: %4.1f`C\r\n", i + 1,
+					_romBuff[i].toString(), temp);
+
+		else
+			byteCounter += sprintf(buff, "%d: %s: ERROR\r\n", i + 1,
+					_romBuff[i].toString());
+
+		if (byteCounter < SMS_BUFF_LEN - 1)
+			strcpy(smsBuff + strlen(smsBuff), buff);
+		else
+		{
+			smsIface.SendSMS(phone, smsBuff);
+			strcpy(smsBuff, buff);
+			byteCounter = strlen(smsBuff);
+		}
+
+		buff[strlen(buff) - 2] = '\0';
+		INFO(buff);
+	}
+	if (byteCounter != 0)
+		smsIface.SendSMS(phone, smsBuff);
 }
 
 void NetworkWorker::setNode(const char* arg, const char* phone)
 {
+	uint16_t romNum;
+	int16_t minTemp, maxTemp;
+	char phoneBuff[PHONE_LEN + 1];
+
+#define XSTR(A) STR(A)
+#define STR(A) #A
+	int8_t argNum = sscanf(arg, "%u,%d,%d,%" XSTR(PHONE_LEN) "s", &romNum,
+			&minTemp, &maxTemp, phoneBuff);
+
+	if ((argNum == 3) || (argNum == 4))
+	{
+		if (argNum == 3)
+			strcpy(phoneBuff, phone);
+
+		//check phone number length
+		if (strlen(phoneBuff) == PHONE_LEN)
+		{
+			INFO(F("Phone number too long"));
+			smsIface.SendSMS(phone, "Phone number too long");
+			return;
+		}
+
+		//check number of rom
+		uint16_t i = 0;
+		for (; ((i < ROM_MAINBUFF_SIZE) && (!_romBuff[i].isNull())); i++)
+			;
+		if ((romNum > i) || (romNum <= 0))
+		{
+			INFO(F("Invalid number of sensor"));
+			smsIface.SendSMS(phone, "Invalid number of sensor");
+			return;
+		}
+
+		//check for range
+		if (minTemp >= maxTemp)
+		{
+			INFO(F("Invalid temperature range"));
+			smsIface.SendSMS(phone, "Invalid temperature range");
+			return;
+		}
+
+		i = 0;
+		for (; ((i < RULENODE_BUFF_SIZE) && (!_nodeBuff[i].getRom().isNull()));
+				i++)
+			;
+		if (i == RULENODE_BUFF_SIZE - 1)
+		{
+			INFO(F("Not enough memory to append node"));
+			smsIface.SendSMS(phone, "Not enough memory to append node");
+		}
+		else
+		{
+			_nodeBuff[i].setRom(_romBuff[romNum - 1]);
+			_nodeBuff[i].setMin(minTemp);
+			_nodeBuff[i].setMax(maxTemp);
+			_nodeBuff[i].setPhone(phoneBuff);
+			saveNodes();
+			sprintf(smsBuff,
+					"Node appended:\r\n%s\r\nMin temp: %d.0`C\r\nMax temp: %d.0`C\r\nPh: %s",
+					_nodeBuff[i].getRom().toString(), _nodeBuff[i].getMin(),
+					_nodeBuff[i].getMax(), _nodeBuff[i].getPhone());
+			INFO(smsBuff);
+			smsIface.SendSMS(phone, smsBuff);
+		}
+	}
+	else
+	{
+		INFO(F("Arguments not valid"));
+		smsIface.SendSMS(phone, "Arguments not valid");
+	}
 }
 
 void NetworkWorker::showNode(const char* arg, const char* phone)

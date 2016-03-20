@@ -524,9 +524,9 @@ float DallasTemp::calculateTemperature(const ROM & deviceAddress,
 	return -127;
 }
 
-int16_t DallasTemp::searchAllTempSensors(ROM* _mainbuf, uint16_t size)
+int8_t DallasTemp::searchAllTempSensors(ROM* _mainbuf, uint16_t size, uint16_t & newSensorsCount)
 {
-	uint16_t newSensorsCount = 0; //, sensorsCount = 0;
+	newSensorsCount = 0; //, sensorsCount = 0;
 
 	DATA(F("Searching sensors..."));
 
@@ -553,6 +553,8 @@ int16_t DallasTemp::searchAllTempSensors(ROM* _mainbuf, uint16_t size)
 					newSensorsCount++;
 					break;
 				}
+				else if (i == size - 1)
+					return -2;
 			}
 		else
 		{
@@ -561,5 +563,5 @@ int16_t DallasTemp::searchAllTempSensors(ROM* _mainbuf, uint16_t size)
 		}
 	}
 
-	return newSensorsCount;
+	return 0;
 }
