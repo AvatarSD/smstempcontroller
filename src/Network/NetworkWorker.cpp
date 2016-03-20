@@ -297,8 +297,8 @@ void NetworkWorker::returnStatus(const char* arg, const char* phone)
 
 	sprintf(smsBuff, "Status is: \r\n");
 	uint16_t byteCounter = strlen(smsBuff);
-	for (uint16_t i = 0; ((i < ROM_MAINBUFF_SIZE) && (!_romBuff[i].isNull()));
-			i++)
+	uint16_t i = 0;
+	for (; ((i < ROM_MAINBUFF_SIZE) && (!_romBuff[i].isNull())); i++)
 	{
 		wachdog.doCheckpoint();
 		char buff[35];
@@ -323,6 +323,12 @@ void NetworkWorker::returnStatus(const char* arg, const char* phone)
 
 		buff[strlen(buff) - 2] = '\0';
 		INFO(buff);
+	}
+	if (i == 0)
+	{
+		smsIface.SendSMS(phone,
+				"No any sensors available. Please, do \"search\".");
+		return;
 	}
 	if (byteCounter != 0)
 		smsIface.SendSMS(phone, smsBuff);
@@ -387,8 +393,8 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 			_nodeBuff[i].setMax(maxTemp);
 			_nodeBuff[i].setPhone(phoneBuff);
 			saveNodes();
-			sprintf(smsBuff,
-					"Node appended:\r\n%s\r\nMin temp: %d.0`C\r\nMax temp: %d.0`C\r\nPh: %s",
+			sprintf(smsBuff, "Node %d appended:\r\n%d: %s\r\nMin temp: "
+					"%d.0`C\r\nMax temp: %d.0`C\r\nPh: %s", i + 1, romNum,
 					_nodeBuff[i].getRom().toString(), _nodeBuff[i].getMin(),
 					_nodeBuff[i].getMax(), _nodeBuff[i].getPhone());
 			INFO(smsBuff);
@@ -404,7 +410,6 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 
 void NetworkWorker::showNode(const char* arg, const char* phone)
 {
-
 	if (arg == NULL)
 	{
 		INFO(F("Need argument"));
@@ -412,29 +417,38 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 		return;
 	}
 
-	//sprintf(smsBuff, "Node(s) count: %d\r\n" );
-	uint16_t byteCounter = strlen(smsBuff);
-	for (uint16_t i = 0;
-			((i < RULENODE_BUFF_SIZE) && (!_nodeBuff[i].getRom().isNull()));
-			i++)
+	char argBuff[PHONE_LEN];
+	if (strlen(arg) > PHONE_LEN - 1)
+	{
+		INFO(F("Argument too long"));
+		smsIface.SendSMS(phone, "Argument too long");
+		return;
+	}
+
+	strcpy(argBuff, arg);
+
+	uint16_t byteCounter = 0;
+	smsBuff[0] = 0;
+	uint16_t i = 0;
+	for (; ((i < RULENODE_BUFF_SIZE) && (!_nodeBuff[i].getRom().isNull())); i++)
 	{
 		wachdog.doCheckpoint();
 
-		uint8_t pos;
-		if (strcmp(arg, "all"))
+		uint16_t pos;
+		if (strstr(argBuff, "all") == argBuff)
 		{
 		}
-		else if (sscanf(arg, "%u", &pos) == 1)
+		else if (sscanf(argBuff, "%u", &pos) == 1)
 		{
 			if (_nodeBuff[i].getRom() != _romBuff[pos])
-				return;
+				continue;
 		}
-		else if (strcmp(_nodeBuff[i].getPhone(), arg) != 0)
-			return;
+		else if (strcmp(_nodeBuff[i].getPhone(), argBuff) != 0)
+			continue;
 
 		char tempBuff[60];
-		byteCounter += sprintf(tempBuff, "%s, Min: %d, Max: %d, Ph: %s\r\n",
-				_nodeBuff[i].getRom().toString(), _nodeBuff[i].getMin(),
+		byteCounter += sprintf(tempBuff, "%d: %s, Min: %d, Max: %d, Ph: %s\r\n",
+				i + 1, _nodeBuff[i].getRom().toString(), _nodeBuff[i].getMin(),
 				_nodeBuff[i].getMax(), _nodeBuff[i].getPhone());
 
 		if (byteCounter < SMS_BUFF_LEN - 1)
@@ -448,6 +462,8 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 	}
 	if (byteCounter != 0)
 		smsIface.SendSMS(phone, smsBuff);
+	if (i == 0)
+		smsIface.SendSMS(phone, "No any node in memory");
 }
 
 void NetworkWorker::deleteNode(const char* arg, const char* phone)

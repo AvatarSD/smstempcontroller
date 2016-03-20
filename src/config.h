@@ -113,8 +113,8 @@
 #define LED_TRN //PORTB ^= (1<<PORTB7)
 
 /************* MainBuf Size ***************/
-#define ROM_MAINBUFF_SIZE 64 //max sensor size
-#define RULENODE_BUFF_SIZE 128
+#define ROM_MAINBUFF_SIZE 32 //max sensor size
+#define RULENODE_BUFF_SIZE 64
 
 /**************** WachDog *****************/
 #define WDT_SEC 30

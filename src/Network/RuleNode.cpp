@@ -52,8 +52,10 @@ const ROM& RuleNode::getRom() const
 
 void RuleNode::setPhone(const char* phone)
 {
-	for (uint8_t i = 0; ((i < PHONE_LEN) && (phone[i] != '\0')); i++)
+	uint8_t i = 0;
+	for (; ((i < PHONE_LEN) && (phone[i] != '\0')); i++)
 		this->phone[i] = phone[i];
+	this->phone[i] = '\0';
 }
 
 void RuleNode::setRom(const ROM& rom)
