@@ -17,6 +17,7 @@ public:
 	const unsigned char& operator [](int i) const;
 	bool operator < (const ROM& cmp) const;
 	bool operator == (const ROM& cmp) const;
+	bool operator != (const ROM& cmp) const;
 	bool isNull() const;
 	const unsigned long long int& operator &() const;
 	const char* toString() const;

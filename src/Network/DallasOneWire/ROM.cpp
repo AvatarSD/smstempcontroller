@@ -71,7 +71,7 @@ bool ROM::operator ==(const ROM& cmp) const
 bool ROM::isNull() const
 {
 	for (uint8_t i = 0; i < 8; i++)
-		if ((ROM_NO[i] != 0x00)&&(ROM_NO[i] != 0xFF)&&(ROM_NO[i] != 0x01))
+		if ((ROM_NO[i] != 0x00) && (ROM_NO[i] != 0xFF) && (ROM_NO[i] != 0x01))
 			return false;
 	return true;
 }
@@ -85,11 +85,16 @@ void ROM::zeroing()
 bool ROM::operator =(const char * str)
 {
 
-		sscanf(str, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &ROM_NO[0], &ROM_NO[1],
-				&ROM_NO[2], &ROM_NO[3], &ROM_NO[4], &ROM_NO[5], &ROM_NO[6],
-				&ROM_NO[7]);
+	sscanf(str, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &ROM_NO[0],
+			&ROM_NO[1], &ROM_NO[2], &ROM_NO[3], &ROM_NO[4], &ROM_NO[5],
+			&ROM_NO[6], &ROM_NO[7]);
 
 //	sscanf(str, "%llx", (unsigned long long *)ROM_NO);
 
 	return true;
+}
+
+bool ROM::operator !=(const ROM& cmp) const
+{
+	return !this->operator ==(cmp);
 }

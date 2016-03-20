@@ -42,7 +42,7 @@ void NetworkWorker::mainLoop()
 	while (!setupSms())
 		;
 
-	char position = smsIface.IsSMSPresent(SMSGSM::SMS_UNREAD);
+	char position = smsIface.IsSMSPresent(SMSGSM::SMS_ALL);
 	// issues not all sms parse
 	auto ret = smsIface.GetSMS(position, phoneBuff, smsBuff, SMS_BUFF_LEN);
 	smsIface.DeleteSMS(position);
@@ -404,6 +404,50 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 
 void NetworkWorker::showNode(const char* arg, const char* phone)
 {
+
+	if (arg == NULL)
+	{
+		INFO(F("Need argument"));
+		smsIface.SendSMS(phone, "Need argument");
+		return;
+	}
+
+	//sprintf(smsBuff, "Node(s) count: %d\r\n" );
+	uint16_t byteCounter = strlen(smsBuff);
+	for (uint16_t i = 0;
+			((i < RULENODE_BUFF_SIZE) && (!_nodeBuff[i].getRom().isNull()));
+			i++)
+	{
+		wachdog.doCheckpoint();
+
+		uint8_t pos;
+		if (strcmp(arg, "all"))
+		{
+		}
+		else if (sscanf(arg, "%u", &pos) == 1)
+		{
+			if (_nodeBuff[i].getRom() != _romBuff[pos])
+				return;
+		}
+		else if (strcmp(_nodeBuff[i].getPhone(), arg) != 0)
+			return;
+
+		char tempBuff[60];
+		byteCounter += sprintf(tempBuff, "%s, Min: %d, Max: %d, Ph: %s\r\n",
+				_nodeBuff[i].getRom().toString(), _nodeBuff[i].getMin(),
+				_nodeBuff[i].getMax(), _nodeBuff[i].getPhone());
+
+		if (byteCounter < SMS_BUFF_LEN - 1)
+			strcpy(smsBuff + strlen(smsBuff), tempBuff);
+		else
+		{
+			smsIface.SendSMS(phone, smsBuff);
+			strcpy(smsBuff, tempBuff);
+			byteCounter = strlen(smsBuff);
+		}
+	}
+	if (byteCounter != 0)
+		smsIface.SendSMS(phone, smsBuff);
 }
 
 void NetworkWorker::deleteNode(const char* arg, const char* phone)
