@@ -8,13 +8,15 @@
 #ifndef NETWORK_NETWORKWORKER_H_
 #define NETWORK_NETWORKWORKER_H_
 
-
 #include "GSM/sms.h"
 #include "GSM/inetGSM.h"
 #include "GSM/SIM900.h"
 #include "DallasOneWire/DallasTemp.h"
 #include "HardwareData/HardwareData.h"
 #include "RuleNode.h"
+
+#define SMS_BUFF_LEN 160
+
 
 class NetworkWorker
 {
@@ -42,9 +44,10 @@ private:
 	void printSMS(const char* msg, const char* phone);
 
 
-	void searchSensors(uint8_t searchAttempts);
+	void searchSensors(uint8_t searchAttempts, const char* phone);
 
-
+	char smsBuff[SMS_BUFF_LEN];
+	char phoneBuff[PHONE_LEN];
 
 	SIMCOM900  gsm;
 	InetGSM inetIface;

@@ -30,7 +30,7 @@ public:
 	bool readSensor(const ROM & sensorRom, double & retTemp);
 
 	/****************/
-	uint16_t searchAllTempSensors(ROM * buff, uint16_t size);
+	int16_t searchAllTempSensors(ROM * buff, uint16_t size);
 
 
 private:

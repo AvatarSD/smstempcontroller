@@ -11,6 +11,7 @@
 #include "../LOG/debug.h"
 #include "../init/rtc.h"
 #include "../config.h"
+#include "../init/wachdog/WachDog.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -38,15 +39,11 @@ NetworkWorker::NetworkWorker(DallasTemp & Sensors, HardwareData & data) :
 
 void NetworkWorker::mainLoop()
 {
-#define SMS_BUFF_LEN 160
-
-	char smsBuff[SMS_BUFF_LEN];
-	char phoneBuff[PHONE_LEN];
-
 	while (!setupSms())
 		;
 
 	char position = smsIface.IsSMSPresent(SMSGSM::SMS_UNREAD);
+	// issues not all sms parse
 	auto ret = smsIface.GetSMS(position, phoneBuff, smsBuff, SMS_BUFF_LEN);
 	smsIface.DeleteSMS(position);
 	if ((ret == SMSGSM::GETSMS_READ_SMS) || (ret == SMSGSM::GETSMS_UNREAD_SMS))
@@ -143,7 +140,7 @@ void NetworkWorker::parseSMS(const char* msg, const char* phone)
 			attmpt = DEFAULT_SEARCH_ATTEMPTS;
 		else if (attmpt > MAX_SEARCH_ATTEMPTS)
 			attmpt = MAX_SEARCH_ATTEMPTS;
-		searchSensors(attmpt);
+		searchSensors(attmpt, phone);
 	}
 	else if (strstr(msg, "status") == msg)
 	{
@@ -161,7 +158,10 @@ void NetworkWorker::parseSMS(const char* msg, const char* phone)
 	{
 
 	}
+	else if (strstr(msg, "help") == msg)
+	{
 
+	}
 }
 
 void NetworkWorker::iterateNodes()
@@ -201,20 +201,42 @@ void NetworkWorker::iterateNodes()
 	}
 }
 
-void NetworkWorker::searchSensors(uint8_t searchAttempts)
+void NetworkWorker::searchSensors(uint8_t searchAttempts, const char* phone)
 {
 	char buff[40];
 	sprintf(buff, "Search perform with %d attempts", searchAttempts);
 	INFO(buff);
 
-	memset(_romBuff, 0, ROM_MAINBUFF_SIZE * sizeof(ROM));
+	smsIface.SendSMS(phone, "Searches perform...");
 
+	memset(_romBuff, 0, ROM_MAINBUFF_SIZE * sizeof(ROM));
 	INFO(F("Saved sensor ROMs was cleaned"));
 
 	uint16_t sensorsCount = 0;
 	for (; searchAttempts > 0; searchAttempts--)
-		sensorsCount += sensors.searchAllTempSensors(_romBuff,
+	{
+		int16_t retVal = sensors.searchAllTempSensors(_romBuff,
 		ROM_MAINBUFF_SIZE);
+		wachdog.doCheckpoint();
+		if (retVal >= 0)
+		{
+			sensorsCount += retVal;
+			for (uint16_t i = sensorsCount - retVal; i < sensorsCount; i++)
+			{
+				char buff[30];
+				sprintf(buff, "New sensor: %s", _romBuff[i].toString());
+				INFO(buff);
+			}
+		}
+		else
+		{
+			CRITICAL(F("Line error"));
+			smsIface.SendSMS(phone, "Critical error! Line not answer.");
+			loadROMs();
+			return;
+		}
+
+	}
 
 	sprintf(buff, "New sensor founded: %d", sensorsCount);
 	INFO(buff);
@@ -223,4 +245,27 @@ void NetworkWorker::searchSensors(uint8_t searchAttempts)
 	saveROMs();
 	INFO(F("Saving successful"));
 
+	if (sensorsCount == 0)
+		smsIface.SendSMS(phone, "Sensors not found.");
+	else
+	{
+		sprintf(smsBuff, "Found sensors: %d\r\n", sensorsCount);
+		uint16_t byteCounter = strlen(smsBuff);
+		for (uint16_t i = 0; i < sensorsCount; i++)
+		{
+			char tempBuff[25];
+			byteCounter += sprintf(tempBuff, "%d: %s\r\n", i + 1,
+					_romBuff[i].toString());
+			if (byteCounter < SMS_BUFF_LEN - 1)
+				strcpy(smsBuff + strlen(smsBuff), tempBuff);
+			else
+			{
+				smsIface.SendSMS(phone, smsBuff);
+				strcpy(smsBuff, tempBuff);
+				byteCounter = strlen(smsBuff);
+			}
+		}
+		if (byteCounter != 0)
+			smsIface.SendSMS(phone, smsBuff);
+	}
 }

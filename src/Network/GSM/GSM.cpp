@@ -634,9 +634,8 @@ GSM::RegistrationStatus GSM::CheckRegistration(void)
 	setCOMStatus(CLS_ATCMD);
 	print(F("AT+CREG?"));
 	print("\r");
-	// 5 sec. for initial comm tmout
-	// 50 msec. for inter character timeout
-	status = WaitResp(5000, 50);
+
+	status = WaitResp(5000, 100);
 
 	if (status == RX_FINISHED)
 	{
@@ -677,7 +676,7 @@ GSM::RegistrationStatus GSM::CheckRegistration(void)
 		// nothing was received
 		// --------------------
 		ret_val = REG_NO_RESPONSE;
-		WARNING(F("Status: Not response"));
+		WARNING(F("Modem not response"));
 	}
 	setCOMStatus(CLS_FREE);
 
