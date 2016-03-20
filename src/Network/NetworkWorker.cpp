@@ -422,7 +422,6 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 		return;
 	}
 
-	char argBuff[PHONE_LEN];
 	if (strlen(arg) > PHONE_LEN - 1)
 	{
 		INFO(F("Argument too long"));
@@ -430,6 +429,7 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 		return;
 	}
 
+	char argBuff[PHONE_LEN];
 	strcpy(argBuff, arg);
 
 	uint16_t byteCounter = 0;
@@ -439,17 +439,18 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 	{
 		wachdog.doCheckpoint();
 
-		uint16_t pos;
-		if (strstr(argBuff, "all") == argBuff)
-		{
-		}
-		else if (sscanf(argBuff, "%u", &pos) == 1)
-		{
-			if (_nodeBuff[i].getRom() != _romBuff[pos])
-				continue;
-		}
-		else if (strcmp(_nodeBuff[i].getPhone(), argBuff) != 0)
-			continue;
+//		todo:
+//		uint16_t pos;
+//		if (strstr(argBuff, "all") == argBuff)
+//		{
+//		}
+//		else if (sscanf(argBuff, "%u", &pos) == 1)
+//		{
+//			if (_nodeBuff[i].getRom() != _romBuff[pos])
+//				continue;
+//		}
+//		else if (strcmp(_nodeBuff[i].getPhone(), argBuff) != 0)
+//			continue;
 
 		char tempBuff[60];
 		byteCounter += sprintf(tempBuff, "%d: %s, Min: %d, Max: %d, Ph: %s\r\n",
@@ -473,8 +474,71 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 
 void NetworkWorker::deleteNode(const char* arg, const char* phone)
 {
+	if (arg == NULL)
+	{
+		INFO(F("Need argument"));
+		smsIface.SendSMS(phone, "Need argument");
+		return;
+	}
+
+	if (strlen(arg) > PHONE_LEN - 1)
+	{
+		INFO(F("Argument too long"));
+		smsIface.SendSMS(phone, "Argument too long");
+		return;
+	}
+
+	if (strstr(arg, "all") == arg)
+	{
+		memset(_romBuff, 0, RULENODE_BUFF_SIZE * sizeof(RuleNode));
+		saveNodes();
+		INFO(F("All nodes deleted"));
+		smsIface.SendSMS(phone, "All nodes deleted");
+		return;
+	}
+
+	uint16_t pos;
+	if (sscanf(arg, "%u", &pos) == 1)
+	{
+		if (deleteNode(pos) == 0)
+			sprintf(smsBuff, "%d node deleted", pos);
+		else
+			sprintf(smsBuff, "%d is invalid node number", pos);
+		saveNodes();
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
+		return;
+
+	}
+
+	/*
+	 else if (strcmp(_nodeBuff[i].getPhone(), argBuff) != 0)
+	 {
+
+	 }*/
+
+	sprintf(smsBuff, "\"%s\" not found", arg);
+	INFO(smsBuff);
+	smsIface.SendSMS(phone, smsBuff);
+	return;
+
+}
+
+int8_t NetworkWorker::deleteNode(uint16_t num)
+{
+	if (num >= RULENODE_BUFF_SIZE)
+		return -1;
+	_nodeBuff[num].zeroing();
+	for (;
+			((num < (RULENODE_BUFF_SIZE - 1))
+					&& (!_nodeBuff[num].getRom().isNull())); num++)
+		_nodeBuff[num] = _nodeBuff[num + 1];
+	if (num < RULENODE_BUFF_SIZE - 1)
+		_nodeBuff[num + 1].zeroing();
+	return 0;
 }
 
 void NetworkWorker::returnHelp(const char* phone)
 {
 }
+

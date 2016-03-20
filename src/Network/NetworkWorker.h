@@ -48,7 +48,9 @@ private:
 	void setNode(const char* arg, const char* phone);
 	void showNode(const char* arg, const char* phone);
 	void deleteNode(const char* arg, const char* phone);
+	int8_t deleteNode(uint16_t num);
 	void returnHelp(const char* phone);
+
 
 	char smsBuff[SMS_BUFF_LEN];
 	char phoneBuff[PHONE_LEN];
