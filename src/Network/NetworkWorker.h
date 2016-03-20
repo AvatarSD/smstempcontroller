@@ -43,8 +43,12 @@ private:
 
 	void printSMS(const char* msg, const char* phone);
 
-
 	void searchSensors(uint8_t searchAttempts, const char* phone);
+	void returnStatus(const char* arg, const char* phone);
+	void setNode(const char* arg, const char* phone);
+	void showNode(const char* arg, const char* phone);
+	void deleteNode(const char* arg, const char* phone);
+	void returnHelp(const char* phone);
 
 	char smsBuff[SMS_BUFF_LEN];
 	char phoneBuff[PHONE_LEN];

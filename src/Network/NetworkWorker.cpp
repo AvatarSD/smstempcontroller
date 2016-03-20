@@ -144,24 +144,35 @@ void NetworkWorker::parseSMS(const char* msg, const char* phone)
 	}
 	else if (strstr(msg, "status") == msg)
 	{
+		const char * args = strchr(msg, ' ');
+		if (args != NULL)
+			args++;
+		returnStatus(args, phone);
 
 	}
 	else if (strstr(msg, "setnode") == msg)
 	{
-
+		const char * args = strchr(msg, ' ');
+		if (args != NULL)
+			args++;
+		setNode(args, phone);
 	}
 	else if (strstr(msg, "shownode") == msg)
 	{
-
+		const char * args = strchr(msg, ' ');
+		if (args != NULL)
+			args++;
+		showNode(args, phone);
 	}
 	else if (strstr(msg, "deletenode") == msg)
 	{
-
+		const char * args = strchr(msg, ' ');
+		if (args != NULL)
+			args++;
+		deleteNode(args, phone);
 	}
 	else if (strstr(msg, "help") == msg)
-	{
-
-	}
+		returnHelp(phone);
 }
 
 void NetworkWorker::iterateNodes()
@@ -268,4 +279,24 @@ void NetworkWorker::searchSensors(uint8_t searchAttempts, const char* phone)
 		if (byteCounter != 0)
 			smsIface.SendSMS(phone, smsBuff);
 	}
+}
+
+void NetworkWorker::returnStatus(const char* arg, const char* phone)
+{
+}
+
+void NetworkWorker::setNode(const char* arg, const char* phone)
+{
+}
+
+void NetworkWorker::showNode(const char* arg, const char* phone)
+{
+}
+
+void NetworkWorker::deleteNode(const char* arg, const char* phone)
+{
+}
+
+void NetworkWorker::returnHelp(const char* phone)
+{
 }
