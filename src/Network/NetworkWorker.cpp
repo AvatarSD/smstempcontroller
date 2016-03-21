@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <avr/pgmspace.h>
 
 uint8_t eepromROMsBuff[ROM_MAINBUFF_SIZE * sizeof(ROM)] EEMEM;
 uint8_t eepromNodesBuff[RULENODE_BUFF_SIZE * sizeof(RuleNode)] EEMEM;
@@ -450,15 +451,22 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 		strcpy(argBuff, phone);
 	}
 	else if (sscanf(argBuff, "%u", &pos) == 1)
-		if ((pos <= getRomBuffSize()) || (pos > 0))
+		if ((pos <= getRomBuffSize()) && (pos > 0))
 			mode = NUMBER;
 
 	if (mode == NUMBER)
-		sprintf(smsBuff, "Show node with sensor %s", _romBuff[pos].toString());
+	{
+		sprintf(smsBuff, "Show node with sensor %s",
+				_romBuff[pos - 1].toString());
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
+	}
 	else if (mode == PHONE)
+	{
 		sprintf(smsBuff, "Search %s in phone number", argBuff);
-	INFO(smsBuff);
-	smsIface.SendSMS(phone, smsBuff);
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
+	}
 
 	uint16_t byteCounter = 0;
 	smsBuff[0] = 0;
@@ -478,15 +486,11 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 			if (strstr(_nodeBuff[i].getPhone(), argBuff) == NULL)
 				continue;
 
-		char tempBuff[60];
+		char tempBuff[100];
 		byteCounter += sprintf(tempBuff,
 				"%d node: %s, Min: %d, Max: %d, Ph: %s\r\n", i + 1,
 				_nodeBuff[i].getRom().toString(), _nodeBuff[i].getMin(),
 				_nodeBuff[i].getMax(), _nodeBuff[i].getPhone());
-
-		INFO(tempBuff);
-
-		counter++;
 
 		if (byteCounter < SMS_BUFF_LEN - 1)
 			strcpy(smsBuff + strlen(smsBuff), tempBuff);
@@ -496,11 +500,26 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 			strcpy(smsBuff, tempBuff);
 			byteCounter = strlen(smsBuff);
 		}
+
+		tempBuff[strlen(tempBuff) - 2] = '\0';
+		INFO(tempBuff);
+
+		counter++;
 	}
 	if (byteCounter != 0)
 		smsIface.SendSMS(phone, smsBuff);
 	if (counter == 0)
-		smsIface.SendSMS(phone, "No any node found");
+	{
+		sprintf(smsBuff, "No any node found");
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
+	}
+	else
+	{
+		sprintf(smsBuff, "Found %d node(s)", counter);
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
+	}
 }
 
 void NetworkWorker::deleteNode(const char* arg, const char* phone)
@@ -562,7 +581,7 @@ int8_t NetworkWorker::deleteNode(uint16_t num)
 }
 
 //todo
-char help[] EEMEM =
+const char help[] PROGMEM =
 { "Usage:\r\n" };
 
 void NetworkWorker::returnHelp(const char* phone)
