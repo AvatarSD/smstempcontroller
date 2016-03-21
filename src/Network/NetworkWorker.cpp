@@ -529,9 +529,12 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 			if (strstr(_nodeBuff[i].getPhone(), argBuff) == NULL)
 				continue;
 
-		char tempBuff[100];
+		char tempBuff[120];
+
+		const char * status = _nodeBuff[i].isEnabled() ? "enabled" : "disabled";
+
 		byteCounter += sprintf(tempBuff,
-				"%d node: %s, Min: %d, Max: %d, Ph: %s\r\n", i + 1,
+				"Node %d[%s]: %s, Min: %d, Max: %d, Ph: %s\r\n", i + 1, status,
 				_nodeBuff[i].getRom().toString(), _nodeBuff[i].getMin(),
 				_nodeBuff[i].getMax(), _nodeBuff[i].getPhone());
 
