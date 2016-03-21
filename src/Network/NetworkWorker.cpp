@@ -172,7 +172,11 @@ void NetworkWorker::parseSMS(const char* msg, const char* phone)
 	else if (strstr(msg, "help") == msg)
 		returnHelp(phone);
 	else
-		INFO(F("Invalid parse messege"));
+	{
+		sprintf(smsBuff, "Invalid parse message, try send \"help\"");
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
+	}
 }
 
 void NetworkWorker::iterateNodes()
@@ -405,8 +409,9 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 	}
 	else
 	{
-		INFO(F("Arguments not valid"));
-		smsIface.SendSMS(phone, "Arguments not valid");
+		sprintf(smsBuff, "Arguments not valid, try send \"help\"");
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
 	}
 }
 
@@ -414,15 +419,17 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 {
 	if (arg == NULL)
 	{
-		INFO(F("Need argument"));
-		smsIface.SendSMS(phone, "Need argument");
+		sprintf(smsBuff, "Need argument, try send \"help\"");
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
 		return;
 	}
 
 	if (strlen(arg) > PHONE_LEN - 1)
 	{
-		INFO(F("Argument too long"));
-		smsIface.SendSMS(phone, "Argument too long");
+		sprintf(smsBuff, "Argument too long, max %d character", PHONE_LEN - 1);
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
 		return;
 	}
 
@@ -435,27 +442,29 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 	};
 	SearchMode mode = PHONE;
 	uint16_t pos;
-	if (strstr(arg, "all") == arg)
+	if (strstr(argBuff, "all") == argBuff)
 		mode = ALL;
-	else if (strstr(arg, "my") == arg)
+	else if (strstr(argBuff, "my") == argBuff)
 	{
 		mode = PHONE;
 		strcpy(argBuff, phone);
 	}
-	else if (sscanf(arg, "%u", &pos) == 1)
-		mode = NUMBER;
+	else if (sscanf(argBuff, "%u", &pos) == 1)
+		if ((pos <= getRomBuffSize()) || (pos > 0))
+			mode = NUMBER;
 
-	if ((mode == NUMBER) && ((pos > getRomBuffSize()) || (pos == 0)))
-	{
-		INFO(F("Invalid number of sensor"));
-		smsIface.SendSMS(phone, "Invalid number of sensor");
-		return;
-	}
+	if (mode == NUMBER)
+		sprintf(smsBuff, "Show node with sensor %s", _romBuff[pos].toString());
+	else if (mode == PHONE)
+		sprintf(smsBuff, "Search %s in phone number", argBuff);
+	INFO(smsBuff);
+	smsIface.SendSMS(phone, smsBuff);
 
 	uint16_t byteCounter = 0;
 	smsBuff[0] = 0;
 	uint16_t i = 0;
 	const uint16_t nodeBuffSize = getNodeBuffSize();
+	uint16_t counter = 0;
 	for (; i < nodeBuffSize; i++)
 	{
 		wachdog.doCheckpoint();
@@ -470,9 +479,14 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 				continue;
 
 		char tempBuff[60];
-		byteCounter += sprintf(tempBuff, "%d: %s, Min: %d, Max: %d, Ph: %s\r\n",
-				i + 1, _nodeBuff[i].getRom().toString(), _nodeBuff[i].getMin(),
+		byteCounter += sprintf(tempBuff,
+				"%d node: %s, Min: %d, Max: %d, Ph: %s\r\n", i + 1,
+				_nodeBuff[i].getRom().toString(), _nodeBuff[i].getMin(),
 				_nodeBuff[i].getMax(), _nodeBuff[i].getPhone());
+
+		INFO(tempBuff);
+
+		counter++;
 
 		if (byteCounter < SMS_BUFF_LEN - 1)
 			strcpy(smsBuff + strlen(smsBuff), tempBuff);
@@ -485,7 +499,7 @@ void NetworkWorker::showNode(const char* arg, const char* phone)
 	}
 	if (byteCounter != 0)
 		smsIface.SendSMS(phone, smsBuff);
-	if (i == 0)
+	if (counter == 0)
 		smsIface.SendSMS(phone, "No any node found");
 }
 
