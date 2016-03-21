@@ -596,7 +596,8 @@ void NetworkWorker::deleteNode(const char* arg, const char* phone)
 	uint16_t pos;
 	if (sscanf(arg, "%u", &pos) == 1)
 	{
-		if (deleteNode(pos) == 0)
+
+		if ((pos > 0)&&(pos <= getNodeBuffSize())&&(deleteNode(pos-1) == 0))
 			sprintf(smsBuff, "%d node deleted", pos);
 		else
 			sprintf(smsBuff, "%d is invalid node number", pos);
