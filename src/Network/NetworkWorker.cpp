@@ -402,7 +402,8 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 
 		if ((romNum > getRomBuffSize()) || (romNum <= 0))
 		{
-			sprintf(smsBuff, "Invalid number of sensor, usage \"status\" for get sensor list");
+			sprintf(smsBuff,
+					"Invalid number of sensor, usage \"status\" for get sensor list");
 			INFO(smsBuff);
 			smsIface.SendSMS(phone, smsBuff);
 			return;
@@ -624,6 +625,27 @@ int8_t NetworkWorker::deleteNode(uint16_t num)
 
 void NetworkWorker::returnHelp(const char* phone)
 {
+	uint16_t byteCounter = 0;
+	for (uint16_t i = 0; true; i++)
+	{
+		wachdog.doCheckpoint();
+
+		char temp = pgm_read_byte(help + i);
+
+		if (byteCounter == SMS_BUFF_LEN - 1)
+		{
+			smsIface.SendSMS(phone, smsBuff);
+			byteCounter = 0;
+		}
+		smsBuff[byteCounter++] = temp;
+
+		if (temp == '\0')
+			break;
+	}
+	if (byteCounter != 0)
+		smsIface.SendSMS(phone, smsBuff);
+
+	INFO(F("Help returned"));
 }
 
 uint16_t NetworkWorker::getRomBuffSize()
