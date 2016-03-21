@@ -241,8 +241,8 @@ void NetworkWorker::iterateNodes()
 		{
 			_nodeBuff[i].setAlarmed(true);
 			char buff[100];
-			sprintf(buff, "Out of range [%d;%d]`C: %s: %3.1lf`C",
-					_nodeBuff[i].getMin(), _nodeBuff[i].getMax(),
+			sprintf(buff, "Node %d: Out of range [%d;%d]`C: %s: %3.1lf`C",
+					i + 1, _nodeBuff[i].getMin(), _nodeBuff[i].getMax(),
 					_nodeBuff[i].getRom().toString(), temperarure);
 			WARNING(buff);
 			smsIface.SendSMS(_nodeBuff[i].getPhone(), buff);
