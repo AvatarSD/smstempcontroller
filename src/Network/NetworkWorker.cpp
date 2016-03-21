@@ -638,6 +638,7 @@ void NetworkWorker::returnHelp(const char* phone)
 
 		if (byteCounter == SMS_BUFF_LEN - 1)
 		{
+			smsBuff[byteCounter] = '\0';
 			smsIface.SendSMS(phone, smsBuff);
 			byteCounter = 0;
 		}

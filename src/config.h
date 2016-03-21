@@ -115,7 +115,17 @@
 
 /***************** Help *******************/
 const char help[] PROGMEM =
-{ "Usage:\r\n" };
+{ 		"Usage:\r\n"
+		"search\r\n"
+		"status\r\r"
+		"setnode <num>,<min>,<max>,<phone>  "
+		"where <num> is number of sensor in \"status\" or \"search\" command output, "
+		"<min> and <max> is temperature range, <phone> is not required parameter\r\n"
+		"shownode <num_or_phone_or_all_or_my>  where <num> is similar to \"setnode\"\r\n"
+		"deletenode <num_or_all>  where <num> is node number in \"shownode\" output\r\n"
+		"disablenode <num>  where <num> is similar to last\r\n"
+		"enablenode <num>"
+};
 
 
 
