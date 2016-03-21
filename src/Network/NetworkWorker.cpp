@@ -390,10 +390,11 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 			strcpy(phoneBuff, phone);
 
 		//check phone number length
-		if (strlen(phoneBuff) == PHONE_LEN)
+		if (strlen(phoneBuff) >= PHONE_LEN)
 		{
-			INFO(F("Phone number too long"));
-			smsIface.SendSMS(phone, "Phone number too long");
+			sprintf(smsBuff, "Phone number too long");
+			INFO(smsBuff);
+			smsIface.SendSMS(phone, smsBuff);
 			return;
 		}
 
@@ -401,8 +402,9 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 
 		if ((romNum > getRomBuffSize()) || (romNum <= 0))
 		{
-			INFO(F("Invalid number of sensor"));
-			smsIface.SendSMS(phone, "Invalid number of sensor");
+			sprintf(smsBuff, "Invalid number of sensor, usage \"status\" for get sensor list");
+			INFO(smsBuff);
+			smsIface.SendSMS(phone, smsBuff);
 			return;
 		}
 
@@ -422,14 +424,19 @@ void NetworkWorker::setNode(const char* arg, const char* phone)
 		for (; i < nodeBuffSize; i++)
 			if (_nodeBuff[i] == node)
 			{
-				INFO(F("This node already exists"));
-				smsIface.SendSMS(phone, "This node already exists");
+				sprintf(smsBuff, "This node already exists at %d position",
+						i + 1);
+				INFO(smsBuff);
+				smsIface.SendSMS(phone, smsBuff);
 				return;
 			}
 		if (i == RULENODE_BUFF_SIZE - 1)
 		{
-			INFO(F("Not enough memory to append node"));
-			smsIface.SendSMS(phone, "Not enough memory to append node");
+			sprintf(smsBuff,
+					"Not enough memory to append node, max is %d nodes",
+					RULENODE_BUFF_SIZE);
+			INFO(smsBuff);
+			smsIface.SendSMS(phone, smsBuff);
 		}
 		else
 		{
@@ -652,6 +659,7 @@ void NetworkWorker::setNodeEnabled(bool enable, const char* arg,
 		{
 			_nodeBuff[pos - 1].setAlarmed(false);
 			_nodeBuff[pos - 1].setEnabled(enable);
+			saveNodes();
 			if (enable)
 				sprintf(smsBuff, "Node %d enabled", pos);
 			else
