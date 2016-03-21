@@ -650,11 +650,12 @@ void NetworkWorker::setNodeEnabled(bool enable, const char* arg,
 	if (sscanf(arg, "%u", &pos) == 1)
 		if ((pos <= getRomBuffSize()) && (pos > 0))
 		{
+			_nodeBuff[pos - 1].setAlarmed(false);
 			_nodeBuff[pos - 1].setEnabled(enable);
 			if (enable)
-				sprintf(smsBuff, "%d node enabled", pos);
+				sprintf(smsBuff, "Node %d enabled", pos);
 			else
-				sprintf(smsBuff, "%d node disabled", pos);
+				sprintf(smsBuff, "Node %d disabled", pos);
 			INFO(smsBuff);
 			smsIface.SendSMS(phone, smsBuff);
 			return;
