@@ -241,7 +241,7 @@ void NetworkWorker::iterateNodes()
 		{
 			_nodeBuff[i].setAlarmed(true);
 			char buff[100];
-			sprintf(buff, "Out of range [%d;%d]`C: %s: %3.2lf`C",
+			sprintf(buff, "Out of range [%d;%d]`C: %s: %3.1lf`C",
 					_nodeBuff[i].getMin(), _nodeBuff[i].getMax(),
 					_nodeBuff[i].getRom().toString(), temperarure);
 			WARNING(buff);
