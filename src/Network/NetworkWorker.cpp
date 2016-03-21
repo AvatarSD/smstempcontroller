@@ -53,7 +53,7 @@ void NetworkWorker::mainLoop()
 		parseSMS(smsBuff, phoneBuff);
 	};
 
-	//iterateNodes();
+	iterateNodes();
 }
 
 bool NetworkWorker::refreshModemTimeFromNTP()
@@ -170,6 +170,20 @@ void NetworkWorker::parseSMS(const char* msg, const char* phone)
 			args++;
 		deleteNode(args, phone);
 	}
+	else if (strstr(msg, "disablenode") == msg)
+	{
+		const char * args = strchr(msg, ' ');
+		if (args != NULL)
+			args++;
+		setNodeEnabled(false, args, phone);
+	}
+	else if (strstr(msg, "enablenode") == msg)
+	{
+		const char * args = strchr(msg, ' ');
+		if (args != NULL)
+			args++;
+		setNodeEnabled(true, args, phone);
+	}
 	else if (strstr(msg, "help") == msg)
 		returnHelp(phone);
 	else
@@ -182,10 +196,26 @@ void NetworkWorker::parseSMS(const char* msg, const char* phone)
 
 void NetworkWorker::iterateNodes()
 {
-	for (uint16_t i = 0;
-			((i < RULENODE_BUFF_SIZE) && (!_nodeBuff[i].getRom().isNull()));
-			i++)
+	bool timeToAlarm = false;
+	static unsigned long long int lasttime = 0;
+	unsigned long long int currtime = getUnixTime();
+	if (lasttime + ALARM_PERID * 60 < currtime)
 	{
+		lasttime = currtime;
+		timeToAlarm = true;
+	}
+
+	const uint16_t nodeBuffSize = getNodeBuffSize();
+	for (uint16_t i = 0; i < nodeBuffSize; i++)
+	{
+		wachdog.doCheckpoint();
+
+		if (!_nodeBuff[i].isEnabled())
+			continue;
+
+		if ((_nodeBuff[i].isAlarmed()) && (!timeToAlarm))
+			continue;
+
 		double temperarure;
 		bool readingOk = false;
 		for (uint8_t n = 0; n < NUM_OF_READING_ATEMPT; n++)
@@ -195,8 +225,9 @@ void NetworkWorker::iterateNodes()
 				break;
 			}
 
-		if (readingOk == false)
+		if (!readingOk)
 		{
+			_nodeBuff[i].setAlarmed(true);
 			char buff[100];
 			sprintf(buff, "Sensor wasn't read: %s",
 					_nodeBuff[i].getRom().toString());
@@ -205,15 +236,19 @@ void NetworkWorker::iterateNodes()
 			continue;
 		}
 
-		if ((temperarure < _nodeBuff[i].getMin())
+		else if ((temperarure < _nodeBuff[i].getMin())
 				|| (temperarure > _nodeBuff[i].getMax()))
 		{
+			_nodeBuff[i].setAlarmed(true);
 			char buff[100];
-			sprintf(buff, "Out of range [%d;%d]: %s", _nodeBuff[i].getMin(),
-					_nodeBuff[i].getMax(), _nodeBuff[i].getRom().toString());
+			sprintf(buff, "Out of range [%d;%d]`C: %s: %3.2lf`C",
+					_nodeBuff[i].getMin(), _nodeBuff[i].getMax(),
+					_nodeBuff[i].getRom().toString(), temperarure);
 			WARNING(buff);
 			smsIface.SendSMS(_nodeBuff[i].getPhone(), buff);
 		}
+		else
+			_nodeBuff[i].setAlarmed(false);
 	}
 }
 
@@ -580,10 +615,6 @@ int8_t NetworkWorker::deleteNode(uint16_t num)
 	return 0;
 }
 
-//todo
-const char help[] PROGMEM =
-{ "Usage:\r\n" };
-
 void NetworkWorker::returnHelp(const char* phone)
 {
 }
@@ -602,4 +633,35 @@ uint16_t NetworkWorker::getNodeBuffSize()
 	for (; (i < (RULENODE_BUFF_SIZE) && (!_nodeBuff[i].getRom().isNull())); i++)
 		;
 	return i;
+}
+
+void NetworkWorker::setNodeEnabled(bool enable, const char* arg,
+		const char* phone)
+{
+	if (arg == NULL)
+	{
+		sprintf(smsBuff, "Need argument, try send \"help\"");
+		INFO(smsBuff);
+		smsIface.SendSMS(phone, smsBuff);
+		return;
+	}
+
+	uint16_t pos;
+	if (sscanf(arg, "%u", &pos) == 1)
+		if ((pos <= getRomBuffSize()) && (pos > 0))
+		{
+			_nodeBuff[pos - 1].setEnabled(enable);
+			if (enable)
+				sprintf(smsBuff, "%d node enabled", pos);
+			else
+				sprintf(smsBuff, "%d node disabled", pos);
+			INFO(smsBuff);
+			smsIface.SendSMS(phone, smsBuff);
+			return;
+		}
+
+	sprintf(smsBuff, "Invalid argument");
+	INFO(smsBuff);
+	smsIface.SendSMS(phone, smsBuff);
+
 }

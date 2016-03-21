@@ -13,6 +13,8 @@ RuleNode::RuleNode()
 	memset(phone, 0, PHONE_LEN);
 	min = 0;
 	max = 0;
+	enabled = true;
+	alarmed = false;
 }
 
 RuleNode::~RuleNode()
@@ -96,4 +98,24 @@ bool RuleNode::operator ==(const RuleNode& cmp) const
 bool RuleNode::operator !=(const RuleNode& cmp) const
 {
 	return !operator ==(cmp);
+}
+
+bool RuleNode::isAlarmed() const
+{
+	return alarmed;
+}
+
+void RuleNode::setAlarmed(bool alarmed)
+{
+	this->alarmed = alarmed;
+}
+
+bool RuleNode::isEnabled() const
+{
+	return enabled;
+}
+
+void RuleNode::setEnabled(bool enabled)
+{
+	this->enabled = enabled;
 }

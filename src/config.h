@@ -8,6 +8,7 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+#include <avr/pgmspace.h>
 
 /************ Debug Settings ********************/
 #define DEBUG_TXINT USART3_TX_vect
@@ -98,16 +99,6 @@
 #define CASE_DDR DDRF
 #define CASE_PORT PORTF
 
-//#define NEWSRC_PIN_NUM 3
-//#define NEWSRC_PIN PINF
-//#define NEWSRC_DDR DDRF
-//#define NEWSRC_PORT PORTF
-//
-//#define ADDSRC_PIN_NUM 4
-//#define ADDSRC_PIN PINF
-//#define ADDSRC_DDR DDRF
-//#define ADDSRC_PORT PORTF
-
 #define LED_ON //PORTB |= (1<<PORTB7) //now we no have LED indicator
 #define LED_OFF //PORTB &=~ (1<<PORTB7)
 #define LED_TRN //PORTB ^= (1<<PORTB7)
@@ -116,7 +107,16 @@
 #define ROM_MAINBUFF_SIZE 32 //max sensor size
 #define RULENODE_BUFF_SIZE 64
 
+/***************** Alarm ******************/
+#define ALARM_PERID 5 // in minutes
+
 /**************** WachDog *****************/
 #define WDT_SEC 30
+
+/***************** Help *******************/
+const char help[] PROGMEM =
+{ "Usage:\r\n" };
+
+
 
 #endif /* CONFIG_H_ */

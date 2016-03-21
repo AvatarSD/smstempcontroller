@@ -50,6 +50,7 @@ private:
 	void deleteNode(const char* arg, const char* phone);
 	int8_t deleteNode(uint16_t num);
 	void returnHelp(const char* phone);
+	void setNodeEnabled(bool enable, const char* arg, const char* phone);
 
 	uint16_t getRomBuffSize();
 	uint16_t getNodeBuffSize();
@@ -62,7 +63,6 @@ private:
 	SMSGSM  smsIface;
 	DallasTemp & sensors;
 	HardwareData & HWdata;
-
 
 	ROM _romBuff[ROM_MAINBUFF_SIZE];
 	RuleNode _nodeBuff[RULENODE_BUFF_SIZE];

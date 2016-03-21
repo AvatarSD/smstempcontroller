@@ -44,7 +44,6 @@ void MainWorker::mainLoop()
 	if (lastDay != currDay)
 	{
 		_network.refreshModemTimeFromNTP();
-		_network.refreshInternalTimeFromModem();
 		currDay = convertFromUNIXtime(getUnixTime()).tm_day;
 	}
 	lastDay = currDay;

@@ -34,12 +34,19 @@ public:
 	bool operator ==(const RuleNode& cmp) const;
 	bool operator !=(const RuleNode& cmp) const;
 
+	bool isAlarmed() const;
+	void setAlarmed(bool alarmed);
+	bool isEnabled() const;
+	void setEnabled(bool enabled);
+
 private:
 	ROM rom;
 	char phone[PHONE_LEN];
 	int8_t min;
 	int8_t max;
 
+	bool enabled;
+	bool alarmed;
 };
 
 #endif /* MAINWORKER_RULENODE_H_ */
